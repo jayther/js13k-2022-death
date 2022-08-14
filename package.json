@@ -5,6 +5,7 @@
   "scripts": {
     "build": "gulp",
     "watch": "gulp watch",
+    "server": "static -c 1 dist",
     "test": "gulp"
   },
   "author": "JB <jb@jayther.com>",
@@ -23,6 +24,7 @@
     "gulp-util": "3.0.7",
     "gulp-zip": "3.2.0",
     "handlebars": "4.0.5",
+    "node-static": "^0.7.11",
     "rollup-stream": "1.11.0",
     "vinyl": "2.2.0",
     "vinyl-buffer": "1.0.1",
