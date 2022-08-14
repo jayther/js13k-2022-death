@@ -13,7 +13,7 @@ const util        = require('gulp-util');
 function onError( err, pipeline ) {
   util.log( util.colors.red( `Error: ${ err.message }` ) );
   util.beep();
-  pipeline.emit('end');
+  pipeline.emit('error', err);
 }
 
 function buildFull() {
