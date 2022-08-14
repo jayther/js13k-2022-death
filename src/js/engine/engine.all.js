@@ -33,12 +33,12 @@ const debugPointSize = .5;
 /** True if watermark with FPS should be down, false in release builds
  *  @default
  *  @memberof Debug */
-let showWatermark = 1;
+export let showWatermark = 1;
 
 /** True if god mode is enabled, handle this however you want
  *  @default
  *  @memberof Debug */
-let godMode = 0;
+export let godMode = 0;
 
 // Engine internal variables not exposed to documentation
 let debugPrimitives = [], debugOverlay = 0, debugPhysics = 0, debugRaycast = 0,
@@ -407,40 +407,40 @@ const debugRender = ()=>
 /** A shortcut to get Math.PI
  *  @const
  *  @memberof Utilities */
-const PI = Math.PI;
+export const PI = Math.PI;
 
 /** Returns absoulte value of value passed in
  *  @param {Number} value
  *  @return {Number}
  *  @memberof Utilities */
-const abs = (a)=> a < 0 ? -a : a;
+export const abs = (a)=> a < 0 ? -a : a;
 
 /** Returns lowest of two values passed in
  *  @param {Number} valueA
  *  @param {Number} valueB
  *  @return {Number}
  *  @memberof Utilities */
-const min = (a, b)=> a < b ?  a : b;
+export const min = (a, b)=> a < b ?  a : b;
 
 /** Returns highest of two values passed in
  *  @param {Number} valueA
  *  @param {Number} valueB
  *  @return {Number}
  *  @memberof Utilities */
-const max = (a, b)=> a > b ?  a : b;
+export const max = (a, b)=> a > b ?  a : b;
 
 /** Returns the sign of value passed in (also returns 1 if 0)
  *  @param {Number} value
  *  @return {Number}
  *  @memberof Utilities */
-const sign = (a)=> a < 0 ? -1 : 1;
+export const sign = (a)=> a < 0 ? -1 : 1;
 
 /** Returns first parm modulo the second param, but adjusted so negative numbers work as expected
  *  @param {Number} dividend
  *  @param {Number} [divisor=1]
  *  @return {Number}
  *  @memberof Utilities */
-const mod = (a, b=1)=> ((a % b) + b) % b;
+export const mod = (a, b=1)=> ((a % b) + b) % b;
 
 /** Clamps the value beween max and min
  *  @param {Number} value
@@ -448,7 +448,7 @@ const mod = (a, b=1)=> ((a % b) + b) % b;
  *  @param {Number} [max=1]
  *  @return {Number}
  *  @memberof Utilities */
-const clamp = (v, min=0, max=1)=> v < min ? min : v > max ? max : v;
+export const clamp = (v, min=0, max=1)=> v < min ? min : v > max ? max : v;
 
 /** Returns what percentage the value is between max and min
  *  @param {Number} value
@@ -456,7 +456,7 @@ const clamp = (v, min=0, max=1)=> v < min ? min : v > max ? max : v;
  *  @param {Number} [max=1]
  *  @return {Number}
  *  @memberof Utilities */
-const percent = (v, min=0, max=1)=> max-min ? clamp((v-min) / (max-min)) : 0;
+export const percent = (v, min=0, max=1)=> max-min ? clamp((v-min) / (max-min)) : 0;
 
 /** Linearly interpolates the percent value between max and min
  *  @param {Number} percent
@@ -464,19 +464,19 @@ const percent = (v, min=0, max=1)=> max-min ? clamp((v-min) / (max-min)) : 0;
  *  @param {Number} [max=1]
  *  @return {Number}
  *  @memberof Utilities */
-const lerp = (p, min=0, max=1)=> min + clamp(p) * (max-min);
+export const lerp = (p, min=0, max=1)=> min + clamp(p) * (max-min);
 
 /** Applies smoothstep function to the percentage value
  *  @param {Number} value
  *  @return {Number}
  *  @memberof Utilities */
-const smoothStep = (p)=> p * p * (3 - 2 * p);
+export const smoothStep = (p)=> p * p * (3 - 2 * p);
 
 /** Returns the nearest power of two not less then the value
  *  @param {Number} value
  *  @return {Number}
  *  @memberof Utilities */
-const nearestPowerOfTwo = (v)=> 2**Math.ceil(Math.log2(v));
+export const nearestPowerOfTwo = (v)=> 2**Math.ceil(Math.log2(v));
 
 /** Returns true if two axis aligned bounding boxes are overlapping 
  *  @param {Vector2} pointA  - Center of box A
@@ -485,7 +485,7 @@ const nearestPowerOfTwo = (v)=> 2**Math.ceil(Math.log2(v));
  *  @param {Vector2} [sizeB] - Size of box B
  *  @return {Boolean}        - True if overlapping
  *  @memberof Utilities */
-const isOverlapping = (pA, sA, pB, sB)=> abs(pA.x - pB.x)*2 < sA.x + sB.x & abs(pA.y - pB.y)*2 < sA.y + sB.y;
+export const isOverlapping = (pA, sA, pB, sB)=> abs(pA.x - pB.x)*2 < sA.x + sB.x & abs(pA.y - pB.y)*2 < sA.y + sB.y;
 
 /** Returns an oscillating wave between 0 and amplitude with frequency of 1 Hz by default
  *  @param {Number} [frequency=1] - Frequency of the wave in Hz
@@ -493,13 +493,13 @@ const isOverlapping = (pA, sA, pB, sB)=> abs(pA.x - pB.x)*2 < sA.x + sB.x & abs(
  *  @param {Number} [t=time]      - Value to use for time of the wave
  *  @return {Number}              - Value waving between 0 and amplitude
  *  @memberof Utilities */
-const wave = (frequency=1, amplitude=1, t=time)=> amplitude/2 * (1 - Math.cos(t*frequency*2*PI));
+export const wave = (frequency=1, amplitude=1, t=time)=> amplitude/2 * (1 - Math.cos(t*frequency*2*PI));
 
 /** Formats seconds to mm:ss style for display purposes 
  *  @param {Number} t - time in seconds
  *  @return {String}
  *  @memberof Utilities */
-const formatTime = (t)=> (t/60|0)+':'+(t%60<10?'0':'')+(t%60|0);
+export const formatTime = (t)=> (t/60|0)+':'+(t%60<10?'0':'')+(t%60|0);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -511,32 +511,32 @@ const formatTime = (t)=> (t/60|0)+':'+(t%60<10?'0':'')+(t%60|0);
  *  @param {Number} [valueB=0]
  *  @return {Number}
  *  @memberof Random */
-const rand = (a=1, b=0)=> b + (a-b)*Math.random();
+export const rand = (a=1, b=0)=> b + (a-b)*Math.random();
 
 /** Returns a floored random value the two values passed in
  *  @param {Number} [valueA=1]
  *  @param {Number} [valueB=0]
  *  @return {Number}
  *  @memberof Random */
-const randInt = (a=1, b=0)=> rand(a,b)|0;
+export const randInt = (a=1, b=0)=> rand(a,b)|0;
 
 /** Randomly returns either -1 or 1
  *  @return {Number}
  *  @memberof Random */
-const randSign = ()=> (rand(2)|0) * 2 - 1;
+export const randSign = ()=> (rand(2)|0) * 2 - 1;
 
 /** Returns a random Vector2 within a circular shape
  *  @param {Number} [radius=1]
  *  @param {Number} [minRadius=0]
  *  @return {Vector2}
  *  @memberof Random */
-const randInCircle = (radius=1, minRadius=0)=> radius > 0 ? randVector(radius * rand(minRadius / radius, 1)**.5) : new Vector2;
+export const randInCircle = (radius=1, minRadius=0)=> radius > 0 ? randVector(radius * rand(minRadius / radius, 1)**.5) : new Vector2;
 
 /** Returns a random Vector2 with the passed in length
  *  @param {Number} [length=1]
  *  @return {Vector2}
  *  @memberof Random */
-const randVector = (length=1)=> new Vector2().setAngle(rand(2*PI), length);
+export const randVector = (length=1)=> new Vector2().setAngle(rand(2*PI), length);
 
 /** Returns a random color between the two passed in colors, combine components if linear
  *  @param {Color}   [colorA=new Color(1,1,1,1)]
@@ -544,19 +544,19 @@ const randVector = (length=1)=> new Vector2().setAngle(rand(2*PI), length);
  *  @param {Boolean} [linear]
  *  @return {Color}
  *  @memberof Random */
-const randColor = (cA = new Color, cB = new Color(0,0,0,1), linear)=>
+export const randColor = (cA = new Color, cB = new Color(0,0,0,1), linear)=>
     linear ? cA.lerp(cB, rand()) : new Color(rand(cA.r,cB.r),rand(cA.g,cB.g),rand(cA.b,cB.b),rand(cA.a,cB.a));
 
 /** The seed used by the randSeeded function, should not be 0
  *  @memberof Random */
-let randSeed = 1;
+export let randSeed = 1;
 
 /** Returns a seeded random value between the two values passed in using randSeed
  *  @param {Number} [valueA=1]
  *  @param {Number} [valueB=0]
  *  @return {Number}
  *  @memberof Random */
-const randSeeded = (a=1, b=0)=>
+export const randSeeded = (a=1, b=0)=>
 {
     randSeed ^= randSeed << 13; randSeed ^= randSeed >>> 17; randSeed ^= randSeed << 5; // xorshift
     return b + (a-b) * abs(randSeed % 1e9) / 1e9;
@@ -576,7 +576,7 @@ const randSeeded = (a=1, b=0)=>
  * b = vec2();         // set b to (0, 0)
  * @memberof Utilities
  */
-const vec2 = (x=0, y)=> x.x == undefined ? new Vector2(x, y == undefined? x : y) : new Vector2(x.x, x.y);
+export const vec2 = (x=0, y)=> x.x == undefined ? new Vector2(x, y == undefined? x : y) : new Vector2(x.x, x.y);
 
 /** 
  * 2D Vector object with vector math library
@@ -587,7 +587,7 @@ const vec2 = (x=0, y)=> x.x == undefined ? new Vector2(x, y == undefined? x : y)
  * let c = vec2(4, 2);        // use the vec2 function to make a Vector2
  * let d = a.add(b).scale(5); // operators can be chained
  */
-class Vector2
+export class Vector2
 {
     /** Create a 2D vector with the x and y passed in, can also be created with vec2()
      *  @param {Number} [x=0] - X axis location
@@ -724,7 +724,7 @@ class Vector2
  * let b = new Color(1, 0, 0);    // red
  * let c = new Color(0, 0, 0, 0); // transparent black
  */
-class Color
+export class Color
 {
     /** Create a color with the components passed in, white by default
      *  @param {Number} [red=1]
@@ -897,7 +897,7 @@ class Color
  * let b = new Timer(1); // creates a timer with 1 second left
  * b.unset();            // unsets the timer
  */
-class Timer
+export class Timer
 {
     /** Create a timer object set time passed in
      *  @param {Number} [timeLeft] - How much time left before the timer elapses in seconds */
@@ -948,24 +948,24 @@ class Timer
  *  @type {Vector2} 
  *  @default
  *  @memberof Settings */
-let canvasMaxSize = vec2(1920, 1200);
+export let canvasMaxSize = vec2(1920, 1200);
 
 /** Fixed size of the canvas, if enabled canvas size never changes
  * - you may also need to set mainCanvasSize if using screen space coords in startup
  *  @type {Vector2} 
  *  @default
  *  @memberof Settings */
-let canvasFixedSize = vec2();
+export let canvasFixedSize = vec2();
 
 /** Disables anti aliasing for pixel art if true
  *  @default
  *  @memberof Settings */
-let cavasPixelated = 1;
+export let cavasPixelated = 1;
 
 /** Default font used for text rendering
  *  @default
  *  @memberof Settings */
-let fontDefault = 'arial';
+export let fontDefault = 'arial';
 
 ///////////////////////////////////////////////////////////////////////////////
 // Tile sheet settings
@@ -974,12 +974,12 @@ let fontDefault = 'arial';
  *  @type {Vector2} 
  *  @default
  *  @memberof Settings */
-let tileSizeDefault = vec2(16);
+export let tileSizeDefault = vec2(16);
 
 /** Prevent tile bleeding from neighbors in pixels
  *  @default
  *  @memberof Settings */
-let tileFixBleedScale = .3;
+export let tileFixBleedScale = .3;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Object settings
@@ -988,52 +988,52 @@ let tileFixBleedScale = .3;
  *  @type {Vector2} 
  *  @default
  *  @memberof Settings */
-let objectDefaultSize = vec2(1);
+export let objectDefaultSize = vec2(1);
 
 /** Enable physics solver for collisions between objects
  *  @default
  *  @memberof Settings */
-let enablePhysicsSolver = 1;
+export let enablePhysicsSolver = 1;
 
 /** Default object mass for collison calcuations (how heavy objects are)
  *  @default
  *  @memberof Settings */
-let objectDefaultMass = 1;
+export let objectDefaultMass = 1;
 
 /** How much to slow velocity by each frame (0-1)
  *  @default
  *  @memberof Settings */
-let objectDefaultDamping = .99;
+export let objectDefaultDamping = .99;
 
 /** How much to slow angular velocity each frame (0-1)
  *  @default
  *  @memberof Settings */
-let objectDefaultAngleDamping = .99;
+export let objectDefaultAngleDamping = .99;
 
 /** How much to bounce when a collision occurs (0-1)
  *  @default
  *  @memberof Settings */
-let objectDefaultElasticity = 0;
+export let objectDefaultElasticity = 0;
 
 /** How much to slow when touching (0-1)
  *  @default
  *  @memberof Settings */
-let objectDefaultFriction = .8;
+export let objectDefaultFriction = .8;
 
 /** Clamp max speed to avoid fast objects missing collisions
  *  @default
  *  @memberof Settings */
-let objectMaxSpeed = 1;
+export let objectMaxSpeed = 1;
 
 /** How much gravity to apply to objects along the Y axis, negative is down
  *  @default
  *  @memberof Settings */
-let gravity = 0;
+export let gravity = 0;
 
 /** Scales emit rate of particles, useful for low graphics mode (0 disables particle emitters)
  *  @default
  *  @memberof Settings */
-let particleEmitRateScale = 1;
+export let particleEmitRateScale = 1;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Camera settings
@@ -1042,12 +1042,12 @@ let particleEmitRateScale = 1;
  *  @type {Vector2}
  *  @default
  *  @memberof Settings */
-let cameraPos = vec2();
+export let cameraPos = vec2();
 
 /** Scale of camera in world space
  *  @default
  *  @memberof Settings */
-let cameraScale = max(tileSizeDefault.x, tileSizeDefault.y);
+export let cameraScale = max(tileSizeDefault.x, tileSizeDefault.y);
 
 ///////////////////////////////////////////////////////////////////////////////
 // WebGL settings
@@ -1055,12 +1055,12 @@ let cameraScale = max(tileSizeDefault.x, tileSizeDefault.y);
 /** Enable webgl rendering, webgl can be disabled and removed from build (with some features disabled)
  *  @default
  *  @memberof Settings */
-let glEnable = 1;
+export let glEnable = 1;
 
 /** Fixes slow rendering in some browsers by not compositing the WebGL canvas
  *  @default
  *  @memberof Settings */
-let glOverlay = 1;
+export let glOverlay = 1;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Input settings
@@ -1068,44 +1068,44 @@ let glOverlay = 1;
 /** Should gamepads be allowed
  *  @default
  *  @memberof Settings */
-let gamepadsEnable = 1;
+export let gamepadsEnable = 1;
 
 /** If true, the dpad input is also routed to the left analog stick (for better accessability)
  *  @default
  *  @memberof Settings */
-let gamepadDirectionEmulateStick = 1;
+export let gamepadDirectionEmulateStick = 1;
 
 /** If true the WASD keys are also routed to the direction keys (for better accessability)
  *  @default
  *  @memberof Settings */
-let inputWASDEmulateDirection = 1;
+export let inputWASDEmulateDirection = 1;
 
 /** True if touch gamepad should appear on mobile devices
  *  <br> - Supports left analog stick, 4 face buttons and start button (button 9)
  *  <br> - Must be set by end of gameInit to be activated
  *  @default
  *  @memberof Settings */
-let touchGamepadEnable = 0;
+export let touchGamepadEnable = 0;
 
 /** True if touch gamepad should be analog stick or false to use if 8 way dpad
  *  @default
  *  @memberof Settings */
-let touchGamepadAnalog = 1;
+export let touchGamepadAnalog = 1;
 
 /** Size of virutal gamepad for touch devices in pixels
  *  @default
  *  @memberof Settings */
-let touchGamepadSize = 80;
+export let touchGamepadSize = 80;
 
 /** Transparency of touch gamepad overlay
  *  @default
  *  @memberof Settings */
-let touchGamepadAlpha = .3;
+export let touchGamepadAlpha = .3;
 
 /** Allow vibration hardware if it exists
  *  @default
  *  @memberof Settings */
-let vibrateEnable = 1;
+export let vibrateEnable = 1;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Audio settings
@@ -1113,22 +1113,22 @@ let vibrateEnable = 1;
 /** Volume scale to apply to all sound, music and speech
  *  @default
  *  @memberof Settings */
-let soundVolume = .5;
+export let soundVolume = .5;
 
 /** All audio code can be disabled and removed from build
  *  @default
  *  @memberof Settings */
-let soundEnable = 1;
+export let soundEnable = 1;
 
 /** Default range where sound no longer plays
  *  @default
  *  @memberof Settings */
-let soundDefaultRange = 30;
+export let soundDefaultRange = 30;
 
 /** Default range percent to start tapering off sound (0-1)
  *  @default
  *  @memberof Settings */
-let soundDefaultTaper = .7;
+export let soundDefaultTaper = .7;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Medals settings
@@ -1136,27 +1136,27 @@ let soundDefaultTaper = .7;
 /** How long to show medals for in seconds
  *  @default
  *  @memberof Settings */
-let medalDisplayTime = 5;
+export let medalDisplayTime = 5;
 
 /** How quickly to slide on/off medals in seconds
  *  @default
  *  @memberof Settings */
-let medalDisplaySlideTime = .5;
+export let medalDisplaySlideTime = .5;
 
 /** Width of medal display
  *  @default
  *  @memberof Settings */
-let medalDisplayWidth = 640;
+export let medalDisplayWidth = 640;
 
 /** Height of medal display
  *  @default
  *  @memberof Settings */
-let medalDisplayHeight = 80;
+export let medalDisplayHeight = 80;
 
 /** Size of icon in medal display
  *  @default
  *  @memberof Settings */
-let medalDisplayIconSize = 50;
+export let medalDisplayIconSize = 50;
 /*
     LittleJS Object System
 */
@@ -1188,7 +1188,7 @@ let medalDisplayIconSize = 50;
  * const pos = vec2(2,3);
  * const object = new EngineObject(pos); 
  */
-class EngineObject
+export class EngineObject
 {
     /** Create an engine object and adds it to the list of objects
      *  @param {Vector2} [position=new Vector2()]    - World space position of the object
@@ -1558,39 +1558,39 @@ class EngineObject
 /** Tile sheet for batch rendering system
  *  @type {Image}
  *  @memberof Draw */
-const tileImage = new Image();
+export const tileImage = new Image();
 
 /** The primary 2D canvas visible to the user
  *  @type {HTMLCanvasElement}
  *  @memberof Draw */
-let mainCanvas;
+export let mainCanvas;
 
 /** 2d context for mainCanvas
  *  @type {CanvasRenderingContext2D}
  *  @memberof Draw */
-let mainContext;
+export let mainContext;
 
 /** A canvas that appears on top of everything the same size as mainCanvas
  *  @type {HTMLCanvasElement}
  *  @memberof Draw */
-let overlayCanvas;
+export let overlayCanvas;
 
 /** 2d context for overlayCanvas
  *  @type {CanvasRenderingContext2D}
  *  @memberof Draw */
-let overlayContext;
+export let overlayContext;
 
 /** The size of the main canvas (and other secondary canvases) 
  *  @type {Vector2}
  *  @memberof Draw */
-let mainCanvasSize = vec2();
+export let mainCanvasSize = vec2();
 
 /** Convert from screen to world space coordinates
  *  - if calling outside of render, you may need to manually set mainCanvasSize
  *  @param {Vector2} screenPos
  *  @return {Vector2}
  *  @memberof Draw */
-const screenToWorld = (screenPos)=>
+export const screenToWorld = (screenPos)=>
 {
     ASSERT(mainCanvasSize.x && mainCanvasSize.y, 'mainCanvasSize is invalid');
     return screenPos.add(vec2(.5)).subtract(mainCanvasSize.scale(.5)).multiply(vec2(1/cameraScale,-1/cameraScale)).add(cameraPos);
@@ -1601,7 +1601,7 @@ const screenToWorld = (screenPos)=>
  *  @param {Vector2} worldPos
  *  @return {Vector2}
  *  @memberof Draw */
-const worldToScreen = (worldPos)=>
+export const worldToScreen = (worldPos)=>
 {
     ASSERT(mainCanvasSize.x && mainCanvasSize.y, 'mainCanvasSize is invalid');
     return worldPos.subtract(cameraPos).multiply(vec2(cameraScale,-cameraScale)).add(mainCanvasSize.scale(.5)).subtract(vec2(.5));
@@ -1618,7 +1618,7 @@ const worldToScreen = (worldPos)=>
  *  @param {Color}   [additiveColor=new Color(0,0,0,0)] - Additive color to be applied
  *  @param {Boolean} [useWebGL=glEnable]                - Use accelerated WebGL rendering
  *  @memberof Draw */
-function drawTile(pos, size=vec2(1), tileIndex=-1, tileSize=tileSizeDefault, color=new Color, angle=0, mirror, 
+export function drawTile(pos, size=vec2(1), tileIndex=-1, tileSize=tileSizeDefault, color=new Color, angle=0, mirror, 
     additiveColor=new Color(0,0,0,0), useWebGL=glEnable)
 {
     showWatermark && ++drawCount;
@@ -1676,7 +1676,7 @@ function drawTile(pos, size=vec2(1), tileIndex=-1, tileSize=tileSizeDefault, col
  *  @param {Number}  [angle=0]
  *  @param {Boolean} [useWebGL=glEnable]
  *  @memberof Draw */
-function drawRect(pos, size, color, angle, useWebGL)
+export function drawRect(pos, size, color, angle, useWebGL)
 {
     drawTile(pos, size, -1, tileSizeDefault, color, angle, 0, 0, useWebGL);
 }
@@ -1692,7 +1692,7 @@ function drawRect(pos, size, color, angle, useWebGL)
  *  @param {Color}   [additiveColor=new Color(0,0,0,0)]
  *  @param {Boolean} [useWebGL=glEnable]
  *  @memberof Draw */
-function drawTileScreenSpace(pos, size=vec2(1), tileIndex, tileSize, color, angle, mirror, additiveColor, useWebGL)
+export function drawTileScreenSpace(pos, size=vec2(1), tileIndex, tileSize, color, angle, mirror, additiveColor, useWebGL)
 {
     drawTile(screenToWorld(pos), size.scale(1/cameraScale), tileIndex, tileSize, color, angle, mirror, additiveColor, useWebGL);
 }
@@ -1704,7 +1704,7 @@ function drawTileScreenSpace(pos, size=vec2(1), tileIndex, tileSize, color, angl
  *  @param {Number}  [angle=0]
  *  @param {Boolean} [useWebGL=glEnable]
  *  @memberof Draw */
-function drawRectScreenSpace(pos, size, color, angle, useWebGL)
+export function drawRectScreenSpace(pos, size, color, angle, useWebGL)
 {
     drawTileScreenSpace(pos, size, -1, tileSizeDefault, color, angle, 0, 0, useWebGL);
 }
@@ -1716,7 +1716,7 @@ function drawRectScreenSpace(pos, size, color, angle, useWebGL)
  *  @param {Color}   [color=new Color(1,1,1)]
  *  @param {Boolean} [useWebGL=glEnable]
  *  @memberof Draw */
-function drawLine(posA, posB, thickness=.1, color, useWebGL)
+export function drawLine(posA, posB, thickness=.1, color, useWebGL)
 {
     const halfDelta = vec2((posB.x - posA.x)/2, (posB.y - posA.y)/2);
     const size = vec2(thickness, halfDelta.length()*2);
@@ -1731,7 +1731,7 @@ function drawLine(posA, posB, thickness=.1, color, useWebGL)
  *  @param {Function} drawFunction
  *  @param {CanvasRenderingContext2D} [context=mainContext]
  *  @memberof Draw */
-function drawCanvas2D(pos, size, angle, mirror, drawFunction, context = mainContext)
+export function drawCanvas2D(pos, size, angle, mirror, drawFunction, context = mainContext)
 {
     // create canvas transform from world space to screen space
     pos = worldToScreen(pos);
@@ -1748,7 +1748,7 @@ function drawCanvas2D(pos, size, angle, mirror, drawFunction, context = mainCont
  *  @param {Boolean} [additive=0]
  *  @param {Boolean} [useWebGL=glEnable]
  *  @memberof Draw */
-function setBlendMode(additive, useWebGL=glEnable)
+export function setBlendMode(additive, useWebGL=glEnable)
 {
     if (glEnable && useWebGL)
         glSetBlendMode(additive);
@@ -1766,7 +1766,7 @@ function setBlendMode(additive, useWebGL=glEnable)
  *  @param {Color}   [lineColor=new Color(0,0,0)]
  *  @param {String}  [textAlign='center']
  *  @memberof Draw */
-function drawTextScreen(text, pos, size=1, color=new Color, lineWidth=0, lineColor=new Color(0,0,0), textAlign='center', font=fontDefault)
+export function drawTextScreen(text, pos, size=1, color=new Color, lineWidth=0, lineColor=new Color(0,0,0), textAlign='center', font=fontDefault)
 {
     overlayContext.fillStyle = color;
     overlayContext.lineWidth = lineWidth;
@@ -1795,7 +1795,7 @@ function drawTextScreen(text, pos, size=1, color=new Color, lineWidth=0, lineCol
  *  @param {Color}   [lineColor=new Color(0,0,0)]
  *  @param {String}  [textAlign='center']
  *  @memberof Draw */
-function drawText(text, pos, size=1, color, lineWidth, lineColor, textAlign, font)
+export function drawText(text, pos, size=1, color, lineWidth, lineColor, textAlign, font)
 {
     drawTextScreen(text, worldToScreen(pos), size*cameraScale, color, lineWidth*cameraScale, lineColor, textAlign, font);
 }
@@ -1815,9 +1815,9 @@ function drawText(text, pos, size=1, color, lineWidth, lineColor, textAlign, fon
  * font.drawTextScreen("LittleJS\nHello World!", vec2(200, 50));
  */
 
-let engineFontImage;
+export let engineFontImage;
 
-class FontImage
+export class FontImage
 {
     /** Create an image font
      *  @param {Image}   [image] - The image the font is stored in, if undefined the default font is used
@@ -1898,11 +1898,11 @@ class FontImage
 /** Returns true if fullscreen mode is active
  *  @return {Boolean}
  *  @memberof Draw */
-const isFullscreen =()=> document.fullscreenElement;
+export const isFullscreen =()=> document.fullscreenElement;
 
 /** Toggle fullsceen mode
  *  @memberof Draw */
-function toggleFullscreen()
+export function toggleFullscreen()
 {
     if (isFullscreen())
     {
@@ -1935,102 +1935,102 @@ function toggleFullscreen()
  *  @param {Number} [device=0]
  *  @return {Boolean}
  *  @memberof Input */
-const keyIsDown = (key, device=0)=> inputData[device] && inputData[device][key] & 1 ? 1 : 0;
+export const keyIsDown = (key, device=0)=> inputData[device] && inputData[device][key] & 1 ? 1 : 0;
 
 /** Returns true if device key was pressed this frame
  *  @param {Number} key
  *  @param {Number} [device=0]
  *  @return {Boolean}
  *  @memberof Input */
-const keyWasPressed = (key, device=0)=> inputData[device] && inputData[device][key] & 2 ? 1 : 0;
+export const keyWasPressed = (key, device=0)=> inputData[device] && inputData[device][key] & 2 ? 1 : 0;
 
 /** Returns true if device key was released this frame
  *  @param {Number} key
  *  @param {Number} [device=0]
  *  @return {Boolean}
  *  @memberof Input */
-const keyWasReleased = (key, device=0)=> inputData[device] && inputData[device][key] & 4 ? 1 : 0;
+export const keyWasReleased = (key, device=0)=> inputData[device] && inputData[device][key] & 4 ? 1 : 0;
 
 /** Clears all input
  *  @memberof Input */
-const clearInput = ()=> inputData = [[]];
+export const clearInput = ()=> inputData = [[]];
 
 /** Returns true if mouse button is down
  *  @param {Number} button
  *  @return {Boolean}
  *  @memberof Input */
-const mouseIsDown = keyIsDown;
+export const mouseIsDown = keyIsDown;
 
 /** Returns true if mouse button was pressed
  *  @param {Number} button
  *  @return {Boolean}
  *  @memberof Input */
-const mouseWasPressed = keyWasPressed;
+export const mouseWasPressed = keyWasPressed;
 
 /** Returns true if mouse button was released
  *  @param {Number} button
  *  @return {Boolean}
  *  @memberof Input */
-const mouseWasReleased = keyWasReleased;
+export const mouseWasReleased = keyWasReleased;
 
 /** Mouse pos in world space
  *  @type {Vector2}
  *  @memberof Input */
-let mousePos = vec2();
+export let mousePos = vec2();
 
 /** Mouse pos in screen space
  *  @type {Vector2}
  *  @memberof Input */
-let mousePosScreen = vec2();
+export let mousePosScreen = vec2();
 
 /** Mouse wheel delta this frame
  *  @memberof Input */
-let mouseWheel = 0;
+export let mouseWheel = 0;
 
 /** Returns true if user is using gamepad (has more recently pressed a gamepad button)
  *  @memberof Input */
-let isUsingGamepad = 0;
+export let isUsingGamepad = 0;
 
 /** Prevents input continuing to the default browser handling (false by default)
  *  @memberof Input */
-let preventDefaultInput = 0;
+export let preventDefaultInput = 0;
 
 /** Returns true if gamepad button is down
  *  @param {Number} button
  *  @param {Number} [gamepad=0]
  *  @return {Boolean}
  *  @memberof Input */
-const gamepadIsDown = (button, gamepad=0)=> keyIsDown(button, gamepad+1);
+export const gamepadIsDown = (button, gamepad=0)=> keyIsDown(button, gamepad+1);
 
 /** Returns true if gamepad button was pressed
  *  @param {Number} button
  *  @param {Number} [gamepad=0]
  *  @return {Boolean}
  *  @memberof Input */
-const gamepadWasPressed = (button, gamepad=0)=> keyWasPressed(button, gamepad+1);
+export const gamepadWasPressed = (button, gamepad=0)=> keyWasPressed(button, gamepad+1);
 
 /** Returns true if gamepad button was released
  *  @param {Number} button
  *  @param {Number} [gamepad=0]
  *  @return {Boolean}
  *  @memberof Input */
-const gamepadWasReleased = (button, gamepad=0)=> keyWasReleased(button, gamepad+1);
+export const gamepadWasReleased = (button, gamepad=0)=> keyWasReleased(button, gamepad+1);
 
 /** Returns gamepad stick value
  *  @param {Number} stick
  *  @param {Number} [gamepad=0]
  *  @return {Vector2}
  *  @memberof Input */
-const gamepadStick = (stick,  gamepad=0)=> stickData[gamepad] ? stickData[gamepad][stick] || vec2() : vec2();
+export const gamepadStick = (stick,  gamepad=0)=> stickData[gamepad] ? stickData[gamepad][stick] || vec2() : vec2();
 
 ///////////////////////////////////////////////////////////////////////////////
 // Input update called by engine
 
 // store input as a bit field for each key: 1 = isDown, 2 = wasPressed, 4 = wasReleased
 // mouse and keyboard are stored together in device 0, gamepads are in devices > 0
-let inputData = [[]];
+export let inputData = [[]];
 
-function inputUpdate()
+export function inputUpdate()
 {
     // clear input when lost focus (prevent stuck keys)
     document.hasFocus() || clearInput();
@@ -2042,7 +2042,7 @@ function inputUpdate()
     gamepadsUpdate();
 }
 
-function inputUpdatePost()
+export function inputUpdatePost()
 {
     // clear input to prepare for next frame
     for (const deviceInputData of inputData)
@@ -2065,7 +2065,7 @@ onkeyup = (e)=>
     if (debug && e.target != document.body) return;
     inputData[0][remapKeyCode(e.keyCode)] = 4;
 }
-const remapKeyCode = (c)=> inputWASDEmulateDirection ? c==87?38 : c==83?40 : c==65?37 : c==68?39 : c : c;
+export const remapKeyCode = (c)=> inputWASDEmulateDirection ? c==87?38 : c==83?40 : c==65?37 : c==68?39 : c : c;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Mouse event handlers
@@ -2077,7 +2077,7 @@ onwheel = (e)=> e.ctrlKey || (mouseWheel = sign(e.deltaY));
 oncontextmenu = (e)=> !1; // prevent right click menu
 
 // convert a mouse or touch event position to screen space
-const mouseToScreen = (mousePos)=>
+export const mouseToScreen = (mousePos)=>
 {
     if (!mainCanvas)
         return vec2(); // fix bug that can occur if user clicks before page loads
@@ -2090,8 +2090,8 @@ const mouseToScreen = (mousePos)=>
 ///////////////////////////////////////////////////////////////////////////////
 // Gamepad input
 
-const stickData = [];
-function gamepadsUpdate()
+export const stickData = [];
+export function gamepadsUpdate()
 {
     if (touchGamepadEnable && touchGamepadTimer.isSet())
     {
@@ -2157,11 +2157,11 @@ function gamepadsUpdate()
 /** Pulse the vibration hardware if it exists
  *  @param {Number} [pattern=100] - a single value in miliseconds or vibration interval array
  *  @memberof Input */
-const vibrate = (pattern)=> vibrateEnable && Navigator.vibrate && Navigator.vibrate(pattern);
+export const vibrate = (pattern)=> vibrateEnable && Navigator.vibrate && Navigator.vibrate(pattern);
 
 /** Cancel any ongoing vibration
  *  @memberof Input */
-const vibrateStop = ()=> vibrate(0);
+export const vibrateStop = ()=> vibrate(0);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Touch input
@@ -2169,7 +2169,7 @@ const vibrateStop = ()=> vibrate(0);
 /** True if a touch device has been detected
  *  @const {boolean}
  *  @memberof Input */
-const isTouchDevice = window.ontouchstart !== undefined;
+export const isTouchDevice = window.ontouchstart !== undefined;
 
 // try to enable touch mouse
 if (isTouchDevice)
@@ -2206,10 +2206,10 @@ if (isTouchDevice)
 // touch gamepad, virtual on screen gamepad emulator for touch devices
 
 // touch input internal variables
-let touchGamepadTimer = new Timer, touchGamepadButtons = [], touchGamepadStick = vec2();
+export let touchGamepadTimer = new Timer, touchGamepadButtons = [], touchGamepadStick = vec2();
 
 // create the touch gamepad, called automatically by the engine
-function touchGamepadCreate()
+export function touchGamepadCreate()
 {
     if (!touchGamepadEnable || !isTouchDevice)
         return;
@@ -2277,7 +2277,7 @@ function touchGamepadCreate()
 }
 
 // render the touch gamepad, called automatically by the engine
-function touchGamepadRender()
+export function touchGamepadRender()
 {
     if (!touchGamepadEnable || !touchGamepadTimer.isSet())
         return;
@@ -2354,7 +2354,7 @@ function touchGamepadRender()
  * // play the sound
  * sound_example.play();
  */
-class Sound
+export class Sound
 {
     /** Create a sound object and cache the zzfx samples for later use
      *  @param {Array}  zzfxSound - Array of zzfx parameters, ex. [.5,.5]
@@ -2458,7 +2458,7 @@ class Sound
  * // play the music
  * music_example.play();
  */
-class Music
+export class Music
 {
     /** Create a music object and cache the zzfx music samples for later use
      *  @param {Array} zzfxMusic - Array of zzfx music parameters
@@ -2489,7 +2489,7 @@ class Music
  *  @param {Boolean} [loop=1] - True if the music should loop when it reaches the end
  *  @return {HTMLAudioElement} - The audio element for this sound
  *  @memberof Audio */
-function playAudioFile(url, volume=1, loop=1)
+export function playAudioFile(url, volume=1, loop=1)
 {
     if (!soundEnable) return;
 
@@ -2508,7 +2508,7 @@ function playAudioFile(url, volume=1, loop=1)
  *  @param {Number} [pitch=1] - How much to change the pitch by
  *  @return {SpeechSynthesisUtterance} - The utterance that was spoken
  *  @memberof Audio */
-function speak(text, language='', volume=1, rate=1, pitch=1)
+export function speak(text, language='', volume=1, rate=1, pitch=1)
 {
     if (!soundEnable || !speechSynthesis) return;
 
@@ -2528,20 +2528,20 @@ function speak(text, language='', volume=1, rate=1, pitch=1)
 
 /** Stop all queued speech
  *  @memberof Audio */
-const speakStop = ()=> speechSynthesis && speechSynthesis.cancel();
+export const speakStop = ()=> speechSynthesis && speechSynthesis.cancel();
 
 /** Get frequency of a note on a musical scale
  *  @param {Number} semitoneOffset - How many semitones away from the root note
  *  @param {Number} [rootNoteFrequency=220] - Frequency at semitone offset 0
  *  @return {Number} - The frequency of the note
  *  @memberof Audio */
-const getNoteFrequency = (semitoneOffset, rootFrequency=220)=> rootFrequency * 2**(semitoneOffset/12); 
+export const getNoteFrequency = (semitoneOffset, rootFrequency=220)=> rootFrequency * 2**(semitoneOffset/12); 
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /** Audio context used by the engine
  *  @memberof Audio */
-let audioContext;
+export let audioContext;
 
 /** Play cached audio samples with given settings
  *  @param {Array}   sampleChannels - Array of arrays of samples to play (for stereo playback)
@@ -2551,7 +2551,7 @@ let audioContext;
  *  @param {Boolean} [loop=0] - True if the sound should loop when it reaches the end
  *  @return {AudioBufferSourceNode} - The audio node of the sound played
  *  @memberof Audio */
-function playSamples(sampleChannels, volume=1, rate=1, pan=0, loop=0) 
+export function playSamples(sampleChannels, volume=1, rate=1, pan=0, loop=0) 
 {
     if (!soundEnable) return;
 
@@ -2603,16 +2603,16 @@ function playSamples(sampleChannels, volume=1, rate=1, pan=0, loop=0)
  *  @param {Array} zzfxSound - Array of ZzFX parameters, ex. [.5,.5]
  *  @return {Array} - Array of audio samples
  *  @memberof Audio */
-const zzfx = (...zzfxSound) => playSamples([zzfxG(...zzfxSound)]);
+export const zzfx = (...zzfxSound) => playSamples([zzfxG(...zzfxSound)]);
 
 /** Sample rate used for all ZzFX sounds
  *  @default 44100
  *  @memberof Audio */
-const zzfxR = 44100; 
+export const zzfxR = 44100; 
 
 /** Generate samples for a ZzFX sound
  *  @memberof Audio */
-function zzfxG
+export function zzfxG
 (
     // parameters
     volume = 1, randomness = .05, frequency = 220, attack = 0, sustain = 0,
@@ -2703,7 +2703,7 @@ function zzfxG
  *  @param {Number} [BPM=125] - Playback speed of the song in BPM
  *  @returns {Array} - Left and right channel sample data
  *  @memberof Audio */
-function zzfxM(instruments, patterns, sequence, BPM = 125) 
+export function zzfxM(instruments, patterns, sequence, BPM = 125) 
 {
   let instrumentParameters;
   let i;
@@ -2815,17 +2815,17 @@ function zzfxM(instruments, patterns, sequence, BPM = 125)
 
 /** The tile collision layer array, use setTileCollisionData and getTileCollisionData to access
  *  @memberof TileCollision */
-let tileCollision = [];
+export let tileCollision = [];
 
 /** Size of the tile collision layer
  *  @type {Vector2} 
  *  @memberof TileCollision */
-let tileCollisionSize = vec2();
+export let tileCollisionSize = vec2();
 
 /** Clear and initialize tile collision
  *  @param {Vector2} size
  *  @memberof TileCollision */
-function initTileCollision(size)
+export function initTileCollision(size)
 {
     tileCollisionSize = size;
     tileCollision = [];
@@ -2837,14 +2837,14 @@ function initTileCollision(size)
  *  @param {Vector2} pos
  *  @param {Number}  [data=0]
  *  @memberof TileCollision */
-const setTileCollisionData = (pos, data=0)=>
+export const setTileCollisionData = (pos, data=0)=>
     pos.arrayCheck(tileCollisionSize) && (tileCollision[(pos.y|0)*tileCollisionSize.x+pos.x|0] = data);
 
 /** Get tile collision data
  *  @param {Vector2} pos
  *  @return {Number}
  *  @memberof TileCollision */
-const getTileCollisionData = (pos)=>
+export const getTileCollisionData = (pos)=>
     pos.arrayCheck(tileCollisionSize) ? tileCollision[(pos.y|0)*tileCollisionSize.x+pos.x|0] : 0;
 
 /** Check if collision with another object should occur
@@ -2853,7 +2853,7 @@ const getTileCollisionData = (pos)=>
  *  @param {EngineObject} [object]
  *  @return {Boolean}
  *  @memberof TileCollision */
-function tileCollisionTest(pos, size=vec2(), object)
+export function tileCollisionTest(pos, size=vec2(), object)
 {
     const minX = max(pos.x - size.x/2|0, 0);
     const minY = max(pos.y - size.y/2|0, 0);
@@ -2874,7 +2874,7 @@ function tileCollisionTest(pos, size=vec2(), object)
  *  @param {EngineObject} [object]
  *  @return {Vector2}
  *  @memberof TileCollision */
-function tileCollisionRaycast(posStart, posEnd, object)
+export function tileCollisionRaycast(posStart, posEnd, object)
 {
     // test if a ray collides with tiles from start to end
     // todo: a way to get the exact hit point, it must still register as inside the hit tile
@@ -2917,7 +2917,7 @@ function tileCollisionRaycast(posStart, posEnd, object)
  * const color = randColor();
  * const data = new TileLayerData(tileIndex, direction, mirror, color);
  */
-class TileLayerData
+export class TileLayerData
 {
     /** Create a tile layer data object, one for each tile in a TileLayer
      *  @param {Number}  [tile]                   - The tile to use, untextured if undefined
@@ -2952,7 +2952,7 @@ class TileLayerData
  * initTileCollision(vec2(200,100));
  * const tileLayer = new TileLayer();
  */
-class TileLayer extends EngineObject
+export class TileLayer extends EngineObject
 {
 /** Create a tile layer object
     *  @param {Vector2} [position=new Vector2()]   - World space position
@@ -3169,7 +3169,7 @@ constructor(pos, size=tileCollisionSize, tileSize=tileSizeDefault, scale=vec2(1)
  *     .5, 1                // randomness, collide, additive, randomColorLinear, renderOrder
  * );
  */
-class ParticleEmitter extends EngineObject
+export class ParticleEmitter extends EngineObject
 {
     /** Create a particle system with the given settings
      *  @param {Vector2} position           - World space position of the emitter
@@ -3374,7 +3374,7 @@ class ParticleEmitter extends EngineObject
  * Particle Object - Created automatically by Particle Emitters
  * @extends EngineObject
  */
-class Particle extends EngineObject
+export class Particle extends EngineObject
 {
     /**
      * Create a particle with the given settings
@@ -3439,19 +3439,19 @@ class Particle extends EngineObject
 
 /** List of all medals
  *  @memberof Medals */
-const medals = [];
+export const medals = [];
 
 /** Set to stop medals from being unlockable (like if cheats are enabled)
  *  @memberof Medals */
-let medalsPreventUnlock;
+export let medalsPreventUnlock;
 
 /** This can used to enable Newgrounds functionality
  *  @type {Newgrounds}
  *  @memberof Medals */
-let newgrounds;
+export let newgrounds;
 
 // Engine internal variables not exposed to documentation
-let medalsDisplayQueue = [], medalsSaveName, medalsDisplayTimeLast;
+export let medalsDisplayQueue = [], medalsSaveName, medalsDisplayTimeLast;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -3460,7 +3460,7 @@ let medalsDisplayQueue = [], medalsSaveName, medalsDisplayTimeLast;
  *  <br> - Checks if medals are unlocked
  *  @param {String} saveName
  *  @memberof Medals */
-function medalsInit(saveName)
+export function medalsInit(saveName)
 {
     // check if medals are unlocked
     medalsSaveName = saveName;
@@ -3479,7 +3479,7 @@ function medalsInit(saveName)
  * // unlock the medal
  * medal_example.unlock();
  */
-class Medal
+export class Medal
 {
     /** Create an medal object and adds it to the list of medals
      *  @param {Number} id            - The unique identifier of the medal
@@ -3572,7 +3572,7 @@ class Medal
 }
 
 // engine automatically renders medals
-function medalsRender()
+export function medalsRender()
 {
     if (!medalsDisplayQueue.length)
         return;
@@ -3605,7 +3605,7 @@ function medalsRender()
  * const cipher = 'enF0vGH@Mj/FRASKL23Q==';
  * newgrounds = new Newgrounds(app_id, cipher);
  */
-class Newgrounds
+export class Newgrounds
 {
     /** Create a newgrounds object
      *  @param {Number} app_id   - The newgrounds App ID
@@ -3727,7 +3727,7 @@ class Newgrounds
 // Crypto-JS - https://github.com/brix/crypto-js [The MIT License (MIT)]
 // Copyright (c) 2009-2013 Jeff Mott  Copyright (c) 2013-2016 Evan Vosberg
 
-const CryptoJS=()=>eval(Function("[M='GBMGXz^oVYPPKKbB`agTXU|LxPc_ZBcMrZvCr~wyGfWrwk@ATqlqeTp^N?p{we}jIpEnB_sEr`l?YDkDhWhprc|Er|XETG?pTl`e}dIc[_N~}fzRycIfpW{HTolvoPB_FMe_eH~BTMx]yyOhv?biWPCGc]kABencBhgERHGf{OL`Dj`c^sh@canhy[secghiyotcdOWgO{tJIE^JtdGQRNSCrwKYciZOa]Y@tcRATYKzv|sXpboHcbCBf`}SKeXPFM|RiJsSNaIb]QPc[D]Jy_O^XkOVTZep`ONmntLL`Qz~UupHBX_Ia~WX]yTRJIxG`ioZ{fefLJFhdyYoyLPvqgH?b`[TMnTwwfzDXhfM?rKs^aFr|nyBdPmVHTtAjXoYUloEziWDCw_suyYT~lSMksI~ZNCS[Bex~j]Vz?kx`gdYSEMCsHpjbyxQvw|XxX_^nQYue{sBzVWQKYndtYQMWRef{bOHSfQhiNdtR{o?cUAHQAABThwHPT}F{VvFmgN`E@FiFYS`UJmpQNM`X|tPKHlccT}z}k{sACHL?Rt@MkWplxO`ASgh?hBsuuP|xD~LSH~KBlRs]t|l|_tQAroDRqWS^SEr[sYdPB}TAROtW{mIkE|dWOuLgLmJrucGLpebrAFKWjikTUzS|j}M}szasKOmrjy[?hpwnEfX[jGpLt@^v_eNwSQHNwtOtDgWD{rk|UgASs@mziIXrsHN_|hZuxXlPJOsA^^?QY^yGoCBx{ekLuZzRqQZdsNSx@ezDAn{XNj@fRXIwrDX?{ZQHwTEfu@GhxDOykqts|n{jOeZ@c`dvTY?e^]ATvWpb?SVyg]GC?SlzteilZJAL]mlhLjYZazY__qcVFYvt@|bIQnSno@OXyt]OulzkWqH`rYFWrwGs`v|~XeTsIssLrbmHZCYHiJrX}eEzSssH}]l]IhPQhPoQ}rCXLyhFIT[clhzYOvyHqigxmjz`phKUU^TPf[GRAIhNqSOdayFP@FmKmuIzMOeoqdpxyCOwCthcLq?n`L`tLIBboNn~uXeFcPE{C~mC`h]jUUUQe^`UqvzCutYCgct|SBrAeiYQW?X~KzCz}guXbsUw?pLsg@hDArw?KeJD[BN?GD@wgFWCiHq@Ypp_QKFixEKWqRp]oJFuVIEvjDcTFu~Zz]a{IcXhWuIdMQjJ]lwmGQ|]g~c]Hl]pl`Pd^?loIcsoNir_kikBYyg?NarXZEGYspt_vLBIoj}LI[uBFvm}tbqvC|xyR~a{kob|HlctZslTGtPDhBKsNsoZPuH`U`Fqg{gKnGSHVLJ^O`zmNgMn~{rsQuoymw^JY?iUBvw_~mMr|GrPHTERS[MiNpY[Mm{ggHpzRaJaoFomtdaQ_?xuTRm}@KjU~RtPsAdxa|uHmy}n^i||FVL[eQAPrWfLm^ndczgF~Nk~aplQvTUpHvnTya]kOenZlLAQIm{lPl@CCTchvCF[fI{^zPkeYZTiamoEcKmBMfZhk_j_~Fjp|wPVZlkh_nHu]@tP|hS@^G^PdsQ~f[RqgTDqezxNFcaO}HZhb|MMiNSYSAnQWCDJukT~e|OTgc}sf[cnr?fyzTa|EwEtRG|I~|IO}O]S|rp]CQ}}DWhSjC_|z|oY|FYl@WkCOoPuWuqr{fJu?Brs^_EBI[@_OCKs}?]O`jnDiXBvaIWhhMAQDNb{U`bqVR}oqVAvR@AZHEBY@depD]OLh`kf^UsHhzKT}CS}HQKy}Q~AeMydXPQztWSSzDnghULQgMAmbWIZ|lWWeEXrE^EeNoZApooEmrXe{NAnoDf`m}UNlRdqQ@jOc~HLOMWs]IDqJHYoMziEedGBPOxOb?[X`KxkFRg@`mgFYnP{hSaxwZfBQqTm}_?RSEaQga]w[vxc]hMne}VfSlqUeMo_iqmd`ilnJXnhdj^EEFifvZyxYFRf^VaqBhLyrGlk~qowqzHOBlOwtx?i{m~`n^G?Yxzxux}b{LSlx]dS~thO^lYE}bzKmUEzwW^{rPGhbEov[Plv??xtyKJshbG`KuO?hjBdS@Ru}iGpvFXJRrvOlrKN?`I_n_tplk}kgwSXuKylXbRQ]]?a|{xiT[li?k]CJpwy^o@ebyGQrPfF`aszGKp]baIx~H?ElETtFh]dz[OjGl@C?]VDhr}OE@V]wLTc[WErXacM{We`F|utKKjgllAxvsVYBZ@HcuMgLboFHVZmi}eIXAIFhS@A@FGRbjeoJWZ_NKd^oEH`qgy`q[Tq{x?LRP|GfBFFJV|fgZs`MLbpPYUdIV^]mD@FG]pYAT^A^RNCcXVrPsgk{jTrAIQPs_`mD}rOqAZA[}RETFz]WkXFTz_m{N@{W@_fPKZLT`@aIqf|L^Mb|crNqZ{BVsijzpGPEKQQZGlApDn`ruH}cvF|iXcNqK}cxe_U~HRnKV}sCYb`D~oGvwG[Ca|UaybXea~DdD~LiIbGRxJ_VGheI{ika}KC[OZJLn^IBkPrQj_EuoFwZ}DpoBRcK]Q}?EmTv~i_Tul{bky?Iit~tgS|o}JL_VYcCQdjeJ_MfaA`FgCgc[Ii|CBHwq~nbJeYTK{e`CNstKfTKPzw{jdhp|qsZyP_FcugxCFNpKitlR~vUrx^NrSVsSTaEgnxZTmKc`R|lGJeX}ccKLsQZQhsFkeFd|ckHIVTlGMg`~uPwuHRJS_CPuN_ogXe{Ba}dO_UBhuNXby|h?JlgBIqMKx^_u{molgL[W_iavNQuOq?ap]PGB`clAicnl@k~pA?MWHEZ{HuTLsCpOxxrKlBh]FyMjLdFl|nMIvTHyGAlPogqfZ?PlvlFJvYnDQd}R@uAhtJmDfe|iJqdkYr}r@mEjjIetDl_I`TELfoR|qTBu@Tic[BaXjP?dCS~MUK[HPRI}OUOwAaf|_}HZzrwXvbnNgltjTwkBE~MztTQhtRSWoQHajMoVyBBA`kdgK~h`o[J`dm~pm]tk@i`[F~F]DBlJKklrkR]SNw@{aG~Vhl`KINsQkOy?WhcqUMTGDOM_]bUjVd|Yh_KUCCgIJ|LDIGZCPls{RzbVWVLEhHvWBzKq|^N?DyJB|__aCUjoEgsARki}j@DQXS`RNU|DJ^a~d{sh_Iu{ONcUtSrGWW@cvUjefHHi}eSSGrNtO?cTPBShLqzwMVjWQQCCFB^culBjZHEK_{dO~Q`YhJYFn]jq~XSnG@[lQr]eKrjXpG~L^h~tDgEma^AUFThlaR{xyuP@[^VFwXSeUbVetufa@dX]CLyAnDV@Bs[DnpeghJw^?UIana}r_CKGDySoRudklbgio}kIDpA@McDoPK?iYcG?_zOmnWfJp}a[JLR[stXMo?_^Ng[whQlrDbrawZeSZ~SJstIObdDSfAA{MV}?gNunLOnbMv_~KFQUAjIMj^GkoGxuYtYbGDImEYiwEMyTpMxN_LSnSMdl{bg@dtAnAMvhDTBR_FxoQgANniRqxd`pWv@rFJ|mWNWmh[GMJz_Nq`BIN@KsjMPASXORcdHjf~rJfgZYe_uulzqM_KdPlMsuvU^YJuLtofPhGonVOQxCMuXliNvJIaoC?hSxcxKVVxWlNs^ENDvCtSmO~WxI[itnjs^RDvI@KqG}YekaSbTaB]ki]XM@[ZnDAP~@|BzLRgOzmjmPkRE@_sobkT|SszXK[rZN?F]Z_u}Yue^[BZgLtR}FHzWyxWEX^wXC]MJmiVbQuBzkgRcKGUhOvUc_bga|Tx`KEM`JWEgTpFYVeXLCm|mctZR@uKTDeUONPozBeIkrY`cz]]~WPGMUf`MNUGHDbxZuO{gmsKYkAGRPqjc|_FtblEOwy}dnwCHo]PJhN~JoteaJ?dmYZeB^Xd?X^pOKDbOMF@Ugg^hETLdhwlA}PL@_ur|o{VZosP?ntJ_kG][g{Zq`Tu]dzQlSWiKfnxDnk}KOzp~tdFstMobmy[oPYjyOtUzMWdjcNSUAjRuqhLS@AwB^{BFnqjCmmlk?jpn}TksS{KcKkDboXiwK]qMVjm~V`LgWhjS^nLGwfhAYrjDSBL_{cRus~{?xar_xqPlArrYFd?pHKdMEZzzjJpfC?Hv}mAuIDkyBxFpxhstTx`IO{rp}XGuQ]VtbHerlRc_LFGWK[XluFcNGUtDYMZny[M^nVKVeMllQI[xtvwQnXFlWYqxZZFp_|]^oWX[{pOMpxXxvkbyJA[DrPzwD|LW|QcV{Nw~U^dgguSpG]ClmO@j_TENIGjPWwgdVbHganhM?ema|dBaqla|WBd`poj~klxaasKxGG^xbWquAl~_lKWxUkDFagMnE{zHug{b`A~IYcQYBF_E}wiA}K@yxWHrZ{[d~|ARsYsjeNWzkMs~IOqqp[yzDE|WFrivsidTcnbHFRoW@XpAV`lv_zj?B~tPCppRjgbbDTALeFaOf?VcjnKTQMLyp{NwdylHCqmo?oelhjWuXj~}{fpuX`fra?GNkDiChYgVSh{R[BgF~eQa^WVz}ATI_CpY?g_diae]|ijH`TyNIF}|D_xpmBq_JpKih{Ba|sWzhnAoyraiDvk`h{qbBfsylBGmRH}DRPdryEsSaKS~tIaeF[s]I~xxHVrcNe@Jjxa@jlhZueLQqHh_]twVMqG_EGuwyab{nxOF?`HCle}nBZzlTQjkLmoXbXhOtBglFoMz?eqre`HiE@vNwBulglmQjj]DB@pPkPUgA^sjOAUNdSu_`oAzar?n?eMnw{{hYmslYi[TnlJD'",...']charCodeAtUinyxpf',"for(;e<10359;c[e++]=p-=128,A=A?p-A&&A:p==34&&p)for(p=1;p<128;y=f.map((n,x)=>(U=r[n]*2+1,U=Math.log(U/(h-U)),t-=a[x]*U,U/500)),t=~-h/(1+Math.exp(t))|1,i=o%h<t,o=o%h+(i?t:h-t)*(o>>17)-!i*t,f.map((n,x)=>(U=r[n]+=(i*h/2-r[n]<<13)/((C[n]+=C[n]<5)+1/20)>>13,a[x]+=y[x]*(i-t/h))),p=p*2+i)for(f='010202103203210431053105410642065206541'.split(t=0).map((n,x)=>(U=0,[...n].map((n,x)=>(U=U*997+(c[e-n]|0)|0)),h*32-1&U*997+p+!!A*129)*12+x);o<h*32;o=o*64|M.charCodeAt(d++)&63);for(C=String.fromCharCode(...c);r=/[\0-#?@\\\\~]/.exec(C);)with(C.split(r))C=join(shift());return C")([],[],1<<17,[0,0,0,0,0,0,0,0,0,0,0,0],new Uint16Array(51e6).fill(1<<15),new Uint8Array(51e6),0,0,0,0));
+export const CryptoJS=()=>eval(Function("[M='GBMGXz^oVYPPKKbB`agTXU|LxPc_ZBcMrZvCr~wyGfWrwk@ATqlqeTp^N?p{we}jIpEnB_sEr`l?YDkDhWhprc|Er|XETG?pTl`e}dIc[_N~}fzRycIfpW{HTolvoPB_FMe_eH~BTMx]yyOhv?biWPCGc]kABencBhgERHGf{OL`Dj`c^sh@canhy[secghiyotcdOWgO{tJIE^JtdGQRNSCrwKYciZOa]Y@tcRATYKzv|sXpboHcbCBf`}SKeXPFM|RiJsSNaIb]QPc[D]Jy_O^XkOVTZep`ONmntLL`Qz~UupHBX_Ia~WX]yTRJIxG`ioZ{fefLJFhdyYoyLPvqgH?b`[TMnTwwfzDXhfM?rKs^aFr|nyBdPmVHTtAjXoYUloEziWDCw_suyYT~lSMksI~ZNCS[Bex~j]Vz?kx`gdYSEMCsHpjbyxQvw|XxX_^nQYue{sBzVWQKYndtYQMWRef{bOHSfQhiNdtR{o?cUAHQAABThwHPT}F{VvFmgN`E@FiFYS`UJmpQNM`X|tPKHlccT}z}k{sACHL?Rt@MkWplxO`ASgh?hBsuuP|xD~LSH~KBlRs]t|l|_tQAroDRqWS^SEr[sYdPB}TAROtW{mIkE|dWOuLgLmJrucGLpebrAFKWjikTUzS|j}M}szasKOmrjy[?hpwnEfX[jGpLt@^v_eNwSQHNwtOtDgWD{rk|UgASs@mziIXrsHN_|hZuxXlPJOsA^^?QY^yGoCBx{ekLuZzRqQZdsNSx@ezDAn{XNj@fRXIwrDX?{ZQHwTEfu@GhxDOykqts|n{jOeZ@c`dvTY?e^]ATvWpb?SVyg]GC?SlzteilZJAL]mlhLjYZazY__qcVFYvt@|bIQnSno@OXyt]OulzkWqH`rYFWrwGs`v|~XeTsIssLrbmHZCYHiJrX}eEzSssH}]l]IhPQhPoQ}rCXLyhFIT[clhzYOvyHqigxmjz`phKUU^TPf[GRAIhNqSOdayFP@FmKmuIzMOeoqdpxyCOwCthcLq?n`L`tLIBboNn~uXeFcPE{C~mC`h]jUUUQe^`UqvzCutYCgct|SBrAeiYQW?X~KzCz}guXbsUw?pLsg@hDArw?KeJD[BN?GD@wgFWCiHq@Ypp_QKFixEKWqRp]oJFuVIEvjDcTFu~Zz]a{IcXhWuIdMQjJ]lwmGQ|]g~c]Hl]pl`Pd^?loIcsoNir_kikBYyg?NarXZEGYspt_vLBIoj}LI[uBFvm}tbqvC|xyR~a{kob|HlctZslTGtPDhBKsNsoZPuH`U`Fqg{gKnGSHVLJ^O`zmNgMn~{rsQuoymw^JY?iUBvw_~mMr|GrPHTERS[MiNpY[Mm{ggHpzRaJaoFomtdaQ_?xuTRm}@KjU~RtPsAdxa|uHmy}n^i||FVL[eQAPrWfLm^ndczgF~Nk~aplQvTUpHvnTya]kOenZlLAQIm{lPl@CCTchvCF[fI{^zPkeYZTiamoEcKmBMfZhk_j_~Fjp|wPVZlkh_nHu]@tP|hS@^G^PdsQ~f[RqgTDqezxNFcaO}HZhb|MMiNSYSAnQWCDJukT~e|OTgc}sf[cnr?fyzTa|EwEtRG|I~|IO}O]S|rp]CQ}}DWhSjC_|z|oY|FYl@WkCOoPuWuqr{fJu?Brs^_EBI[@_OCKs}?]O`jnDiXBvaIWhhMAQDNb{U`bqVR}oqVAvR@AZHEBY@depD]OLh`kf^UsHhzKT}CS}HQKy}Q~AeMydXPQztWSSzDnghULQgMAmbWIZ|lWWeEXrE^EeNoZApooEmrXe{NAnoDf`m}UNlRdqQ@jOc~HLOMWs]IDqJHYoMziEedGBPOxOb?[X`KxkFRg@`mgFYnP{hSaxwZfBQqTm}_?RSEaQga]w[vxc]hMne}VfSlqUeMo_iqmd`ilnJXnhdj^EEFifvZyxYFRf^VaqBhLyrGlk~qowqzHOBlOwtx?i{m~`n^G?Yxzxux}b{LSlx]dS~thO^lYE}bzKmUEzwW^{rPGhbEov[Plv??xtyKJshbG`KuO?hjBdS@Ru}iGpvFXJRrvOlrKN?`I_n_tplk}kgwSXuKylXbRQ]]?a|{xiT[li?k]CJpwy^o@ebyGQrPfF`aszGKp]baIx~H?ElETtFh]dz[OjGl@C?]VDhr}OE@V]wLTc[WErXacM{We`F|utKKjgllAxvsVYBZ@HcuMgLboFHVZmi}eIXAIFhS@A@FGRbjeoJWZ_NKd^oEH`qgy`q[Tq{x?LRP|GfBFFJV|fgZs`MLbpPYUdIV^]mD@FG]pYAT^A^RNCcXVrPsgk{jTrAIQPs_`mD}rOqAZA[}RETFz]WkXFTz_m{N@{W@_fPKZLT`@aIqf|L^Mb|crNqZ{BVsijzpGPEKQQZGlApDn`ruH}cvF|iXcNqK}cxe_U~HRnKV}sCYb`D~oGvwG[Ca|UaybXea~DdD~LiIbGRxJ_VGheI{ika}KC[OZJLn^IBkPrQj_EuoFwZ}DpoBRcK]Q}?EmTv~i_Tul{bky?Iit~tgS|o}JL_VYcCQdjeJ_MfaA`FgCgc[Ii|CBHwq~nbJeYTK{e`CNstKfTKPzw{jdhp|qsZyP_FcugxCFNpKitlR~vUrx^NrSVsSTaEgnxZTmKc`R|lGJeX}ccKLsQZQhsFkeFd|ckHIVTlGMg`~uPwuHRJS_CPuN_ogXe{Ba}dO_UBhuNXby|h?JlgBIqMKx^_u{molgL[W_iavNQuOq?ap]PGB`clAicnl@k~pA?MWHEZ{HuTLsCpOxxrKlBh]FyMjLdFl|nMIvTHyGAlPogqfZ?PlvlFJvYnDQd}R@uAhtJmDfe|iJqdkYr}r@mEjjIetDl_I`TELfoR|qTBu@Tic[BaXjP?dCS~MUK[HPRI}OUOwAaf|_}HZzrwXvbnNgltjTwkBE~MztTQhtRSWoQHajMoVyBBA`kdgK~h`o[J`dm~pm]tk@i`[F~F]DBlJKklrkR]SNw@{aG~Vhl`KINsQkOy?WhcqUMTGDOM_]bUjVd|Yh_KUCCgIJ|LDIGZCPls{RzbVWVLEhHvWBzKq|^N?DyJB|__aCUjoEgsARki}j@DQXS`RNU|DJ^a~d{sh_Iu{ONcUtSrGWW@cvUjefHHi}eSSGrNtO?cTPBShLqzwMVjWQQCCFB^culBjZHEK_{dO~Q`YhJYFn]jq~XSnG@[lQr]eKrjXpG~L^h~tDgEma^AUFThlaR{xyuP@[^VFwXSeUbVetufa@dX]CLyAnDV@Bs[DnpeghJw^?UIana}r_CKGDySoRudklbgio}kIDpA@McDoPK?iYcG?_zOmnWfJp}a[JLR[stXMo?_^Ng[whQlrDbrawZeSZ~SJstIObdDSfAA{MV}?gNunLOnbMv_~KFQUAjIMj^GkoGxuYtYbGDImEYiwEMyTpMxN_LSnSMdl{bg@dtAnAMvhDTBR_FxoQgANniRqxd`pWv@rFJ|mWNWmh[GMJz_Nq`BIN@KsjMPASXORcdHjf~rJfgZYe_uulzqM_KdPlMsuvU^YJuLtofPhGonVOQxCMuXliNvJIaoC?hSxcxKVVxWlNs^ENDvCtSmO~WxI[itnjs^RDvI@KqG}YekaSbTaB]ki]XM@[ZnDAP~@|BzLRgOzmjmPkRE@_sobkT|SszXK[rZN?F]Z_u}Yue^[BZgLtR}FHzWyxWEX^wXC]MJmiVbQuBzkgRcKGUhOvUc_bga|Tx`KEM`JWEgTpFYVeXLCm|mctZR@uKTDeUONPozBeIkrY`cz]]~WPGMUf`MNUGHDbxZuO{gmsKYkAGRPqjc|_FtblEOwy}dnwCHo]PJhN~JoteaJ?dmYZeB^Xd?X^pOKDbOMF@Ugg^hETLdhwlA}PL@_ur|o{VZosP?ntJ_kG][g{Zq`Tu]dzQlSWiKfnxDnk}KOzp~tdFstMobmy[oPYjyOtUzMWdjcNSUAjRuqhLS@AwB^{BFnqjCmmlk?jpn}TksS{KcKkDboXiwK]qMVjm~V`LgWhjS^nLGwfhAYrjDSBL_{cRus~{?xar_xqPlArrYFd?pHKdMEZzzjJpfC?Hv}mAuIDkyBxFpxhstTx`IO{rp}XGuQ]VtbHerlRc_LFGWK[XluFcNGUtDYMZny[M^nVKVeMllQI[xtvwQnXFlWYqxZZFp_|]^oWX[{pOMpxXxvkbyJA[DrPzwD|LW|QcV{Nw~U^dgguSpG]ClmO@j_TENIGjPWwgdVbHganhM?ema|dBaqla|WBd`poj~klxaasKxGG^xbWquAl~_lKWxUkDFagMnE{zHug{b`A~IYcQYBF_E}wiA}K@yxWHrZ{[d~|ARsYsjeNWzkMs~IOqqp[yzDE|WFrivsidTcnbHFRoW@XpAV`lv_zj?B~tPCppRjgbbDTALeFaOf?VcjnKTQMLyp{NwdylHCqmo?oelhjWuXj~}{fpuX`fra?GNkDiChYgVSh{R[BgF~eQa^WVz}ATI_CpY?g_diae]|ijH`TyNIF}|D_xpmBq_JpKih{Ba|sWzhnAoyraiDvk`h{qbBfsylBGmRH}DRPdryEsSaKS~tIaeF[s]I~xxHVrcNe@Jjxa@jlhZueLQqHh_]twVMqG_EGuwyab{nxOF?`HCle}nBZzlTQjkLmoXbXhOtBglFoMz?eqre`HiE@vNwBulglmQjj]DB@pPkPUgA^sjOAUNdSu_`oAzar?n?eMnw{{hYmslYi[TnlJD'",...']charCodeAtUinyxpf',"for(;e<10359;c[e++]=p-=128,A=A?p-A&&A:p==34&&p)for(p=1;p<128;y=f.map((n,x)=>(U=r[n]*2+1,U=Math.log(U/(h-U)),t-=a[x]*U,U/500)),t=~-h/(1+Math.exp(t))|1,i=o%h<t,o=o%h+(i?t:h-t)*(o>>17)-!i*t,f.map((n,x)=>(U=r[n]+=(i*h/2-r[n]<<13)/((C[n]+=C[n]<5)+1/20)>>13,a[x]+=y[x]*(i-t/h))),p=p*2+i)for(f='010202103203210431053105410642065206541'.split(t=0).map((n,x)=>(U=0,[...n].map((n,x)=>(U=U*997+(c[e-n]|0)|0)),h*32-1&U*997+p+!!A*129)*12+x);o<h*32;o=o*64|M.charCodeAt(d++)&63);for(C=String.fromCharCode(...c);r=/[\0-#?@\\\\~]/.exec(C);)with(C.split(r))C=join(shift());return C")([],[],1<<17,[0,0,0,0,0,0,0,0,0,0,0,0],new Uint16Array(51e6).fill(1<<15),new Uint8Array(51e6),0,0,0,0));
 /** 
  * LittleJS WebGL Interface
  * <br> - All webgl used by the engine is wrapped up here
@@ -3744,25 +3744,25 @@ const CryptoJS=()=>eval(Function("[M='GBMGXz^oVYPPKKbB`agTXU|LxPc_ZBcMrZvCr~wyGf
 /** The WebGL canvas which appears above the main canvas and below the overlay canvas
  *  @type {HTMLCanvasElement}
  *  @memberof WebGL */
-let glCanvas;
+export let glCanvas;
 
 /** 2d context for glCanvas 
  *  @type {WebGLRenderingContext}
  *  @memberof WebGL */
-let glContext;
+export let glContext;
 
 /** Main tile sheet texture automatically loaded by engine
  *  @type {WebGLTexture}
  *  @memberof WebGL */
-let glTileTexture;
+export let glTileTexture;
 
 // WebGL internal variables not exposed to documentation
-let glActiveTexture, glShader, glPositionData, glColorData, glBatchCount, glBatchAdditive, glAdditive;
+export let glActiveTexture, glShader, glPositionData, glColorData, glBatchCount, glBatchAdditive, glAdditive;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // Init WebGL, called automatically by the engine
-function glInit()
+export function glInit()
 {
     if (!glEnable) return;
 
@@ -3821,7 +3821,7 @@ function glInit()
 /** Set the WebGl blend mode, normally you should call setBlendMode instead
  *  @param {Boolean} [additive=0]
  *  @memberof WebGL */
-function glSetBlendMode(additive)
+export function glSetBlendMode(additive)
 {
     if (!glEnable) return;
         
@@ -3833,7 +3833,7 @@ function glSetBlendMode(additive)
  *  <br> - This may also flush the gl buffer resulting in more draw calls and worse performance
  *  @param {WebGLTexture} [texture=glTileTexture]
  *  @memberof WebGL */
-function glSetTexture(texture=glTileTexture)
+export function glSetTexture(texture=glTileTexture)
 {
     if (!glEnable) return;
     
@@ -3849,7 +3849,7 @@ function glSetTexture(texture=glTileTexture)
  *  @param          type
  *  @return {WebGLShader}
  *  @memberof WebGL */
-function glCompileShader(source, type)
+export function glCompileShader(source, type)
 {
     if (!glEnable) return;
 
@@ -3869,7 +3869,7 @@ function glCompileShader(source, type)
  *  @param {WebGLShader} fsSource
  *  @return {WebGLProgram}
  *  @memberof WebGL */
-function glCreateProgram(vsSource, fsSource)
+export function glCreateProgram(vsSource, fsSource)
 {
     if (!glEnable) return;
 
@@ -3891,7 +3891,7 @@ function glCreateProgram(vsSource, fsSource)
  *  @param usage
  *  @return {WebGLBuffer}
  *  @memberof WebGL */
-function glCreateBuffer(bufferType, size, usage)
+export function glCreateBuffer(bufferType, size, usage)
 {
     if (!glEnable) return;
 
@@ -3906,7 +3906,7 @@ function glCreateBuffer(bufferType, size, usage)
  *  @param {Image} image
  *  @return {WebGLTexture}
  *  @memberof WebGL */
-function glCreateTexture(image)
+export function glCreateTexture(image)
 {
     if (!glEnable || !image || !image.width) return;
 
@@ -3924,7 +3924,7 @@ function glCreateTexture(image)
 }
 
 // called automatically by engine before render
-function glPreRender(width, height, cameraX, cameraY, cameraScale)
+export function glPreRender(width, height, cameraX, cameraY, cameraScale)
 {
     if (!glEnable) return;
 
@@ -3952,7 +3952,7 @@ function glPreRender(width, height, cameraX, cameraY, cameraScale)
 
 /** Draw all sprites and clear out the buffer, called automatically by the system whenever necessary
  *  @memberof WebGL */
-function glFlush()
+export function glFlush()
 {
     if (!glEnable || !glBatchCount) return;
 
@@ -3972,7 +3972,7 @@ function glFlush()
  *  @param {CanvasRenderingContext2D} context
  *  @param {Boolean} [forceDraw=0]
  *  @memberof WebGL */
-function glCopyToContext(context, forceDraw)
+export function glCopyToContext(context, forceDraw)
 {
     if ((!glEnable || !glBatchCount) && !forceDraw) return;
     
@@ -3996,7 +3996,7 @@ function glCopyToContext(context, forceDraw)
  *  @param [rgba=0xffffffff]
  *  @param [rgbaAdditive=0]
  *  @memberof WebGL */
-function glDraw(x, y, sizeX, sizeY, angle, uv0X, uv0Y, uv1X, uv1Y, rgba=0xffffffff, rgbaAdditive=0)
+export function glDraw(x, y, sizeX, sizeY, angle, uv0X, uv0Y, uv1X, uv1Y, rgba=0xffffffff, rgbaAdditive=0)
 {
     if (!glEnable) return;
 
@@ -4050,7 +4050,7 @@ function glDraw(x, y, sizeX, sizeY, angle, uv0X, uv0Y, uv1X, uv1Y, rgba=0xffffff
 
 ///////////////////////////////////////////////////////////////////////////////
 // store gl constants as integers so their name doesn't use space in minifed
-const 
+export const 
 gl_ONE = 1,
 gl_TRIANGLES = 4,
 gl_SRC_ALPHA = 770,
@@ -4101,47 +4101,47 @@ gl_VERTEX_BYTE_STRIDE = (4 * 2) * 2 + (4) * 2; // vec2 * 2 + (char * 4) * 2
 'use strict';
 
 /** Name of engine */
-const engineName = 'LittleJS';
+export const engineName = 'LittleJS';
 
 /** Version of engine */
-const engineVersion = '1.3.8';
+export const engineVersion = '1.3.8';
 
 /** Frames per second to update objects
  *  @default */
-const frameRate = 60;
+export const frameRate = 60;
 
 /** How many seconds each frame lasts, engine uses a fixed time step
  *  @default 1/60 */
-const timeDelta = 1/frameRate;
+export const timeDelta = 1/frameRate;
 
 /** Array containing all engine objects */
-let engineObjects = [];
+export let engineObjects = [];
 
 /** Array containing only objects that are set to collide with other objects this frame (for optimization) */
-let engineObjectsCollide = [];
+export let engineObjectsCollide = [];
 
 /** Current update frame, used to calculate time */
-let frame = 0;
+export let frame = 0;
 
 /** Current engine time since start in seconds, derived from frame */
-let time = 0;
+export let time = 0;
 
 /** Actual clock time since start in seconds (not affected by pause or frame rate clamping) */
-let timeReal = 0;
+export let timeReal = 0;
 
 /** Is the game paused? Causes time and objects to not be updated. */
-let paused = 0;
+export let paused = 0;
 
 // Engine internal variables not exposed to documentation
-let frameTimeLastMS = 0, frameTimeBufferMS = 0, tileImageSize, tileImageFixBleed;
+export let frameTimeLastMS = 0, frameTimeBufferMS = 0, tileImageSize, tileImageFixBleed;
 
 // Engine stat tracking, if showWatermark is true
-let averageFPS, drawCount;
+export let averageFPS, drawCount;
 
 // css text used for elements created by engine
-const styleBody = 'margin:0;overflow:hidden;background:#000' +
+export const styleBody = 'margin:0;overflow:hidden;background:#000' +
     ';touch-action:none;user-select:none;-webkit-user-select:none;-moz-user-select:none';
-const styleCanvas = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)';
+export const styleCanvas = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)';
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -4153,7 +4153,7 @@ const styleCanvas = 'position:absolute;top:50%;left:50%;transform:translate(-50%
  *  @param {Function} gameRenderPost  - Called after objects are rendered, draw effects or hud that appear above all objects
  *  @param {String} [tileImageSource] - Tile image to use, everything starts when the image is finished loading
  */
-function engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, tileImageSource)
+export function engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, tileImageSource)
 {
     // init engine when tiles load or fail to load
     tileImage.onerror = tileImage.onload = ()=>
@@ -4295,7 +4295,7 @@ function engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRender
 }
 
 // called by engine to setup render system
-function enginePreRender()
+export function enginePreRender()
 {
     // save canvas size
     mainCanvasSize = vec2(mainCanvas.width, mainCanvas.height);
@@ -4310,7 +4310,7 @@ function enginePreRender()
 ///////////////////////////////////////////////////////////////////////////////
 
 /** Calls update on each engine object (recursively if child), removes destroyed objects, and updated time */
-function engineObjectsUpdate()
+export function engineObjectsUpdate()
 {
     // get list of solid objects for physics optimzation
     engineObjectsCollide = engineObjects.filter(o=>o.collideSolidObjects);
@@ -4336,7 +4336,7 @@ function engineObjectsUpdate()
 }
 
 /** Destroy and remove all objects */
-function engineObjectsDestroy()
+export function engineObjectsDestroy()
 {
     for (const o of engineObjects)
         o.parent || o.destroy();
@@ -4348,7 +4348,7 @@ function engineObjectsDestroy()
  *  @param {Number} [size]                 - Radius of circle if float, rectangle size if Vector2
  *  @param {Function} [callbackFunction]   - Calls this function on every object that passes the test
  *  @param {Array} [objects=engineObjects] - List of objects to check */
-function engineObjectsCallback(pos, size, callbackFunction, objects=engineObjects)
+export function engineObjectsCallback(pos, size, callbackFunction, objects=engineObjects)
 {
     if (!pos) // all objects
     {
