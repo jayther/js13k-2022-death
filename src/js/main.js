@@ -1,13 +1,28 @@
 import { engineInit, drawRect, vec2, Color, cameraPos, mouseIsDown, mousePos, mousePosScreen, mouseToScreen, cameraScale } from './engine/engine.all';
 import { Grid } from './game/grid';
+import { tileSize } from './consts';
+import { House } from './game/house';
 
 const grid = new Grid();
 // let origCameraPos = vec2();
-// let dragAnchor = vec2();
-// let dragging = false;
+let origHousePos = vec2();
+let dragAnchor = vec2();
+let dragging = false;
 let mouseDown = false;
 
+const houses = [];
+let house;
+
 function gameInit() {
+  const gridSize = grid.getWorldSize();
+  cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
+  cameraPos.y = grid.pos.y + gridSize.y / 2 - tileSize / 2;
+
+  spawnNewHouse();
+}
+
+function spawnNewHouse() {
+  house = new House();
 }
 
 function gameUpdate() {
@@ -26,11 +41,36 @@ function gameUpdate() {
   // }
 
   if (mouseIsDown(0)) {
-    mouseDown = true;
+    if (!mouseDown) {
+      mouseDown = true;
+      if (house.isClicked()) {
+        origHousePos = house.pos.copy();
+        dragAnchor = mousePos.copy();
+        dragging = true;
+      }
+    }
+    if (dragging) {
+      house.pos.x = origHousePos.x + (mousePos.x - dragAnchor.x);
+      house.pos.y = origHousePos.y + (mousePos.y - dragAnchor.y);
+    }
   } else {
     if (mouseDown) {
       mouseDown = false;
-      console.log('tile type clicked:', grid.getTileFromMousePos());
+      if (dragging) {
+        house.pos.x = Math.floor((house.pos.x + tileSize / 2) / tileSize) * tileSize;
+        house.pos.y = Math.floor((house.pos.y + tileSize / 2) / tileSize) * tileSize;
+        if (grid.houseCanFit(house)) {
+          grid.addHouse(house);
+          spawnNewHouse();
+        }
+        dragging = false;
+      }
+      // const clicked = house.isClicked();
+      // console.log('clicked', clicked);
+      // const tile = grid.getTileFromMousePos();
+      // if (tile) {
+      //   console.log('tile.type', tile.type);
+      // }
     }
   }
 }
@@ -41,6 +81,10 @@ function gameUpdatePost() {
 
 function gameRender() {
   grid.render();
+  // for (const house of houses) {
+  //   house.render();
+  // }
+  house.render();
 }
 
 function gameRenderPost() {
