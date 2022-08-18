@@ -9,6 +9,7 @@ let origHousePos = vec2();
 let dragAnchor = vec2();
 let dragging = false;
 let mouseDown = false;
+let rightClickDown = false;
 
 const houses = [];
 let house;
@@ -39,6 +40,15 @@ function gameUpdate() {
   //     dragging = false;
   //   }
   // }
+
+  if (mouseIsDown(2)) {
+    rightClickDown = true;
+  } else {
+    if (rightClickDown) {
+      rightClickDown = false;
+      house.rotate(1);
+    }
+  }
 
   if (mouseIsDown(0)) {
     if (!mouseDown) {

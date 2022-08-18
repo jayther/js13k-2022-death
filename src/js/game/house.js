@@ -6,6 +6,8 @@ const stateColorMap = {
   [HouseState.Placed]: new Color(0.9, 0.9, 0.9),
 };
 
+const cw = 1, ccw = 0;
+
 function createRandomTiles(maxExtent) {
   const side = maxExtent * 2 - 1;
   const numTiles = randInt(1, side**2 + 1);
@@ -88,6 +90,34 @@ export class House {
     if (!tileRow) { return false; }
 
     return !!tileRow[localPos.x];
+  }
+
+  rotate(direction) {
+    const width = this.tiles.length;
+    const height = this.tiles[0].length;
+    const rotatedTiles = new Array(height);
+
+    for (let y = 0; y < height; y++) {
+      rotatedTiles[y] = new Array(width).fill(TileType.None);
+    }
+
+    // mirror at 45-degree angle from origin
+    // we're traversing the original tiles so we're using the new tiles' width
+    for (let y = 0; y < width; y++) {
+      for (let x = 0; x < height; x++) {
+        rotatedTiles[x][y] = this.tiles[y][x];
+      }
+    }
+
+    // unmirroring in an axis is effectively rotating it
+    if (direction === cw) {
+      // unmirror in the x-axis
+      rotatedTiles.reverse();
+    } else {
+      // unmirror in the y-axis
+      rotatedTiles.forEach(row => row.reverse());
+    }
+    this.tiles = rotatedTiles;
   }
 
   render() {
