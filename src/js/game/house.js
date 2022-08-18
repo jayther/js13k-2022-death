@@ -1,17 +1,10 @@
 import { vec2, Color, drawRect, mousePos, randInt } from '../engine/engine.all';
-import { HouseState, tileSize, TileType } from '../consts';
+import { HouseState, tileSize, TileType, deltaArray } from '../consts';
 
 const stateColorMap = {
   [HouseState.Placing]: new Color(),
   [HouseState.Placed]: new Color(0.9, 0.9, 0.9),
 };
-
-const deltaArray = [
-  [0, 1], // north
-  [1, 0], // east
-  [0, -1], // south
-  [-1, 0], // west
-];
 
 function createRandomTiles(maxExtent) {
   const side = maxExtent * 2 - 1;

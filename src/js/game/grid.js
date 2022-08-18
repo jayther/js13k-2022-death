@@ -1,5 +1,5 @@
 import { Color, drawRect, vec2, randInt, mousePos } from '../engine/engine.all';
-import { HouseState, tileSize, TileType } from '../consts';
+import { deltaArray, HouseState, tileSize, TileType } from '../consts';
 
 
 export class Tile {
@@ -47,6 +47,27 @@ export class Grid {
       }
     }
     return true;
+  }
+
+  houseIsTouchingRoad(house) {
+    const houseGridPos = house.pos.divide(vec2(tileSize));
+    const houseTiles = house.tiles;
+    for (let y = 0; y < houseTiles.length; y += 1) {
+      const row = houseTiles[y];
+      for (let x = 0; x < row.length; x += 1) {
+        if (!row[x]) { continue; }
+        
+        const tileGridPos = houseGridPos.add(vec2(x, y));
+        const gridTiles = deltaArray.map(delta => {
+          return this.getTile(tileGridPos.x + delta[0], tileGridPos.y + delta[1]);
+        }).filter(tile => tile);
+
+        const touchingRoad = gridTiles.some(tile => tile.type === TileType.Road);
+        if (touchingRoad) { return true; }
+      }
+    }
+
+    return false;
   }
 
   addHouse(house) {
@@ -103,7 +124,8 @@ export class Grid {
           color = new Color(0.3, 0.3, 0.3);
           break;
         case TileType.Road:
-          color =  new Color(1, 1, 1);
+          color = new Color(0.5, 0.5, 0.5);
+          break;
         default:
           color = null;
           break;

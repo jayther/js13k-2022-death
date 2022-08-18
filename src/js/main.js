@@ -1,6 +1,6 @@
 import { engineInit, drawRect, vec2, Color, cameraPos, mouseIsDown, mousePos, mousePosScreen, mouseToScreen, cameraScale } from './engine/engine.all';
 import { Grid } from './game/grid';
-import { tileSize } from './consts';
+import { tileSize, TileType } from './consts';
 import { House } from './game/house';
 
 const grid = new Grid();
@@ -59,11 +59,16 @@ function gameUpdate() {
       if (dragging) {
         house.pos.x = Math.floor((house.pos.x + tileSize / 2) / tileSize) * tileSize;
         house.pos.y = Math.floor((house.pos.y + tileSize / 2) / tileSize) * tileSize;
-        if (grid.houseCanFit(house)) {
+        if (grid.houseCanFit(house) && grid.houseIsTouchingRoad(house)) {
           grid.addHouse(house);
           spawnNewHouse();
         }
         dragging = false;
+      } else {
+        const tile = grid.getTileFromMousePos();
+        if (tile) {
+          tile.type = TileType.Road;
+        }
       }
       // const clicked = house.isClicked();
       // console.log('clicked', clicked);
