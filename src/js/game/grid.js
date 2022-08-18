@@ -27,8 +27,8 @@ export class Grid {
     const withinBounds = (
       houseBounds[0].x >= gridBounds[0].x &&
       houseBounds[0].y >= gridBounds[0].y &&
-      houseBounds[1].x < gridBounds[1].x &&
-      houseBounds[1].y < gridBounds[1].y
+      houseBounds[1].x <= gridBounds[1].x &&
+      houseBounds[1].y <= gridBounds[1].y
     );
     if (!withinBounds) { return false; }
 

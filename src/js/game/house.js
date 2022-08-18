@@ -1,24 +1,91 @@
-import { vec2, Color, drawRect, mousePos } from '../engine/engine.all';
-import { HouseState, tileSize } from '../consts';
+import { vec2, Color, drawRect, mousePos, randInt } from '../engine/engine.all';
+import { HouseState, tileSize, TileType } from '../consts';
 
 const stateColorMap = {
   [HouseState.Placing]: new Color(),
   [HouseState.Placed]: new Color(0.9, 0.9, 0.9),
 };
 
+const deltaArray = [
+  [0, 1], // north
+  [1, 0], // east
+  [0, -1], // south
+  [-1, 0], // west
+];
+
+function createRandomTiles(maxExtent) {
+  const side = maxExtent * 2 - 1;
+  const numTiles = randInt(1, side**2 + 1);
+  const tiles = [];
+  const houseCoords = [];
+  for (let i = 0; i < side; i++) {
+    tiles.push(new Array(side).fill(TileType.None));
+  }
+  for (let i = 0; i < numTiles; i++) {
+    let x, y;
+    if (i === 0) {
+      x = randInt(0, side);
+      y = randInt(0, side);
+      houseCoords.push([x, y]);
+    } else {
+      const baseCoord = houseCoords[randInt(0, houseCoords.length)];
+      const eligibleCoords = deltaArray.map(delta => {
+        let neighborCoord = [
+          baseCoord[0] + delta[0],
+          baseCoord[1] + delta[1],
+        ];
+        if (neighborCoord[0] < 0) { return null; }
+        if (neighborCoord[0] >= side) { return null; }
+        if (neighborCoord[1] < 0) { return null; }
+        if (neighborCoord[1] >= side) { return null; }
+
+        if (tiles[neighborCoord[1]][neighborCoord[0]] !== TileType.None) {
+          return null;
+        }
+
+        return neighborCoord;
+      }).filter(coord => coord);
+
+      if (!eligibleCoords.length) {
+        continue;
+      }
+
+      const useCoord = eligibleCoords[randInt(0, eligibleCoords.length)];
+      [x, y] = useCoord;
+      houseCoords.push(useCoord);
+    }
+
+    tiles[y][x] = TileType.HousePart;
+  }
+
+  // trim non-house-parts
+  // trim rows
+  for (let y = tiles.length - 1; y >= 0; y--) {
+    if (tiles[y].every(tile => tile === TileType.None)) {
+      tiles.splice(y, 1);
+    }
+  }
+  // trim columns
+  for (let x = side - 1; x >= 0; x--) {
+    if (tiles.map(row => row[x]).every(tile => tile === TileType.None)) {
+      tiles.forEach(row => row.splice(x, 1));
+    }
+  }
+
+  return tiles;
+}
+
 export class House {
   constructor() {
     this.pos = vec2(20, 20);
-    this.tiles = [
-      [1, 1],
-      [1, 0],
-    ];
+    this.tiles = createRandomTiles(2);
+
     this.state = HouseState.Placing;
   }
 
   getWorldBounds() {
-    const width = this.tiles[0].length;
-    const height = this.tiles.length;
+    const width = this.tiles[0].length * tileSize;
+    const height = this.tiles.length * tileSize;
     return [this.pos.copy(), this.pos.add(vec2(width, height))];
   }
 
