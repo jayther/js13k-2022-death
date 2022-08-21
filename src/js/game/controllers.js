@@ -3,6 +3,7 @@ import {
   mousePos,
   cameraPos,
   mouseIsDown,
+  mouseWasReleased,
 } from '../engine/engine.all';
 import { GameState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
@@ -55,10 +56,18 @@ const placeRoadsController = {
 
   },
   gameUpdate() {
-
+    if (mouseWasReleased(0)) {
+      const tile = grid.getTileFromMousePos();
+      if (tile) {
+        tile.type = tile.type === TileType.Road ? TileType.None : TileType.Road;
+      }
+    }
+    if (mouseWasReleased(2)) {
+      setGameState(GameState.PlaceHouses);
+    }
   },
   gameRender() {
-
+    grid.render();
   },
 };
 
@@ -115,11 +124,6 @@ const placeHousesController = {
             spawnNewHouse();
           }
           dragging = false;
-        } else {
-          const tile = grid.getTileFromMousePos();
-          if (tile) {
-            tile.type = TileType.Road;
-          }
         }
         // const clicked = house.isClicked();
         // console.log('clicked', clicked);
@@ -160,7 +164,7 @@ export const controllerMap = [
 ];
 
 export function gameInit() {
-  setGameState(GameState.PlaceHouses);
+  setGameState(GameState.PlaceRoads);
 
   const gridSize = grid.getWorldSize();
   cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
