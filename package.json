@@ -11,6 +11,7 @@
   "author": "JB <jb@jayther.com>",
   "license": "MIT",
   "devDependencies": {
+    "fs-extra": "^10.1.0",
     "gulp": "4.0.2",
     "gulp-buffer": "0.0.2",
     "gulp-clean-css": "2.0.12",

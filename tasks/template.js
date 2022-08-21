@@ -2,7 +2,7 @@
 
 const gulp        = require('gulp');
 const handlebars  = require('handlebars');
-const fs          = require('fs');
+const fs          = require('fs-extra');
 const srcmaps     = require('gulp-sourcemaps');
 const buffer      = require('vinyl-buffer');
 const source      = require('vinyl-source-stream');
@@ -52,13 +52,16 @@ function template(done) {
     let inlineResult = handlebars.compile( str )
       ({ js: ctx.js, css: ctx.css });
 
-    writeFile( './dist/index.min.html', inlineResult )
-    .then( () => {
-      // development index file
-      let result = handlebars.compile( str )();
-      return writeFile( './dist/index.html', result )
-    })
-    .then( done );
+    Promise.all([
+      writeFile( './dist/index.min.html', inlineResult )      
+        .then( () => {
+          // development index file
+          let result = handlebars.compile( str )();
+          return writeFile( './dist/index.html', result )
+        }),
+      fs.ensureDir('./docs')
+        .then(() => writeFile('./docs/index.html', inlineResult)),
+    ]).then(done);
   })
   done();
 };
