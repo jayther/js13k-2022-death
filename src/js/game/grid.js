@@ -123,18 +123,18 @@ export class Grid {
 
   setTileLine(c1, c2, type) {
     const tiles = [];
-    // TODO negative direction not really working
     if (Math.abs(c2.x - c1.x) < Math.abs(c2.y - c1.y)) {
-      const endY = c2.y;
-      const dir = sign(c2.y - c1.y);
-      console.log(endY, dir);
-      for (let y = c1.y; y * dir <= c1.y + (endY - c1.y); y += dir) {
+      // closer to the y-axis
+      const startY = Math.min(c2.y, c1.y);
+      const endY = Math.max(c2.y, c1.y);
+      for (let y = startY; y <= endY; y += 1) {
         tiles.push(this.getTile(c1.x, y));
       }
     } else {
-      const endX = c2.x;
-      const dir = sign(c2.x - c1.x);
-      for (let x = c1.x; x * dir <= c1.x + (endX - c1.x); x += dir) {
+      // closer to the x-axis
+      const startX = Math.min(c2.x, c1.x);
+      const endX = Math.max(c2.x, c1.x);
+      for (let x = startX; x <= endX; x += 1) {
         tiles.push(this.getTile(x, c1.y));
       }
     }
