@@ -1,4 +1,4 @@
-import { Color, drawRect, vec2, randInt, mousePos } from '../engine/engine.all';
+import { Color, drawRect, vec2, randInt, mousePos, sign } from '../engine/engine.all';
 import { deltaArray, HouseState, tileSize, TileType } from '../consts';
 
 
@@ -103,13 +103,53 @@ export class Grid {
   }
 
   getTileFromMousePos() {
-    const gridPos = mousePos.subtract(this.pos).add(vec2(tileSize / 2));
+    const coords = this.getCoordsFromMousePos();
+    if (!coords) { return null; }
+    return this.getTile(coords.x, coords.y);
+  }
+
+  getCoordsFromMousePos() {
+    return this.getCoordsFromPos(mousePos);
+  }
+
+  getCoordsFromPos(worldPos) {
+    const gridPos = worldPos.subtract(this.pos).add(vec2(tileSize / 2));
     if (gridPos.x < 0) { return null; }
     if (gridPos.x >= this.size.x * tileSize) { return null; }
     if (gridPos.y < 0) { return null; }
     if (gridPos.y >= this.size.y * tileSize) { return null; }
-    const coords = gridPos.divide(vec2(tileSize)).floor();
-    return this.getTile(coords.x, coords.y);
+    return gridPos.divide(vec2(tileSize)).floor();
+  }
+
+  setTileLine(c1, c2, type) {
+    const tiles = [];
+    // TODO negative direction not really working
+    if (Math.abs(c2.x - c1.x) < Math.abs(c2.y - c1.y)) {
+      const endY = c2.y;
+      const dir = sign(c2.y - c1.y);
+      console.log(endY, dir);
+      for (let y = c1.y; y * dir <= c1.y + (endY - c1.y); y += dir) {
+        tiles.push(this.getTile(c1.x, y));
+      }
+    } else {
+      const endX = c2.x;
+      const dir = sign(c2.x - c1.x);
+      for (let x = c1.x; x * dir <= c1.x + (endX - c1.x); x += dir) {
+        tiles.push(this.getTile(x, c1.y));
+      }
+    }
+    for (const tile of tiles) {
+      tile.type = type;
+    }
+    return tiles;
+  }
+
+  clearEphRoads() {
+    for (const tile of this.tiles) {
+      if (tile.type === TileType.EphRoad) {
+        tile.type = TileType.None;
+      }
+    }
   }
 
   render() {
@@ -125,6 +165,9 @@ export class Grid {
           break;
         case TileType.Road:
           color = new Color(0.5, 0.5, 0.5);
+          break;
+        case TileType.EphRoad:
+          color = new Color(0.4, 0.4, 0.4);
           break;
         default:
           color = null;

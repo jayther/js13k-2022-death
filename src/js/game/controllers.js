@@ -4,6 +4,7 @@ import {
   cameraPos,
   mouseIsDown,
   mouseWasReleased,
+  mouseWasPressed,
 } from '../engine/engine.all';
 import { GameState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
@@ -16,6 +17,7 @@ let dragAnchor = vec2();
 let dragging = false;
 let mouseDown = false;
 let rightClickDown = false;
+let roadStartCoord;
 
 let house;
 let setGameState = () => { throw new Error('game state setter not set'); };
@@ -56,10 +58,30 @@ const placeRoadsController = {
 
   },
   gameUpdate() {
+    // if (mouseWasReleased(0)) {
+    //   const tile = grid.getTileFromMousePos();
+    //   if (tile) {
+    //     tile.type = tile.type === TileType.Road ? TileType.None : TileType.Road;
+    //   }
+    // }
+    if (mouseWasPressed(0)) {
+      roadStartCoord = grid.getCoordsFromMousePos();
+    }
+    if (mouseIsDown(0)) {
+      if (roadStartCoord) {
+        grid.clearEphRoads();
+        const roadEndCoord = grid.getCoordsFromMousePos();
+        if (roadEndCoord) {
+          grid.setTileLine(roadStartCoord, roadEndCoord, TileType.EphRoad);
+        }
+      }
+    }
     if (mouseWasReleased(0)) {
-      const tile = grid.getTileFromMousePos();
-      if (tile) {
-        tile.type = tile.type === TileType.Road ? TileType.None : TileType.Road;
+      if (roadStartCoord) {
+        const roadEndCoord = grid.getCoordsFromMousePos();
+        if (roadEndCoord) {
+          grid.setTileLine(roadStartCoord, roadEndCoord, TileType.Road);
+        }
       }
     }
     if (mouseWasReleased(2)) {
