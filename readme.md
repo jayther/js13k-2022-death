@@ -11,4 +11,34 @@ JS13K Games 2022 - Death
 
 So here lies the beginning of JS13K Games 2022 entry by jayther!
 
+## Current State
+
 Try the current state of the game at: https://jayther.github.io/js13k-2022-death/
+
+## Setup
+
+1. Make sure to use Node 16.x with npm 8.x
+   1. `nvm use` to use the current version in `.nvmrc`
+2. `npm i`
+
+## Build
+
+1. `npm run build`
+
+This will make a build in `dist/` folder.
+
+## Local dev
+
+This will require 2 terminals.
+
+1. `npm run watch`
+2. `npm run server`, which will serve `dist`
+
+In browser, go to http://127.0.0.1:8080
+
+Note that `npm run watch` won't build right away until a change in `src/` has occurred.
+
+## Deploy
+
+1. Build with `npm run build`, which will update the `docs/` folder
+2. Push to main
