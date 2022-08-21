@@ -17,3 +17,11 @@ export const deltaArray = [
   [0, -1], // south
   [-1, 0], // west
 ];
+
+export const GameState = {
+  Idle: 0,
+  MainMenu: 1,
+  PlaceRoads: 2,
+  PlaceHouses: 3,
+  Leaderboard: 4,
+};
