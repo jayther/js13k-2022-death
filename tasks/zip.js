@@ -3,12 +3,16 @@
 const gulp      = require('gulp');
 const gulp_zip       = require('gulp-zip');
 const rename    = require('gulp-rename');
-const util      = require('gulp-util');
+const log       = require('fancy-log');
+const colors    = require('ansi-colors');
 const htmlmin   = require('gulp-htmlmin');
 const fs        = require('fs');
 const buildTasks = require('./build.js');
 const templateTasks = require('./template.js');
 
+function beep() {
+  import('beeper').then(module => module.default());
+}
 
 function zip() {
   return gulp.src('./dist/index.min.html')
@@ -21,15 +25,15 @@ function zip() {
 function report(done) {
   fs.stat( './dist/game.zip', ( err, data ) => {
     if ( err ) {
-      util.beep();
+      beep();
       return done( err );
     }
-    util.log(
-      util.colors.yellow.bold(`Current game size: ${ data.size } bytes`)
+    log(
+      colors.yellow.bold(`Current game size: ${ data.size } bytes`)
     );
     let percent = parseInt( ( data.size / 13312 ) * 100, 10 );
-    util.log(
-      util.colors.yellow.bold(`${ percent }% of total game size used`)
+    log(
+      colors.yellow.bold(`${ percent }% of total game size used`)
     );
     done();
   });
