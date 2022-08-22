@@ -14,7 +14,7 @@
     "fs-extra": "^10.1.0",
     "gulp": "4.0.2",
     "gulp-buffer": "0.0.2",
-    "gulp-clean-css": "2.0.12",
+    "gulp-clean-css": "^4.3.0",
     "gulp-concat-css": "2.3.0",
     "gulp-htmlmin": "2.0.0",
     "gulp-livereload": "3.8.1",
