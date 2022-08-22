@@ -108,16 +108,18 @@ export class Grid {
     return this.getTile(coords.x, coords.y);
   }
 
-  getCoordsFromMousePos() {
-    return this.getCoordsFromPos(mousePos);
+  getCoordsFromMousePos(beyondLimits = false) {
+    return this.getCoordsFromPos(mousePos, beyondLimits);
   }
 
-  getCoordsFromPos(worldPos) {
+  getCoordsFromPos(worldPos, beyondLimits = false) {
     const gridPos = worldPos.subtract(this.pos).add(vec2(tileSize / 2));
-    if (gridPos.x < 0) { return null; }
-    if (gridPos.x >= this.size.x * tileSize) { return null; }
-    if (gridPos.y < 0) { return null; }
-    if (gridPos.y >= this.size.y * tileSize) { return null; }
+    if (!beyondLimits) {
+      if (gridPos.x < 0) { return null; }
+      if (gridPos.x >= this.size.x * tileSize) { return null; }
+      if (gridPos.y < 0) { return null; }
+      if (gridPos.y >= this.size.y * tileSize) { return null; }
+    }
     return gridPos.divide(vec2(tileSize)).floor();
   }
 
@@ -125,15 +127,15 @@ export class Grid {
     const tiles = [];
     if (Math.abs(c2.x - c1.x) < Math.abs(c2.y - c1.y)) {
       // closer to the y-axis
-      const startY = Math.min(c2.y, c1.y);
-      const endY = Math.max(c2.y, c1.y);
+      const startY = Math.max(Math.min(c2.y, c1.y), 0);
+      const endY = Math.min(Math.max(c2.y, c1.y), this.size.y - 1);
       for (let y = startY; y <= endY; y += 1) {
         tiles.push(this.getTile(c1.x, y));
       }
     } else {
       // closer to the x-axis
-      const startX = Math.min(c2.x, c1.x);
-      const endX = Math.max(c2.x, c1.x);
+      const startX = Math.max(Math.min(c2.x, c1.x), 0);
+      const endX = Math.min(Math.max(c2.x, c1.x), this.size.x - 1);
       for (let x = startX; x <= endX; x += 1) {
         tiles.push(this.getTile(x, c1.y));
       }

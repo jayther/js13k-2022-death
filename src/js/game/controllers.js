@@ -65,12 +65,12 @@ const placeRoadsController = {
     //   }
     // }
     if (mouseWasPressed(0)) {
-      roadStartCoord = grid.getCoordsFromMousePos();
+      roadStartCoord = grid.getCoordsFromMousePos(true);
     }
     if (mouseIsDown(0)) {
       if (roadStartCoord) {
         grid.clearEphRoads();
-        const roadEndCoord = grid.getCoordsFromMousePos();
+        const roadEndCoord = grid.getCoordsFromMousePos(true);
         if (roadEndCoord) {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.EphRoad);
         }
@@ -78,7 +78,7 @@ const placeRoadsController = {
     }
     if (mouseWasReleased(0)) {
       if (roadStartCoord) {
-        const roadEndCoord = grid.getCoordsFromMousePos();
+        const roadEndCoord = grid.getCoordsFromMousePos(true);
         if (roadEndCoord) {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.Road);
         }
