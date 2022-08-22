@@ -8,11 +8,12 @@ const buffer      = require('vinyl-buffer');
 const source      = require('vinyl-source-stream');
 const rename      = require('gulp-rename');
 const livereload  = require('gulp-livereload');
-const util        = require('gulp-util');
+const log         = require('fancy-log');
+const colors      = require('ansi-colors');
 
 function onError( err, pipeline ) {
-  util.log( util.colors.red( `Error: ${ err.message }` ) );
-  util.beep();
+  log( colors.red( `Error: ${ err.message }` ) );
+  import('beeper').then(module => module.default());
   pipeline.emit('error', err);
 }
 
