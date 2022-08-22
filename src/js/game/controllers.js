@@ -18,6 +18,7 @@ let dragging = false;
 let mouseDown = false;
 let rightClickDown = false;
 let roadStartCoord;
+let roadType;
 
 let house;
 let setGameState = () => { throw new Error('game state setter not set'); };
@@ -65,22 +66,34 @@ const placeRoadsController = {
     //   }
     // }
     if (mouseWasPressed(0)) {
-      roadStartCoord = grid.getCoordsFromMousePos(true);
+      roadStartCoord = grid.getCoordsFromMousePos();
+      if (roadStartCoord) {
+        grid.createSnapshot();
+        const tile = grid.getTileFromMousePos();
+        // this should always return a tile since roadStartCoord should only
+        // be non-null if it's clicked inside the grid
+        if (tile.type === TileType.Road) {
+          roadType = TileType.EphDelete;
+        } else {
+          roadType = TileType.EphRoad;
+        }
+      }
     }
     if (mouseIsDown(0)) {
       if (roadStartCoord) {
-        grid.clearEphRoads();
+        grid.resetToSnapshot();
         const roadEndCoord = grid.getCoordsFromMousePos(true);
-        if (roadEndCoord) {
-          grid.setTileLine(roadStartCoord, roadEndCoord, TileType.EphRoad);
-        }
+        grid.setTileLine(roadStartCoord, roadEndCoord, roadType);
       }
     }
     if (mouseWasReleased(0)) {
       if (roadStartCoord) {
+        grid.resetToSnapshot();
         const roadEndCoord = grid.getCoordsFromMousePos(true);
-        if (roadEndCoord) {
+        if (roadType === TileType.EphRoad) {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.Road);
+        } else {
+          grid.setTileLine(roadStartCoord, roadEndCoord, TileType.None);
         }
       }
     }

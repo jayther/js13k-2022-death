@@ -5,6 +5,7 @@ export const TileType = {
   HousePart: 1,
   Road: 2,
   EphRoad: 3,
+  EphDelete: 4,
 };
 
 export const HouseState = {

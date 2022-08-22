@@ -6,6 +6,13 @@ export class Tile {
   constructor(type) {
     this.type = type || 0;
   }
+  copy() {
+    const tile = new Tile(this.type);
+    return tile;
+  }
+  apply(tile) {
+    this.type = tile.type;
+  }
 }
 
 export class Grid {
@@ -19,6 +26,14 @@ export class Grid {
       this.tiles.push(new Tile(0));
     }
     this.houses = [];
+    this.snapshotTiles = [];
+    for (const tile of this.tiles) {
+      this.snapshotTiles.push(tile.copy());
+    }
+  }
+
+  createSnapshot() {
+    this.tiles.forEach((tile, i) => this.snapshotTiles[i].apply(tile));
   }
 
   houseCanFit(house) {
@@ -146,12 +161,8 @@ export class Grid {
     return tiles;
   }
 
-  clearEphRoads() {
-    for (const tile of this.tiles) {
-      if (tile.type === TileType.EphRoad) {
-        tile.type = TileType.None;
-      }
-    }
+  resetToSnapshot() {
+    this.tiles.forEach((tile, i) => tile.apply(this.snapshotTiles[i]));
   }
 
   render() {
@@ -170,6 +181,9 @@ export class Grid {
           break;
         case TileType.EphRoad:
           color = new Color(0.4, 0.4, 0.4);
+          break;
+        case TileType.EphDelete:
+          color = new Color(0.8, 0.3, 0.3);
           break;
         default:
           color = null;
