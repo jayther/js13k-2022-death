@@ -27,7 +27,7 @@ let house;
 let setGameState = () => { throw new Error('game state setter not set'); };
 
 function spawnNewHouse() {
-  house = new House();
+  house = new House(-8, -8);
 }
 
 // Idle
