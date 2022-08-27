@@ -2,12 +2,17 @@ import { Color, drawRect, vec2, randInt, mousePos, sign } from '../engine/engine
 import { deltaArray, HouseState, tileSize, TileType } from '../consts';
 
 const tileColorMap = [
-  new Color(0.3, 0.3, 0.3), // None
+  null,                     // None
   null,                     // HousePart
-  new Color(0.5, 0.5, 0.5), // Road
-  new Color(0.4, 0.4, 0.4), // EphRoad
+  new Color(0.6, 0.6, 0.6), // Road
+  new Color(0.5, 0.5, 0.5), // EphRoad
   new Color(0.8, 0.3, 0.3), // EphDelete
   new Color(1, 0, 0),       // DCRoad
+];
+
+const baseColorMap = [
+  new Color(0.3, 0.3, 0.3),
+  new Color(0.35, 0.35, 0.35),
 ];
 
 export class Tile {
@@ -213,7 +218,7 @@ export class Grid {
         const tilePos = vec2(x, y);
         const renderTitlePos = tilePos.multiply(vec2(tileSize)).add(this.pos);
         const tile = this.getTile(x, y);
-        const color = tileColorMap[tile.type];
+        const color = tileColorMap[tile.type] || baseColorMap[(x + y) % 2];
         if (color) {
           drawRect(renderTitlePos, vec2(tileSize), color);
         }
