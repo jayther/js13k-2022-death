@@ -12,7 +12,8 @@ export const TileType = {
 export const HouseState = {
   Placing: 0,
   Placed: 1,
-}
+  Invalid: 2,
+};
 
 export const deltaArray = [
   [0, 1], // north

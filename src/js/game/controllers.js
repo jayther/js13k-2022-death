@@ -6,7 +6,7 @@ import {
   mouseWasReleased,
   mouseWasPressed,
 } from '../engine/engine.all';
-import { GameState, tileSize, TileType } from '../consts';
+import { GameState, HouseState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
 import { House } from './house';
 
@@ -140,6 +140,7 @@ const placeHousesController = {
       if (!mouseDown) {
         mouseDown = true;
         if (house.isClicked()) {
+          house.state = HouseState.Placing;
           origHousePos = house.pos.copy();
           dragAnchor = mousePos.copy();
           dragging = true;
@@ -158,6 +159,8 @@ const placeHousesController = {
           if (grid.houseCanFit(house) && grid.houseIsTouchingRoad(house)) {
             grid.addHouse(house);
             spawnNewHouse();
+          } else {
+            house.state = HouseState.Invalid;
           }
           dragging = false;
         }

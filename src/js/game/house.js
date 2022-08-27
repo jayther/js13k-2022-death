@@ -1,10 +1,11 @@
 import { vec2, Color, drawRect, mousePos, randInt } from '../engine/engine.all';
 import { HouseState, tileSize, TileType, deltaArray } from '../consts';
 
-const stateColorMap = {
-  [HouseState.Placing]: new Color(),
-  [HouseState.Placed]: new Color(0.9, 0.9, 0.9),
-};
+const stateColorMap = [
+  new Color(),              // Placing
+  new Color(0.9, 0.9, 0.9), // Placed
+  new Color(1, 0.3, 0.3),   // Invalid
+];
 
 const cw = 1, ccw = 0;
 
