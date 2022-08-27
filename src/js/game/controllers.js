@@ -7,6 +7,8 @@ import {
   mouseWasPressed,
   keyWasPressed,
   keyIsDown,
+  drawTextScreen,
+  Color,
 } from '../engine/engine.all';
 import { GameState, HouseState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
@@ -141,12 +143,9 @@ const placeHousesController = {
     }
 
     // S or down arrow key
-    if (keyWasPressed(40)) {
-      console.log('S pressed?');
-      if (skipsLeft > 0) {
-        spawnNewHouse();
-        skipsLeft -= 1;
-      }
+    if (keyWasPressed(40) && skipsLeft > 0) {
+      spawnNewHouse();
+      skipsLeft -= 1;
     }
   
     if (mouseIsDown(0)) {
@@ -192,6 +191,8 @@ const placeHousesController = {
     //   house.render();
     // }
     house.render();
+
+    drawTextScreen(`Skips left: ${skipsLeft}`, vec2(15, 15), 20, new Color(1, 1, 1), undefined, undefined, 'left');
   },
 };
 
