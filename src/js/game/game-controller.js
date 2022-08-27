@@ -84,6 +84,7 @@ export const placeRoadsController = {
   },
   gameRender() {
     grid.render();
+    drawTextScreen(`Place roads`, vec2(15, 15), 20, new Color(1, 1, 1), undefined, undefined, 'left');
   },
 };
 
