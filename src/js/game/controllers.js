@@ -72,7 +72,7 @@ const placeRoadsController = {
         const tile = grid.getTileFromMousePos();
         // this should always return a tile since roadStartCoord should only
         // be non-null if it's clicked inside the grid
-        if (tile.type === TileType.Road) {
+        if (tile.type === TileType.Road || tile.type === TileType.DCRoad) {
           roadType = TileType.EphDelete;
         } else {
           roadType = TileType.EphRoad;
@@ -95,9 +95,10 @@ const placeRoadsController = {
         } else {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.None);
         }
+        grid.checkRoadConnection();
       }
     }
-    if (mouseWasReleased(2)) {
+    if (mouseWasReleased(2) && grid.allRoadsConnected) {
       setGameState(GameState.PlaceHouses);
     }
   },

@@ -11,11 +11,13 @@ const tileColorMap = [
 ];
 
 export class Tile {
-  constructor(type) {
+  constructor(type, x, y) {
+    this.x = x;
+    this.y = y;
     this.type = type || 0;
   }
   copy() {
-    const tile = new Tile(this.type);
+    const tile = new Tile(this.type, this.x, this.y);
     return tile;
   }
   apply(tile) {
@@ -31,8 +33,9 @@ export class Grid {
     this.size = vec2(10, 10);
     const total = this.size.x * this.size.y;
     for (let i = 0; i < total; i += 1) {
-      this.tiles.push(new Tile(0));
+      this.tiles.push(new Tile(0, i % this.size.x, Math.floor(i / this.size.y)));
     }
+    this.allRoadsConnected = false;
     this.houses = [];
     this.snapshotTiles = [];
     for (const tile of this.tiles) {
@@ -171,6 +174,37 @@ export class Grid {
 
   resetToSnapshot() {
     this.tiles.forEach((tile, i) => tile.apply(this.snapshotTiles[i]));
+  }
+
+  checkRoadConnection() {
+    const roads = this.tiles.filter(tile => tile.type === TileType.Road || tile.type === TileType.DCRoad);
+    roads.forEach(tile => tile.type = TileType.DCRoad);
+    
+    const edgeRoads = roads.filter(tile => (
+      tile.x === 0 || tile.y === 0 ||
+      tile.x === this.size.x - 1 || tile.y === this.size.y - 1
+    ));
+
+    if (!edgeRoads.length) {
+      this.allRoadsConnected = false;
+      return;
+    }
+
+    edgeRoads.forEach(tile => this.setConnectedRoads(tile.x, tile.y));
+
+    this.allRoadsConnected = roads.every(road => road.type === TileType.Road);
+  }
+
+  setConnectedRoads(x, y) {
+    const tile = this.getTile(x, y);
+    if (!tile) { return; }
+    if (tile.type !== TileType.DCRoad) { return; }
+
+    tile.type = TileType.Road;
+
+    for (const delta of deltaArray) {
+      this.setConnectedRoads(x + delta[0], y + delta[1]);
+    }
   }
 
   render() {
