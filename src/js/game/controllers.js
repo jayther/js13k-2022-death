@@ -1,5 +1,6 @@
 import { menuController } from './menu-controller';
 import { placeRoadsController, placeHousesController } from './game-controller';
+import { leaderboardController } from './ldb-controller';
 
 // Idle
 const idleController = {
@@ -11,18 +12,6 @@ const idleController = {
   },
   gameRender() {
 
-  },
-};
-
-// Leaderboard
-const leaderboardController = {
-  init() {
-
-  },
-  gameUpdate() {
-
-  },
-  gameRender() {
   },
 };
 

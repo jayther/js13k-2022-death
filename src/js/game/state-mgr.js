@@ -8,10 +8,10 @@ class StateManager {
   init(controllerMap) {
     this.controllerMap = controllerMap;
   }
-  setGameState(gameState) {
+  setGameState(gameState, opts) {
     this.gameState = gameState;
     this.curController = this.controllerMap[gameState];
-    this.curController.init();
+    this.curController.init(opts);
   }
   gameUpdate() {
     this.curController.gameUpdate();

@@ -123,6 +123,17 @@ export const placeHousesController = {
       spawnNewHouse();
       skipsLeft -= 1;
     }
+
+    // E key
+    if (keyWasPressed(69)) {
+      const counts = grid.getCounts();
+      stateManager.setGameState(GameState.Leaderboard, {
+        timestamp: Date.now(),
+        totalMaxScore: counts.totalCount,
+        score: counts.houseTileCount,
+        roadCount: counts.roadCount,
+      });
+    }
   
     if (mouseIsDown(0)) {
       if (!mouseDown) {

@@ -212,6 +212,26 @@ export class Grid {
     }
   }
 
+  getCounts() {
+    const totalCount = this.size.x * this.size.y;
+    let houseTileCount = 0;
+    let roadCount = 0;
+
+    for (const tile of this.tiles) {
+      if (tile.type === TileType.HousePart) {
+        houseTileCount += 1;
+      } else if (tile.type === TileType.Road) {
+        roadCount += 1;
+      }
+    }
+
+    return {
+      totalCount,
+      houseTileCount,
+      roadCount,
+    };
+  }
+
   render() {
     for (let y = 0; y < this.size.y; y += 1) {
       for (let x = 0; x < this.size.x; x += 1) {
