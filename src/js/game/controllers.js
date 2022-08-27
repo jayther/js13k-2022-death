@@ -6,13 +6,14 @@ import {
   mouseWasReleased,
   mouseWasPressed,
   keyWasPressed,
-  keyIsDown,
   drawTextScreen,
   Color,
 } from '../engine/engine.all';
 import { GameState, HouseState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
 import { House } from './house';
+import { menuController } from './menu-controller';
+import { stateManager } from './state-mgr';
 
 const grid = new Grid(15, 15);
 // let origCameraPos = vec2();
@@ -26,7 +27,6 @@ let roadType;
 let skipsLeft;
 
 let house;
-let setGameState = () => { throw new Error('game state setter not set'); };
 
 function spawnNewHouse() {
   house = new House(-8, -8);
@@ -45,23 +45,12 @@ const idleController = {
   },
 };
 
-// Main Menu
-const menuController = {
-  init() {
-
-  },
-  gameUpdate() {
-
-  },
-  gameRender() {
-
-  },
-};
-
 // Place Roads
 const placeRoadsController = {
   init() {
-
+    const gridSize = grid.getWorldSize();
+    cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
+    cameraPos.y = grid.pos.y + gridSize.y / 2 - tileSize / 2;
   },
   gameUpdate() {
     // if (mouseWasReleased(0)) {
@@ -104,7 +93,7 @@ const placeRoadsController = {
       }
     }
     if (mouseWasReleased(2) && grid.allRoadsConnected) {
-      setGameState(GameState.PlaceHouses);
+      stateManager.setGameState(GameState.PlaceHouses);
     }
   },
   gameRender() {
@@ -215,15 +204,3 @@ export const controllerMap = [
   placeHousesController,
   leaderboardController,
 ];
-
-export function gameInit() {
-  setGameState(GameState.PlaceRoads);
-
-  const gridSize = grid.getWorldSize();
-  cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
-  cameraPos.y = grid.pos.y + gridSize.y / 2 - tileSize / 2;
-}
-
-export function setGameStateSetter(gameStateSetter) {
-  setGameState = gameStateSetter;
-}

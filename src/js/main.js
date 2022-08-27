@@ -1,31 +1,26 @@
 import { engineInit } from './engine/engine.all';
 
 import { GameState } from './consts';
-import { controllerMap, gameInit, setGameStateSetter } from './game/controllers';
-let gameState = GameState.Idle;
+import { controllerMap } from './game/controllers';
+import { stateManager } from './game/state-mgr';
 
-let curController;
-
-function setGameState(state) { 
-  gameState = state;
-  curController = controllerMap[gameState];
-  curController.init();
+function gameInit() {
+  stateManager.init(controllerMap);
+  stateManager.setGameState(GameState.MainMenu);
 }
 
 function gameUpdate() {
-  curController.gameUpdate();
+  stateManager.gameUpdate();
 }
 
 function gameUpdatePost() {
 }
 
 function gameRender() {
-  curController.gameRender();
+  stateManager.gameRender();
 }
 
 function gameRenderPost() {
 }
-
-setGameStateSetter(setGameState);
 
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost);
