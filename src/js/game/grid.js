@@ -32,10 +32,10 @@ export class Tile {
 
 export class Grid {
 
-  constructor() {
+  constructor(width, height) {
     this.pos = vec2();
     this.tiles = [];
-    this.size = vec2(10, 10);
+    this.size = vec2(width, height);
     const total = this.size.x * this.size.y;
     for (let i = 0; i < total; i += 1) {
       this.tiles.push(new Tile(0, i % this.size.x, Math.floor(i / this.size.y)));

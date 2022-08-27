@@ -10,7 +10,7 @@ import { GameState, HouseState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
 import { House } from './house';
 
-const grid = new Grid();
+const grid = new Grid(15, 15);
 // let origCameraPos = vec2();
 let origHousePos = vec2();
 let dragAnchor = vec2();
