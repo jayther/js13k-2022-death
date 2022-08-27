@@ -14,14 +14,14 @@ import { Grid } from './grid';
 import { House } from './house';
 import { stateManager } from './state-mgr';
 
-const grid = new Grid(15, 15);
+let grid;
 // let origCameraPos = vec2();
 let origHousePos = vec2();
 let dragAnchor = vec2();
 let dragging = false;
 let mouseDown = false;
 let rightClickDown = false;
-let roadStartCoord;
+let roadStartCoord = null;
 let roadType;
 let skipsLeft;
 
@@ -34,6 +34,11 @@ function spawnNewHouse() {
 // Place Roads
 export const placeRoadsController = {
   init() {
+    grid = new Grid(15, 15);
+    mouseDown = false;
+    dragging = false;
+    rightClickDown = false;
+    roadStartCoord = null;
     const gridSize = grid.getWorldSize();
     cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
     cameraPos.y = grid.pos.y + gridSize.y / 2 - tileSize / 2;
