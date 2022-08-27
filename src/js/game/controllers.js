@@ -5,6 +5,8 @@ import {
   mouseIsDown,
   mouseWasReleased,
   mouseWasPressed,
+  keyWasPressed,
+  keyIsDown,
 } from '../engine/engine.all';
 import { GameState, HouseState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
@@ -19,6 +21,7 @@ let mouseDown = false;
 let rightClickDown = false;
 let roadStartCoord;
 let roadType;
+let skipsLeft;
 
 let house;
 let setGameState = () => { throw new Error('game state setter not set'); };
@@ -110,6 +113,7 @@ const placeRoadsController = {
 // Place Houses
 const placeHousesController = {
   init() {
+    skipsLeft = 3;
     spawnNewHouse();
   },
   gameUpdate() {
@@ -133,6 +137,15 @@ const placeHousesController = {
       if (rightClickDown) {
         rightClickDown = false;
         house.rotate(1);
+      }
+    }
+
+    // S or down arrow key
+    if (keyWasPressed(40)) {
+      console.log('S pressed?');
+      if (skipsLeft > 0) {
+        spawnNewHouse();
+        skipsLeft -= 1;
       }
     }
   
