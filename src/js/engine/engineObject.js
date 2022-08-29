@@ -29,7 +29,7 @@
  * const pos = vec2(2,3);
  * const object = new EngineObject(pos); 
  */
-class EngineObject
+export class EngineObject
 {
     /** Create an engine object and adds it to the list of objects
      *  @param {Vector2} [position=new Vector2()]    - World space position of the object

@@ -67,31 +67,31 @@ echo.>> %OUTPUT_FILENAME%
 type engineWebGL.js >> %OUTPUT_FILENAME%
 echo.>> %OUTPUT_FILENAME%
 
-rem --- BUILD ENGINE MINIFIED ---
+@REM rem --- BUILD ENGINE MINIFIED ---
 
-set OUTPUT_FILENAME=engine.all.min.js
+@REM set OUTPUT_FILENAME=engine.all.min.js
 
-rem remove old files
-del %OUTPUT_FILENAME%
+@REM rem remove old files
+@REM del %OUTPUT_FILENAME%
 
-rem start with release build
-copy engine.all.release.js %OUTPUT_FILENAME%
+@REM rem start with release build
+@REM copy engine.all.release.js %OUTPUT_FILENAME%
 
-rem check code with closure
-move %OUTPUT_FILENAME% %OUTPUT_FILENAME%.temp
-call npx google-closure-compiler --js=%OUTPUT_FILENAME%.temp --js_output_file=%OUTPUT_FILENAME% --language_out=ECMASCRIPT_2019 --warning_level=VERBOSE --jscomp_off=*
-del %OUTPUT_FILENAME%.temp
-if %ERRORLEVEL% NEQ 0 (
-    pause
-    exit /b %ERRORLEVEL%
-)
+@REM rem check code with closure
+@REM move %OUTPUT_FILENAME% %OUTPUT_FILENAME%.temp
+@REM call npx google-closure-compiler --js=%OUTPUT_FILENAME%.temp --js_output_file=%OUTPUT_FILENAME% --language_out=ECMASCRIPT_2019 --warning_level=VERBOSE --jscomp_off=*
+@REM del %OUTPUT_FILENAME%.temp
+@REM if %ERRORLEVEL% NEQ 0 (
+@REM     pause
+@REM     exit /b %ERRORLEVEL%
+@REM )
 
-rem lightly minify with uglify
-call npx uglifyjs -o %OUTPUT_FILENAME% -- %OUTPUT_FILENAME%
-if %ERRORLEVEL% NEQ 0 (
-    pause
-    exit /b %ERRORLEVEL%
-)
+@REM rem lightly minify with uglify
+@REM call npx uglifyjs -o %OUTPUT_FILENAME% -- %OUTPUT_FILENAME%
+@REM if %ERRORLEVEL% NEQ 0 (
+@REM     pause
+@REM     exit /b %ERRORLEVEL%
+@REM )
 
 rem --- BUILD TYPESCRIPT DEFINITIONS ---
 call npx tsc engine.all.js --declaration --allowJs --emitDeclarationOnly --outFile index.d.ts

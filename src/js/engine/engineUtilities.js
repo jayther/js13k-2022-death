@@ -12,40 +12,40 @@
 /** A shortcut to get Math.PI
  *  @const
  *  @memberof Utilities */
-const PI = Math.PI;
+export const PI = Math.PI;
 
 /** Returns absoulte value of value passed in
  *  @param {Number} value
  *  @return {Number}
  *  @memberof Utilities */
-const abs = (a)=> a < 0 ? -a : a;
+export const abs = (a)=> a < 0 ? -a : a;
 
 /** Returns lowest of two values passed in
  *  @param {Number} valueA
  *  @param {Number} valueB
  *  @return {Number}
  *  @memberof Utilities */
-const min = (a, b)=> a < b ?  a : b;
+export const min = (a, b)=> a < b ?  a : b;
 
 /** Returns highest of two values passed in
  *  @param {Number} valueA
  *  @param {Number} valueB
  *  @return {Number}
  *  @memberof Utilities */
-const max = (a, b)=> a > b ?  a : b;
+export const max = (a, b)=> a > b ?  a : b;
 
 /** Returns the sign of value passed in (also returns 1 if 0)
  *  @param {Number} value
  *  @return {Number}
  *  @memberof Utilities */
-const sign = (a)=> a < 0 ? -1 : 1;
+export const sign = (a)=> a < 0 ? -1 : 1;
 
 /** Returns first parm modulo the second param, but adjusted so negative numbers work as expected
  *  @param {Number} dividend
  *  @param {Number} [divisor=1]
  *  @return {Number}
  *  @memberof Utilities */
-const mod = (a, b=1)=> ((a % b) + b) % b;
+export const mod = (a, b=1)=> ((a % b) + b) % b;
 
 /** Clamps the value beween max and min
  *  @param {Number} value
@@ -53,7 +53,7 @@ const mod = (a, b=1)=> ((a % b) + b) % b;
  *  @param {Number} [max=1]
  *  @return {Number}
  *  @memberof Utilities */
-const clamp = (v, min=0, max=1)=> v < min ? min : v > max ? max : v;
+export const clamp = (v, min=0, max=1)=> v < min ? min : v > max ? max : v;
 
 /** Returns what percentage the value is between max and min
  *  @param {Number} value
@@ -61,7 +61,7 @@ const clamp = (v, min=0, max=1)=> v < min ? min : v > max ? max : v;
  *  @param {Number} [max=1]
  *  @return {Number}
  *  @memberof Utilities */
-const percent = (v, min=0, max=1)=> max-min ? clamp((v-min) / (max-min)) : 0;
+export const percent = (v, min=0, max=1)=> max-min ? clamp((v-min) / (max-min)) : 0;
 
 /** Linearly interpolates the percent value between max and min
  *  @param {Number} percent
@@ -69,19 +69,19 @@ const percent = (v, min=0, max=1)=> max-min ? clamp((v-min) / (max-min)) : 0;
  *  @param {Number} [max=1]
  *  @return {Number}
  *  @memberof Utilities */
-const lerp = (p, min=0, max=1)=> min + clamp(p) * (max-min);
+export const lerp = (p, min=0, max=1)=> min + clamp(p) * (max-min);
 
 /** Applies smoothstep function to the percentage value
  *  @param {Number} value
  *  @return {Number}
  *  @memberof Utilities */
-const smoothStep = (p)=> p * p * (3 - 2 * p);
+export const smoothStep = (p)=> p * p * (3 - 2 * p);
 
 /** Returns the nearest power of two not less then the value
  *  @param {Number} value
  *  @return {Number}
  *  @memberof Utilities */
-const nearestPowerOfTwo = (v)=> 2**Math.ceil(Math.log2(v));
+export const nearestPowerOfTwo = (v)=> 2**Math.ceil(Math.log2(v));
 
 /** Returns true if two axis aligned bounding boxes are overlapping 
  *  @param {Vector2} pointA  - Center of box A
@@ -90,7 +90,7 @@ const nearestPowerOfTwo = (v)=> 2**Math.ceil(Math.log2(v));
  *  @param {Vector2} [sizeB] - Size of box B
  *  @return {Boolean}        - True if overlapping
  *  @memberof Utilities */
-const isOverlapping = (pA, sA, pB, sB)=> abs(pA.x - pB.x)*2 < sA.x + sB.x & abs(pA.y - pB.y)*2 < sA.y + sB.y;
+export const isOverlapping = (pA, sA, pB, sB)=> abs(pA.x - pB.x)*2 < sA.x + sB.x & abs(pA.y - pB.y)*2 < sA.y + sB.y;
 
 /** Returns an oscillating wave between 0 and amplitude with frequency of 1 Hz by default
  *  @param {Number} [frequency=1] - Frequency of the wave in Hz
@@ -98,13 +98,13 @@ const isOverlapping = (pA, sA, pB, sB)=> abs(pA.x - pB.x)*2 < sA.x + sB.x & abs(
  *  @param {Number} [t=time]      - Value to use for time of the wave
  *  @return {Number}              - Value waving between 0 and amplitude
  *  @memberof Utilities */
-const wave = (frequency=1, amplitude=1, t=time)=> amplitude/2 * (1 - Math.cos(t*frequency*2*PI));
+export const wave = (frequency=1, amplitude=1, t=time)=> amplitude/2 * (1 - Math.cos(t*frequency*2*PI));
 
 /** Formats seconds to mm:ss style for display purposes 
  *  @param {Number} t - time in seconds
  *  @return {String}
  *  @memberof Utilities */
-const formatTime = (t)=> (t/60|0)+':'+(t%60<10?'0':'')+(t%60|0);
+export const formatTime = (t)=> (t/60|0)+':'+(t%60<10?'0':'')+(t%60|0);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -116,32 +116,32 @@ const formatTime = (t)=> (t/60|0)+':'+(t%60<10?'0':'')+(t%60|0);
  *  @param {Number} [valueB=0]
  *  @return {Number}
  *  @memberof Random */
-const rand = (a=1, b=0)=> b + (a-b)*Math.random();
+export const rand = (a=1, b=0)=> b + (a-b)*Math.random();
 
 /** Returns a floored random value the two values passed in
  *  @param {Number} [valueA=1]
  *  @param {Number} [valueB=0]
  *  @return {Number}
  *  @memberof Random */
-const randInt = (a=1, b=0)=> rand(a,b)|0;
+export const randInt = (a=1, b=0)=> rand(a,b)|0;
 
 /** Randomly returns either -1 or 1
  *  @return {Number}
  *  @memberof Random */
-const randSign = ()=> (rand(2)|0) * 2 - 1;
+export const randSign = ()=> (rand(2)|0) * 2 - 1;
 
 /** Returns a random Vector2 within a circular shape
  *  @param {Number} [radius=1]
  *  @param {Number} [minRadius=0]
  *  @return {Vector2}
  *  @memberof Random */
-const randInCircle = (radius=1, minRadius=0)=> radius > 0 ? randVector(radius * rand(minRadius / radius, 1)**.5) : new Vector2;
+export const randInCircle = (radius=1, minRadius=0)=> radius > 0 ? randVector(radius * rand(minRadius / radius, 1)**.5) : new Vector2;
 
 /** Returns a random Vector2 with the passed in length
  *  @param {Number} [length=1]
  *  @return {Vector2}
  *  @memberof Random */
-const randVector = (length=1)=> new Vector2().setAngle(rand(2*PI), length);
+export const randVector = (length=1)=> new Vector2().setAngle(rand(2*PI), length);
 
 /** Returns a random color between the two passed in colors, combine components if linear
  *  @param {Color}   [colorA=new Color(1,1,1,1)]
@@ -149,19 +149,19 @@ const randVector = (length=1)=> new Vector2().setAngle(rand(2*PI), length);
  *  @param {Boolean} [linear]
  *  @return {Color}
  *  @memberof Random */
-const randColor = (cA = new Color, cB = new Color(0,0,0,1), linear)=>
+export const randColor = (cA = new Color, cB = new Color(0,0,0,1), linear)=>
     linear ? cA.lerp(cB, rand()) : new Color(rand(cA.r,cB.r),rand(cA.g,cB.g),rand(cA.b,cB.b),rand(cA.a,cB.a));
 
 /** The seed used by the randSeeded function, should not be 0
  *  @memberof Random */
-let randSeed = 1;
+export let randSeed = 1;
 
 /** Returns a seeded random value between the two values passed in using randSeed
  *  @param {Number} [valueA=1]
  *  @param {Number} [valueB=0]
  *  @return {Number}
  *  @memberof Random */
-const randSeeded = (a=1, b=0)=>
+export const randSeeded = (a=1, b=0)=>
 {
     randSeed ^= randSeed << 13; randSeed ^= randSeed >>> 17; randSeed ^= randSeed << 5; // xorshift
     return b + (a-b) * abs(randSeed % 1e9) / 1e9;
@@ -181,7 +181,7 @@ const randSeeded = (a=1, b=0)=>
  * b = vec2();         // set b to (0, 0)
  * @memberof Utilities
  */
-const vec2 = (x=0, y)=> x.x == undefined ? new Vector2(x, y == undefined? x : y) : new Vector2(x.x, x.y);
+export const vec2 = (x=0, y)=> x.x == undefined ? new Vector2(x, y == undefined? x : y) : new Vector2(x.x, x.y);
 
 /** 
  * 2D Vector object with vector math library
@@ -192,7 +192,7 @@ const vec2 = (x=0, y)=> x.x == undefined ? new Vector2(x, y == undefined? x : y)
  * let c = vec2(4, 2);        // use the vec2 function to make a Vector2
  * let d = a.add(b).scale(5); // operators can be chained
  */
-class Vector2
+export class Vector2
 {
     /** Create a 2D vector with the x and y passed in, can also be created with vec2()
      *  @param {Number} [x=0] - X axis location
@@ -329,7 +329,7 @@ class Vector2
  * let b = new Color(1, 0, 0);    // red
  * let c = new Color(0, 0, 0, 0); // transparent black
  */
-class Color
+export class Color
 {
     /** Create a color with the components passed in, white by default
      *  @param {Number} [red=1]
@@ -502,7 +502,7 @@ class Color
  * let b = new Timer(1); // creates a timer with 1 second left
  * b.unset();            // unsets the timer
  */
-class Timer
+export class Timer
 {
     /** Create a timer object set time passed in
      *  @param {Number} [timeLeft] - How much time left before the timer elapses in seconds */

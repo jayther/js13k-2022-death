@@ -14,17 +14,17 @@
 
 /** The tile collision layer array, use setTileCollisionData and getTileCollisionData to access
  *  @memberof TileCollision */
-let tileCollision = [];
+export let tileCollision = [];
 
 /** Size of the tile collision layer
  *  @type {Vector2} 
  *  @memberof TileCollision */
-let tileCollisionSize = vec2();
+export let tileCollisionSize = vec2();
 
 /** Clear and initialize tile collision
  *  @param {Vector2} size
  *  @memberof TileCollision */
-function initTileCollision(size)
+export function initTileCollision(size)
 {
     tileCollisionSize = size;
     tileCollision = [];
@@ -36,14 +36,14 @@ function initTileCollision(size)
  *  @param {Vector2} pos
  *  @param {Number}  [data=0]
  *  @memberof TileCollision */
-const setTileCollisionData = (pos, data=0)=>
+export const setTileCollisionData = (pos, data=0)=>
     pos.arrayCheck(tileCollisionSize) && (tileCollision[(pos.y|0)*tileCollisionSize.x+pos.x|0] = data);
 
 /** Get tile collision data
  *  @param {Vector2} pos
  *  @return {Number}
  *  @memberof TileCollision */
-const getTileCollisionData = (pos)=>
+export const getTileCollisionData = (pos)=>
     pos.arrayCheck(tileCollisionSize) ? tileCollision[(pos.y|0)*tileCollisionSize.x+pos.x|0] : 0;
 
 /** Check if collision with another object should occur
@@ -52,7 +52,7 @@ const getTileCollisionData = (pos)=>
  *  @param {EngineObject} [object]
  *  @return {Boolean}
  *  @memberof TileCollision */
-function tileCollisionTest(pos, size=vec2(), object)
+export function tileCollisionTest(pos, size=vec2(), object)
 {
     const minX = max(pos.x - size.x/2|0, 0);
     const minY = max(pos.y - size.y/2|0, 0);
@@ -73,7 +73,7 @@ function tileCollisionTest(pos, size=vec2(), object)
  *  @param {EngineObject} [object]
  *  @return {Vector2}
  *  @memberof TileCollision */
-function tileCollisionRaycast(posStart, posEnd, object)
+export function tileCollisionRaycast(posStart, posEnd, object)
 {
     // test if a ray collides with tiles from start to end
     // todo: a way to get the exact hit point, it must still register as inside the hit tile
@@ -116,7 +116,7 @@ function tileCollisionRaycast(posStart, posEnd, object)
  * const color = randColor();
  * const data = new TileLayerData(tileIndex, direction, mirror, color);
  */
-class TileLayerData
+export class TileLayerData
 {
     /** Create a tile layer data object, one for each tile in a TileLayer
      *  @param {Number}  [tile]                   - The tile to use, untextured if undefined
@@ -151,7 +151,7 @@ class TileLayerData
  * initTileCollision(vec2(200,100));
  * const tileLayer = new TileLayer();
  */
-class TileLayer extends EngineObject
+export class TileLayer extends EngineObject
 {
 /** Create a tile layer object
     *  @param {Vector2} [position=new Vector2()]   - World space position
@@ -160,7 +160,7 @@ class TileLayer extends EngineObject
     *  @param {Vector2} [scale=new Vector2(1,1)]   - How much to scale this layer when rendered
     *  @param {Number}  [renderOrder=0]            - Objects sorted by renderOrder before being rendered
     */
-constructor(pos, size=tileCollisionSize, tileSize=tileSizeDefault, scale=vec2(1), renderOrder=0)
+    constructor(pos, size=tileCollisionSize, tileSize=tileSizeDefault, scale=vec2(1), renderOrder=0)
     {
         super(pos, size, -1, tileSize, 0, undefined, renderOrder);
 

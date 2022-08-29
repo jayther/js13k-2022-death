@@ -19,47 +19,47 @@
 'use strict';
 
 /** Name of engine */
-const engineName = 'LittleJS';
+export const engineName = 'LittleJS';
 
 /** Version of engine */
-const engineVersion = '1.3.8';
+export const engineVersion = '1.3.8';
 
 /** Frames per second to update objects
  *  @default */
-const frameRate = 60;
+export const frameRate = 60;
 
 /** How many seconds each frame lasts, engine uses a fixed time step
  *  @default 1/60 */
-const timeDelta = 1/frameRate;
+export const timeDelta = 1/frameRate;
 
 /** Array containing all engine objects */
-let engineObjects = [];
+export let engineObjects = [];
 
 /** Array containing only objects that are set to collide with other objects this frame (for optimization) */
-let engineObjectsCollide = [];
+export let engineObjectsCollide = [];
 
 /** Current update frame, used to calculate time */
-let frame = 0;
+export let frame = 0;
 
 /** Current engine time since start in seconds, derived from frame */
-let time = 0;
+export let time = 0;
 
 /** Actual clock time since start in seconds (not affected by pause or frame rate clamping) */
-let timeReal = 0;
+export let timeReal = 0;
 
 /** Is the game paused? Causes time and objects to not be updated. */
-let paused = 0;
+export let paused = 0;
 
 // Engine internal variables not exposed to documentation
-let frameTimeLastMS = 0, frameTimeBufferMS = 0, tileImageSize, tileImageFixBleed;
+export let frameTimeLastMS = 0, frameTimeBufferMS = 0, tileImageSize, tileImageFixBleed;
 
 // Engine stat tracking, if showWatermark is true
-let averageFPS, drawCount;
+export let averageFPS, drawCount;
 
 // css text used for elements created by engine
-const styleBody = 'margin:0;overflow:hidden;background:#000' +
+export const styleBody = 'margin:0;overflow:hidden;background:#000' +
     ';touch-action:none;user-select:none;-webkit-user-select:none;-moz-user-select:none';
-const styleCanvas = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)';
+export const styleCanvas = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)';
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -71,7 +71,7 @@ const styleCanvas = 'position:absolute;top:50%;left:50%;transform:translate(-50%
  *  @param {Function} gameRenderPost  - Called after objects are rendered, draw effects or hud that appear above all objects
  *  @param {String} [tileImageSource] - Tile image to use, everything starts when the image is finished loading
  */
-function engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, tileImageSource)
+export function engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, tileImageSource)
 {
     // init engine when tiles load or fail to load
     tileImage.onerror = tileImage.onload = ()=>
@@ -213,7 +213,7 @@ function engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRender
 }
 
 // called by engine to setup render system
-function enginePreRender()
+export function enginePreRender()
 {
     // save canvas size
     mainCanvasSize = vec2(mainCanvas.width, mainCanvas.height);
@@ -228,7 +228,7 @@ function enginePreRender()
 ///////////////////////////////////////////////////////////////////////////////
 
 /** Calls update on each engine object (recursively if child), removes destroyed objects, and updated time */
-function engineObjectsUpdate()
+export function engineObjectsUpdate()
 {
     // get list of solid objects for physics optimzation
     engineObjectsCollide = engineObjects.filter(o=>o.collideSolidObjects);
@@ -254,7 +254,7 @@ function engineObjectsUpdate()
 }
 
 /** Destroy and remove all objects */
-function engineObjectsDestroy()
+export function engineObjectsDestroy()
 {
     for (const o of engineObjects)
         o.parent || o.destroy();
@@ -266,7 +266,7 @@ function engineObjectsDestroy()
  *  @param {Number} [size]                 - Radius of circle if float, rectangle size if Vector2
  *  @param {Function} [callbackFunction]   - Calls this function on every object that passes the test
  *  @param {Array} [objects=engineObjects] - List of objects to check */
-function engineObjectsCallback(pos, size, callbackFunction, objects=engineObjects)
+export function engineObjectsCallback(pos, size, callbackFunction, objects=engineObjects)
 {
     if (!pos) // all objects
     {

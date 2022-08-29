@@ -24,7 +24,7 @@
  *     .5, 1                // randomness, collide, additive, randomColorLinear, renderOrder
  * );
  */
-class ParticleEmitter extends EngineObject
+export class ParticleEmitter extends EngineObject
 {
     /** Create a particle system with the given settings
      *  @param {Vector2} position           - World space position of the emitter
@@ -229,7 +229,7 @@ class ParticleEmitter extends EngineObject
  * Particle Object - Created automatically by Particle Emitters
  * @extends EngineObject
  */
-class Particle extends EngineObject
+export class Particle extends EngineObject
 {
     /**
      * Create a particle with the given settings

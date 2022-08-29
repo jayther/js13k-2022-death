@@ -14,25 +14,25 @@
 /** The WebGL canvas which appears above the main canvas and below the overlay canvas
  *  @type {HTMLCanvasElement}
  *  @memberof WebGL */
-let glCanvas;
+export let glCanvas;
 
 /** 2d context for glCanvas 
  *  @type {WebGLRenderingContext}
  *  @memberof WebGL */
-let glContext;
+export let glContext;
 
 /** Main tile sheet texture automatically loaded by engine
  *  @type {WebGLTexture}
  *  @memberof WebGL */
-let glTileTexture;
+export let glTileTexture;
 
 // WebGL internal variables not exposed to documentation
-let glActiveTexture, glShader, glPositionData, glColorData, glBatchCount, glBatchAdditive, glAdditive;
+export let glActiveTexture, glShader, glPositionData, glColorData, glBatchCount, glBatchAdditive, glAdditive;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // Init WebGL, called automatically by the engine
-function glInit()
+export function glInit()
 {
     if (!glEnable) return;
 
@@ -91,7 +91,7 @@ function glInit()
 /** Set the WebGl blend mode, normally you should call setBlendMode instead
  *  @param {Boolean} [additive=0]
  *  @memberof WebGL */
-function glSetBlendMode(additive)
+export function glSetBlendMode(additive)
 {
     if (!glEnable) return;
         
@@ -103,7 +103,7 @@ function glSetBlendMode(additive)
  *  <br> - This may also flush the gl buffer resulting in more draw calls and worse performance
  *  @param {WebGLTexture} [texture=glTileTexture]
  *  @memberof WebGL */
-function glSetTexture(texture=glTileTexture)
+export function glSetTexture(texture=glTileTexture)
 {
     if (!glEnable) return;
     
@@ -119,7 +119,7 @@ function glSetTexture(texture=glTileTexture)
  *  @param          type
  *  @return {WebGLShader}
  *  @memberof WebGL */
-function glCompileShader(source, type)
+export function glCompileShader(source, type)
 {
     if (!glEnable) return;
 
@@ -139,7 +139,7 @@ function glCompileShader(source, type)
  *  @param {WebGLShader} fsSource
  *  @return {WebGLProgram}
  *  @memberof WebGL */
-function glCreateProgram(vsSource, fsSource)
+export function glCreateProgram(vsSource, fsSource)
 {
     if (!glEnable) return;
 
@@ -161,7 +161,7 @@ function glCreateProgram(vsSource, fsSource)
  *  @param usage
  *  @return {WebGLBuffer}
  *  @memberof WebGL */
-function glCreateBuffer(bufferType, size, usage)
+export function glCreateBuffer(bufferType, size, usage)
 {
     if (!glEnable) return;
 
@@ -176,7 +176,7 @@ function glCreateBuffer(bufferType, size, usage)
  *  @param {Image} image
  *  @return {WebGLTexture}
  *  @memberof WebGL */
-function glCreateTexture(image)
+export function glCreateTexture(image)
 {
     if (!glEnable || !image || !image.width) return;
 
@@ -194,7 +194,7 @@ function glCreateTexture(image)
 }
 
 // called automatically by engine before render
-function glPreRender(width, height, cameraX, cameraY, cameraScale)
+export function glPreRender(width, height, cameraX, cameraY, cameraScale)
 {
     if (!glEnable) return;
 
@@ -222,7 +222,7 @@ function glPreRender(width, height, cameraX, cameraY, cameraScale)
 
 /** Draw all sprites and clear out the buffer, called automatically by the system whenever necessary
  *  @memberof WebGL */
-function glFlush()
+export function glFlush()
 {
     if (!glEnable || !glBatchCount) return;
 
@@ -242,7 +242,7 @@ function glFlush()
  *  @param {CanvasRenderingContext2D} context
  *  @param {Boolean} [forceDraw=0]
  *  @memberof WebGL */
-function glCopyToContext(context, forceDraw)
+export function glCopyToContext(context, forceDraw)
 {
     if ((!glEnable || !glBatchCount) && !forceDraw) return;
     
@@ -266,7 +266,7 @@ function glCopyToContext(context, forceDraw)
  *  @param [rgba=0xffffffff]
  *  @param [rgbaAdditive=0]
  *  @memberof WebGL */
-function glDraw(x, y, sizeX, sizeY, angle, uv0X, uv0Y, uv1X, uv1Y, rgba=0xffffffff, rgbaAdditive=0)
+export function glDraw(x, y, sizeX, sizeY, angle, uv0X, uv0Y, uv1X, uv1Y, rgba=0xffffffff, rgbaAdditive=0)
 {
     if (!glEnable) return;
 
@@ -320,7 +320,7 @@ function glDraw(x, y, sizeX, sizeY, angle, uv0X, uv0Y, uv1X, uv1Y, rgba=0xffffff
 
 ///////////////////////////////////////////////////////////////////////////////
 // store gl constants as integers so their name doesn't use space in minifed
-const 
+export const 
 gl_ONE = 1,
 gl_TRIANGLES = 4,
 gl_SRC_ALPHA = 770,
