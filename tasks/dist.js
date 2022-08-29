@@ -3,11 +3,16 @@ const buildTasks    = require('./build.js');
 const cssTasks      = require('./css.js');
 const templateTasks = require('./template.js');
 const zipTasks      = require('./zip.js');
-
 const fullDistTasks = [
-  buildTasks.build,
+  gulp.parallel(
+    buildTasks.build,
+    buildTasks.buildRelease,
+  ),
   cssTasks.css,
-  templateTasks.template,
+  gulp.parallel(
+    templateTasks.template,
+    templateTasks.templateRelease,
+  ),
   zipTasks.zip,
   zipTasks.report
 ];

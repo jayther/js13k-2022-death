@@ -13,6 +13,10 @@ function getJS() {
   return readFile('./dist/main.min.js');
 }
 
+function getReleaseJS() {
+  return readFile('./dist/main.release.min.js');
+}
+
 function getCSS() {
   return readFile('./dist/main.css');
 }
@@ -39,10 +43,25 @@ function readFile( fname ) {
   });
 }
 
-function template(done) {
+function template() {
   let ctx = {};
 
   return getJS()
+  .then( js => ctx.js = js )
+  .then( () => getCSS() )
+  .then( css => ctx.css = css )
+  .then( () => readFile( './src/index.hbs') )
+  .then( str => {
+    // development index.html
+    let result = handlebars.compile( str )();
+    return writeFile( './dist/index.html', result )
+  });
+};
+
+function templateRelease() {
+  let ctx = {};
+
+  return getReleaseJS()
   .then( js => ctx.js = js )
   .then( () => getCSS() )
   .then( css => ctx.css = css )
@@ -52,18 +71,14 @@ function template(done) {
     let inlineResult = handlebars.compile( str )
       ({ js: ctx.js, css: ctx.css });
 
-    Promise.all([
-      writeFile( './dist/index.min.html', inlineResult )      
-        .then( () => {
-          // development index file
-          let result = handlebars.compile( str )();
-          return writeFile( './dist/index.html', result )
-        }),
-      fs.ensureDir('./docs')
-        .then(() => writeFile('./docs/index.html', inlineResult)),
-    ]).then(done);
+    return writeFile('./dist/index.min.html', inlineResult);
   })
-  done();
-};
+  .then(() => fs.ensureDir('./docs')) // ensure docs folder
+  .then(() => {
+    // copy for github page
+    return fs.copyFile('./dist/index.min.html', './docs/index.html')
+  });
+}
 
 exports.template = template;
+exports.templateRelease = templateRelease;
