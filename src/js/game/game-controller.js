@@ -20,7 +20,6 @@ let grid;
 let origHousePos = vec2();
 let dragAnchor = vec2();
 let dragging = false;
-let rightClickDown = false;
 let roadStartCoord = null;
 let roadType;
 let skipsLeft;
@@ -60,8 +59,18 @@ roadsBtnMgr.addBtn(roadsDoneButton);
 
 const housesBtnMgr = new ButtonManager();
 
-const skipButton = new Button(
+const rotateButton = new Button(
   vec2(0, -5), vec2(5, 3),
+  'Rotate', 1.2, new Color(1, 1, 1), new Color(0, 0, 0),
+  () => {
+    house.rotate(1);
+  },
+  false,
+);
+housesBtnMgr.addBtn(rotateButton);
+
+const skipButton = new Button(
+  rotateButton.pos.add(vec2(0, -4)), vec2(5, 3),
   'Skip', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
   () => {
     if (skipsLeft > 0) {
@@ -78,7 +87,7 @@ const skipButton = new Button(
 housesBtnMgr.addBtn(skipButton);
 
 const housesDoneButton = new Button(
-  vec2(0, -9), vec2(5, 3),
+  skipButton.pos.add(vec2(0, -4)), vec2(5, 3),
   'End', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
   () => {
     const counts = grid.getCounts();
@@ -100,7 +109,7 @@ const droppableBounds = {
 
 const undroppableBounds = {
   lower: housesDoneButton.pos.subtract(housesDoneButton.size.divide(vec2(2))).add(vec2(tileSize / 2)),
-  upper: skipButton.pos.add(skipButton.size.divide(vec2(2))).add(vec2(tileSize / 2)),
+  upper: rotateButton.pos.add(rotateButton.size.divide(vec2(2))).add(vec2(tileSize / 2)),
 };
 
 function spawnNewHouse() {
@@ -112,7 +121,6 @@ export const placeRoadsController = {
   init() {
     grid = new Grid(15, 15);
     dragging = false;
-    rightClickDown = false;
     roadStartCoord = null;
     const gridSize = grid.getWorldSize();
     cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
@@ -213,13 +221,8 @@ export const placeHousesController = {
     //   }
     // }
   
-    if (mouseIsDown(2)) {
-      rightClickDown = true;
-    } else {
-      if (rightClickDown) {
-        rightClickDown = false;
-        house.rotate(1);
-      }
+    if (mouseWasReleased(2)) {
+      house.rotate(1);
     }
 
     if (mouseWasPressed(0)) {
@@ -285,6 +288,13 @@ export const placeHousesController = {
     grid.render();
     house.render();
 
+    drawText(
+      'right-click\nworks too',
+      rotateButton.pos.add(vec2(3, 0.5)), 1,
+      new Color(1, 1, 1),
+      undefined, undefined,
+      'left',
+    )
     drawText(
       `Skips left: ${skipsLeft}`,
       skipButton.pos.add(vec2(3, 0)), 1.5,
