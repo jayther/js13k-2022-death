@@ -72,8 +72,8 @@ function createRandomTiles(maxExtent) {
 }
 
 export class House {
-  constructor(x, y) {
-    this.pos = vec2(x, y);
+  constructor(pos) {
+    this.pos = pos;
     this.tiles = createRandomTiles(2);
 
     this.state = HouseState.Placing;

@@ -5,73 +5,147 @@ import {
   mouseIsDown,
   mouseWasReleased,
   mouseWasPressed,
-  keyWasPressed,
-  drawTextScreen,
   Color,
+  drawText,
 } from '../engine/engine.all';
 import { GameState, HouseState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
 import { House } from './house';
 import { stateManager } from './state-mgr';
+import { Button } from './button';
+import { ButtonManager } from './btn-mgr';
 
 let grid;
 // let origCameraPos = vec2();
 let origHousePos = vec2();
 let dragAnchor = vec2();
 let dragging = false;
-let mouseDown = false;
 let rightClickDown = false;
 let roadStartCoord = null;
 let roadType;
 let skipsLeft;
+let spawnPos = vec2();
 
 let house;
 
+const topTextPos = vec2();
+const bottomTextPos = vec2();
+
+const placeRoadsText =
+`Make roads by clicking and dragging lines
+on the grid. Delete by clicking and dragging
+on existing roads`;
+
+const requiredRoadsText =
+`All roads must connect to an edge of the grid`;
+
+// roads state buttons
+
+const roadsBtnMgr = new ButtonManager();
+
+const roadsDoneButton = new Button(
+  vec2(0, -4), vec2(5, 3),
+  'Done', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
+  () => {
+    if (grid.allRoadsConnected) {
+      stateManager.setGameState(GameState.PlaceHouses);
+    }
+  },
+  false,
+);
+
+roadsBtnMgr.addBtn(roadsDoneButton);
+
+// house state buttons
+
+const housesBtnMgr = new ButtonManager();
+
+const skipButton = new Button(
+  vec2(0, -5), vec2(5, 3),
+  'Skip', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
+  () => {
+    if (skipsLeft > 0) {
+      skipsLeft -= 1;
+      spawnNewHouse();
+    }
+    if (skipsLeft <= 0) {
+      skipButton.enabled = false;
+      housesDoneButton.enabled = true;
+    }
+  },
+  false,
+);
+housesBtnMgr.addBtn(skipButton);
+
+const housesDoneButton = new Button(
+  vec2(0, -9), vec2(5, 3),
+  'End', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
+  () => {
+    const counts = grid.getCounts();
+    stateManager.setGameState(GameState.Leaderboard, {
+      timestamp: Date.now(),
+      totalMaxScore: counts.totalCount,
+      score: counts.houseTileCount,
+      roadCount: counts.roadCount,
+    });
+  },
+  false,
+);
+housesBtnMgr.addBtn(housesDoneButton);
+
+const droppableBounds = {
+  lower: vec2(),
+  upper: vec2(),
+};
+
+const undroppableBounds = {
+  lower: housesDoneButton.pos.subtract(housesDoneButton.size.divide(vec2(2))).add(vec2(tileSize / 2)),
+  upper: skipButton.pos.add(skipButton.size.divide(vec2(2))).add(vec2(tileSize / 2)),
+};
+
 function spawnNewHouse() {
-  house = new House(-8, -8);
+  house = new House(spawnPos.copy());
 }
 
 // Place Roads
 export const placeRoadsController = {
   init() {
     grid = new Grid(15, 15);
-    mouseDown = false;
     dragging = false;
     rightClickDown = false;
     roadStartCoord = null;
     const gridSize = grid.getWorldSize();
     cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
     cameraPos.y = grid.pos.y + gridSize.y / 2 - tileSize / 2;
+    roadsDoneButton.pos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
+    roadsDoneButton.enabled = false;
+
+    topTextPos.x = roadsDoneButton.pos.x;
+    topTextPos.y = grid.pos.y + gridSize.y - tileSize / 2 + 5;
+    bottomTextPos.x = roadsDoneButton.pos.x;
+    bottomTextPos.y = roadsDoneButton.pos.y - 4;
   },
   gameUpdate() {
-    // if (mouseWasReleased(0)) {
-    //   const tile = grid.getTileFromMousePos();
-    //   if (tile) {
-    //     tile.type = tile.type === TileType.Road ? TileType.None : TileType.Road;
-    //   }
-    // }
     if (mouseWasPressed(0)) {
-      roadStartCoord = grid.getCoordsFromMousePos();
-      if (roadStartCoord) {
-        grid.createSnapshot();
-        const tile = grid.getTileFromMousePos();
-        // this should always return a tile since roadStartCoord should only
-        // be non-null if it's clicked inside the grid
-        if (tile.type === TileType.Road || tile.type === TileType.DCRoad) {
-          roadType = TileType.EphDelete;
-        } else {
-          roadType = TileType.EphRoad;
+      const buttonPressed = roadsBtnMgr.pressed();
+      if (!buttonPressed) {
+        roadStartCoord = grid.getCoordsFromMousePos();
+        if (roadStartCoord) {
+          grid.createSnapshot();
+          const tile = grid.getTileFromMousePos();
+          // this should always return a tile since roadStartCoord should only
+          // be non-null if it's clicked inside the grid
+          if (tile.type === TileType.Road || tile.type === TileType.DCRoad) {
+            roadType = TileType.EphDelete;
+          } else {
+            roadType = TileType.EphRoad;
+          }
         }
       }
     }
-    if (mouseIsDown(0)) {
-      if (roadStartCoord) {
-        grid.resetToSnapshot();
-        const roadEndCoord = grid.getCoordsFromMousePos(true);
-        grid.setTileLine(roadStartCoord, roadEndCoord, roadType);
-      }
-    }
     if (mouseWasReleased(0)) {
+      roadsBtnMgr.released();
+
       if (roadStartCoord) {
         grid.resetToSnapshot();
         const roadEndCoord = grid.getCoordsFromMousePos(true);
@@ -81,22 +155,47 @@ export const placeRoadsController = {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.None);
         }
         grid.checkRoadConnection();
+        roadsDoneButton.enabled = grid.allRoadsConnected;
       }
+
+      roadStartCoord = null;
     }
-    if (mouseWasReleased(2) && grid.allRoadsConnected) {
-      stateManager.setGameState(GameState.PlaceHouses);
+
+    if (mouseIsDown(0) && roadStartCoord) {
+      grid.resetToSnapshot();
+      const roadEndCoord = grid.getCoordsFromMousePos(true);
+      grid.setTileLine(roadStartCoord, roadEndCoord, roadType);
     }
+    // if (mouseWasReleased(2) && grid.allRoadsConnected) {
+    //   stateManager.setGameState(GameState.PlaceHouses);
+    // }
   },
   gameRender() {
     grid.render();
-    drawTextScreen(`Place roads`, vec2(15, 15), 20, new Color(1, 1, 1), undefined, undefined, 'left');
+    drawText(placeRoadsText, topTextPos, 1.5, new Color(1, 1, 1), undefined, undefined, 'center');
+    if (!grid.allRoadsConnected) {
+      drawText(requiredRoadsText, bottomTextPos, 1.5, new Color(1, 1, 1), undefined, undefined, 'center');
+    }
+    roadsBtnMgr.render();
   },
 };
 
 // Place Houses
 export const placeHousesController = {
   init() {
+    const gridSize = grid.getWorldSize();
+    spawnPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
+    spawnPos.y = -8;
     skipsLeft = 3;
+    skipButton.enabled = true;
+    housesDoneButton.enabled = false;
+
+    const gridBounds = grid.getWorldBounds();
+    const growAmount = 4 * tileSize;
+
+    droppableBounds.lower = gridBounds[0].subtract(vec2(growAmount));
+    droppableBounds.upper = gridBounds[1].add(vec2(growAmount)); // house pos is bottom left
+    
     spawnNewHouse();
   },
   gameUpdate() {
@@ -123,67 +222,76 @@ export const placeHousesController = {
       }
     }
 
-    // S or down arrow key
-    if (keyWasPressed(40) && skipsLeft > 0) {
-      spawnNewHouse();
-      skipsLeft -= 1;
+    if (mouseWasPressed(0)) {
+      const buttonPressed = housesBtnMgr.pressed();
+      if (!buttonPressed && house.isClicked()) {
+        house.state = HouseState.Placing;
+        origHousePos = house.pos.copy();
+        dragAnchor = mousePos.copy();
+        dragging = true;
+      }
     }
 
-    // E key
-    if (keyWasPressed(69)) {
-      const counts = grid.getCounts();
-      stateManager.setGameState(GameState.Leaderboard, {
-        timestamp: Date.now(),
-        totalMaxScore: counts.totalCount,
-        score: counts.houseTileCount,
-        roadCount: counts.roadCount,
-      });
+    if (mouseWasReleased(0)) {
+      housesBtnMgr.released();
+      if (dragging) {
+        house.pos.x = Math.floor((house.pos.x + tileSize / 2) / tileSize) * tileSize;
+        house.pos.y = Math.floor((house.pos.y + tileSize / 2) / tileSize) * tileSize;
+
+        const bounds = house.getWorldBounds();
+        const midpoint = vec2(
+          (bounds[0].x + bounds[1].x) / 2,
+          (bounds[0].y + bounds[1].y) / 2,
+        );
+        if (
+          midpoint.x >= undroppableBounds.lower.x &&
+          midpoint.x <= undroppableBounds.upper.x &&
+          midpoint.y >= undroppableBounds.lower.y &&
+          midpoint.y <= undroppableBounds.upper.y
+        ) {
+          house.pos.x = origHousePos.x;
+          house.pos.y = origHousePos.y;
+        }
+
+        if (grid.houseCanFit(house) && grid.houseIsTouchingRoad(house)) {
+          grid.addHouse(house);
+          spawnNewHouse();
+        } else {
+          house.state = HouseState.Invalid;
+        }
+        dragging = false;
+      }
     }
   
-    if (mouseIsDown(0)) {
-      if (!mouseDown) {
-        mouseDown = true;
-        if (house.isClicked()) {
-          house.state = HouseState.Placing;
-          origHousePos = house.pos.copy();
-          dragAnchor = mousePos.copy();
-          dragging = true;
-        }
+    if (mouseIsDown(0) && dragging) {
+      house.pos.x = origHousePos.x + (mousePos.x - dragAnchor.x);
+      house.pos.y = origHousePos.y + (mousePos.y - dragAnchor.y);
+
+      const bounds = house.getWorldBounds();
+      if (bounds[0].x < droppableBounds.lower.x) {
+        house.pos.x = droppableBounds.lower.x;
+      } else if (bounds[1].x > droppableBounds.upper.x) {
+        house.pos.x = droppableBounds.upper.x - (bounds[1].x - bounds[0].x);
       }
-      if (dragging) {
-        house.pos.x = origHousePos.x + (mousePos.x - dragAnchor.x);
-        house.pos.y = origHousePos.y + (mousePos.y - dragAnchor.y);
+      if (bounds[0].y < droppableBounds.lower.y) {
+        house.pos.y = droppableBounds.lower.y;
+      } else if (bounds[1].y > droppableBounds.upper.y) {
+        house.pos.y = droppableBounds.upper.y - (bounds[1].y - bounds[0].y);
       }
-    } else {
-      if (mouseDown) {
-        mouseDown = false;
-        if (dragging) {
-          house.pos.x = Math.floor((house.pos.x + tileSize / 2) / tileSize) * tileSize;
-          house.pos.y = Math.floor((house.pos.y + tileSize / 2) / tileSize) * tileSize;
-          if (grid.houseCanFit(house) && grid.houseIsTouchingRoad(house)) {
-            grid.addHouse(house);
-            spawnNewHouse();
-          } else {
-            house.state = HouseState.Invalid;
-          }
-          dragging = false;
-        }
-        // const clicked = house.isClicked();
-        // console.log('clicked', clicked);
-        // const tile = grid.getTileFromMousePos();
-        // if (tile) {
-        //   console.log('tile.type', tile.type);
-        // }
-      }
+
     }
   },
   gameRender() {
     grid.render();
-    // for (const house of houses) {
-    //   house.render();
-    // }
     house.render();
 
-    drawTextScreen(`Skips left: ${skipsLeft}`, vec2(15, 15), 20, new Color(1, 1, 1), undefined, undefined, 'left');
+    drawText(
+      `Skips left: ${skipsLeft}`,
+      skipButton.pos.add(vec2(3, 0)), 1.5,
+      new Color(1, 1, 1),
+      undefined, undefined,
+      'left',
+    );
+    housesBtnMgr.render();
   },
 };
