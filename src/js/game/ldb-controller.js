@@ -1,4 +1,4 @@
-import { mouseWasPressed, mainCanvasSize, Color, vec2, drawTextScreen } from '../engine/engine.all';
+import { mouseWasPressed, mainCanvasSize, Color, vec2, drawTextScreen, mouseWasReleased, cameraPos, cameraScale, drawText } from '../engine/engine.all';
 import { ButtonManager } from './btn-mgr';
 import { Button } from './button';
 import { stateManager } from './state-mgr';
@@ -19,13 +19,27 @@ let totalMaxScore = 0;
 let roadCount = 0;
 let localStorageAvail = true;
 
+const topPos = vec2(0, 18);
+const scoreInfoPos = topPos.add(vec2(0, -5));
+const hsTitlePos = topPos.add(vec2(0, -13));
+const scoreTopPos = hsTitlePos.add(vec2(3, -5));
+const scorePosList = new Array(maxScores);
+
+for (let i = 0; i < scorePosList.length; i++) {
+  scorePosList[i] = [
+    scoreTopPos.add(vec2(-0.7, -2 * i)),
+    scoreTopPos.add(vec2(0.7, -2 * i)),
+  ];
+}
+
 const btnMgr = new ButtonManager();
 
 const retryBtn = new Button(
-  mainCanvasSize.x, mainCanvasSize.y, 100, 50, 'Retry', new Color(1, 1, 1), new Color(0, 0, 0),
+  topPos.add(vec2(0, -31)), vec2(5, 3), 'Retry', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
   () => {
     stateManager.setGameState(GameState.PlaceRoads);
-  }
+  },
+  false,
 )
 
 btnMgr.addBtn(retryBtn);
@@ -46,6 +60,7 @@ function loadScores() {
   if (scoresStr) {
     scores = JSON.parse(scoresStr);
   }
+  scores.forEach(score => score.dateStr = new Date(score.timestamp).toLocaleDateString());
 }
 
 function saveScores() {
@@ -71,6 +86,7 @@ function addScore(score, timestamp) {
   currentScore = {
     score,
     timestamp,
+    dateStr: new Date(timestamp).toLocaleDateString(),
     current: true,
   };
   scores.push(currentScore);
@@ -85,19 +101,16 @@ function addScore(score, timestamp) {
 }
 
 function renderScores() {
-  const topPos = vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 - 250);
 
-  drawTextScreen('Game over', topPos, 45, titleColor, 5, titleLineColor);
+  drawText('Game over', topPos, 4, titleColor, 0.5, titleLineColor);
   
-  drawTextScreen(
+  drawText(
     `You covered ${currentScore.score} tiles (${Math.floor(currentScore.score / totalMaxScore * 100)}%)\n(road count: ${roadCount}, grid total: ${totalMaxScore})`,
-    topPos.add(vec2(0, 45)),
-    30, scoreColor
+    scoreInfoPos,
+    2, scoreColor
   );
 
-  const scoreTopPos = topPos.add(vec2(50, 200));
-  const titlePos = topPos.add(vec2(0, 145));
-  drawTextScreen('High Scores', titlePos, 45, titleColor, 5, titleLineColor);
+  drawText('High Scores', hsTitlePos, 4, titleColor, 0.5, titleLineColor);
 
   for (let i = 0; i < maxScores; i++) {
     const score = scores[i];
@@ -108,14 +121,13 @@ function renderScores() {
       scoreStr = '---';
       textColor = scoreColor;
     } else {
-      const date = new Date(score.timestamp);
-      dateStr = date.toLocaleDateString();
+      dateStr = score.dateStr;
       scoreStr = score.score.toString();
       textColor = score.current ? currentScoreColor : scoreColor;
     }
     
-    drawTextScreen(dateStr, scoreTopPos.add(vec2(-5, 35 * i)), 30, textColor, undefined, undefined, 'right');
-    drawTextScreen(scoreStr, scoreTopPos.add(vec2(5, 35 * i)), 30, textColor, undefined, undefined, 'left');
+    drawText(dateStr, scorePosList[i][0], 2, textColor, undefined, undefined, 'right');
+    drawText(scoreStr, scorePosList[i][1], 2, textColor, undefined, undefined, 'left');
   }
 }
 
@@ -126,16 +138,20 @@ export const leaderboardController = {
     roadCount = opts.roadCount;
     loadScores();
     addScore(opts.score, opts.timestamp);
+
+    cameraPos.x = 0;
+    cameraPos.y = 0;
   },
   gameUpdate() {
     if (mouseWasPressed(0)) {
       btnMgr.pressed();
     }
+    if (mouseWasReleased(0)) {
+      btnMgr.released();
+    }
   },
   gameRender() {
     renderScores();
-    retryBtn.pos.x = mainCanvasSize.x / 2;
-    retryBtn.pos.y = mainCanvasSize.y / 2 + 150;
     btnMgr.render();
   },
 };
