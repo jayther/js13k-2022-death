@@ -38,6 +38,10 @@ on existing roads`;
 const requiredRoadsText =
 `All roads must connect to an edge of the grid`;
 
+const placeHouseText = 
+`Place houses! Must touch a road, not overlap
+other houses, and be within the grid`
+
 // roads state buttons
 
 const roadsBtnMgr = new ButtonManager();
@@ -108,8 +112,12 @@ const droppableBounds = {
 };
 
 const undroppableBounds = {
-  lower: housesDoneButton.pos.subtract(housesDoneButton.size.divide(vec2(2))).add(vec2(tileSize / 2)),
-  upper: rotateButton.pos.add(rotateButton.size.divide(vec2(2))).add(vec2(tileSize / 2)),
+  lower: housesDoneButton.pos
+    .subtract(housesDoneButton.size.divide(vec2(2)))
+    .add(vec2(tileSize / 2)),
+  upper: rotateButton.pos
+    .add(rotateButton.size.divide(vec2(2)))
+    .add(vec2(tileSize / 2)),
 };
 
 function spawnNewHouse() {
@@ -180,9 +188,9 @@ export const placeRoadsController = {
   },
   gameRender() {
     grid.render();
-    drawText(placeRoadsText, topTextPos, 1.5, new Color(1, 1, 1), undefined, undefined, 'center');
+    drawText(placeRoadsText, topTextPos, 1.5);
     if (!grid.allRoadsConnected) {
-      drawText(requiredRoadsText, bottomTextPos, 1.5, new Color(1, 1, 1), undefined, undefined, 'center');
+      drawText(requiredRoadsText, bottomTextPos, 1.5);
     }
     roadsBtnMgr.render();
   },
@@ -289,16 +297,21 @@ export const placeHousesController = {
     house.render();
 
     drawText(
+      placeHouseText,
+      topTextPos,
+      1.5,
+    );
+    drawText(
       'right-click\nworks too',
       rotateButton.pos.add(vec2(3, 0.5)), 1,
-      new Color(1, 1, 1),
+      undefined,
       undefined, undefined,
       'left',
     )
     drawText(
       `Skips left: ${skipsLeft}`,
       skipButton.pos.add(vec2(3, 0)), 1.5,
-      new Color(1, 1, 1),
+      undefined,
       undefined, undefined,
       'left',
     );
