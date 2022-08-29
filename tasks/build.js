@@ -21,7 +21,7 @@ function onError( err, pipeline ) {
 function buildFull() {
   let pipeline;
   return pipeline = rollup({
-      entry: 'src/js/main.js', format: 'iife', sourcemap: true,
+      input: 'src/js/main.js', format: 'iife', sourcemap: true,
     })
     .on( 'error', err => onError( err, pipeline ) )
     .pipe( source( 'main.js', './src' ) )
