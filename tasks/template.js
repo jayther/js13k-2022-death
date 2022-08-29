@@ -43,41 +43,23 @@ function readFile( fname ) {
   });
 }
 
-function template() {
-  let ctx = {};
+async function template() {
+  const str = await readFile('./src/index.hbs');
 
-  return getJS()
-  .then( js => ctx.js = js )
-  .then( () => getCSS() )
-  .then( css => ctx.css = css )
-  .then( () => readFile( './src/index.hbs') )
-  .then( str => {
-    // development index.html
-    let result = handlebars.compile( str )();
-    return writeFile( './dist/index.html', result )
-  });
+  // development index.html
+  const result = handlebars.compile(str)();
+  return await writeFile('./dist/index.html', result);
 };
 
-function templateRelease() {
-  let ctx = {};
-
-  return getReleaseJS()
-  .then( js => ctx.js = js )
-  .then( () => getCSS() )
-  .then( css => ctx.css = css )
-  .then( () => readFile( './src/index.hbs') )
-  .then( str => {
-    // Inline/minified index file
-    let inlineResult = handlebars.compile( str )
-      ({ js: ctx.js, css: ctx.css });
-
-    return writeFile('./dist/index.min.html', inlineResult);
-  })
-  .then(() => fs.ensureDir('./docs')) // ensure docs folder
-  .then(() => {
-    // copy for github page
-    return fs.copyFile('./dist/index.min.html', './docs/index.html')
-  });
+async function templateRelease() {
+  const js = await getReleaseJS();
+  const css = await getCSS();
+  const str = await readFile('./src/index.hbs');
+  // Inline/minified index file
+  let inlineResult = handlebars.compile(str)({ js, css });
+  await writeFile('./dist/index.min.html', inlineResult);
+  await fs.ensureDir('./docs');
+  return await fs.copyFile('./dist/index.min.html', './docs/index.html');
 }
 
 exports.template = template;
