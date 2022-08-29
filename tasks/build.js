@@ -18,57 +18,58 @@ function onError( err, pipeline ) {
   pipeline.emit('error', err);
 }
 
-function buildFull() {
+function buildFull(outputName = undefined, releaseEngine = false) {
+  const plugins = releaseEngine ? [
+    replace({
+      'engine.all': 'engine.all.release',
+    }),
+  ] : undefined;
+
   let pipeline;
-  return pipeline = rollup({
-      input: 'src/js/main.js', format: 'iife', sourcemap: true,
-    })
-    .on( 'error', err => onError( err, pipeline ) )
-    .pipe( source( 'main.js', './src' ) )
-    .pipe( buffer() )
-    .pipe( srcmaps.init({ loadMaps: true }) )
-    .pipe( srcmaps.write( './' ) )
-    .pipe( gulp.dest('./dist') )
-    .pipe( livereload({}) );
+  pipeline = rollup({
+    input: 'src/js/main.js', format: 'iife', sourcemap: true,
+    plugins,
+  })
+  .on( 'error', err => onError( err, pipeline ) )
+  .pipe( source( 'main.js', './src' ) )
+  .pipe( buffer() );
+
+  if (outputName) {
+    pipeline = pipeline.pipe( rename('main.release.js'))
+  }
+
+  pipeline = pipeline.pipe( srcmaps.init({ loadMaps: true }) )
+  .pipe( srcmaps.write( './' ) )
+  .pipe( gulp.dest('./dist') )
+  .pipe( livereload({}) );
+
+  return pipeline;
 }
 
-function buildMin() {
+function buildMin(input, minOutputName) {
   let pipeline;
-  return pipeline = gulp.src('./dist/main.js')
+  return pipeline = gulp.src(input)
     .pipe( terser() )
     .on( 'error', err => onError( err, pipeline ) )
-    .pipe( rename('main.min.js') )
+    .pipe( rename(minOutputName) )
     .pipe( gulp.dest('./dist') );
+}
+
+function buildDevFull() {
+  return buildFull();
+}
+
+function buildDevMin() {
+  return buildMin('./dist/main.js', 'main.min.js');
 }
 
 function buildReleaseFull() {
-  let pipeline;
-  return pipeline = rollup({
-      input: 'src/js/main.js', format: 'iife', sourcemap: true,
-      plugins: [
-        replace({
-          'engine.all': 'engine.all.release',
-        }),
-      ],
-    })
-    .on( 'error', err => onError( err, pipeline ) )
-    .pipe( source( 'main.js', './src' ) )
-    .pipe( buffer() )
-    .pipe( rename('main.release.js'))
-    .pipe( srcmaps.init({ loadMaps: true }) )
-    .pipe( srcmaps.write( './' ) )
-    .pipe( gulp.dest('./dist') )
-    .pipe( livereload({}) );
+  return buildFull('main.release.js', true);
 }
 
 function buildReleaseMin() {
-  let pipeline;
-  return pipeline = gulp.src('./dist/main.release.js')
-    .pipe( terser() )
-    .on( 'error', err => onError( err, pipeline ) )
-    .pipe( rename('main.release.min.js') )
-    .pipe( gulp.dest('./dist') );
+  return buildMin('./dist/main.release.js', 'main.release.min.js');
 }
 
-exports.build = gulp.series(buildFull, buildMin)
+exports.build = gulp.series(buildDevFull, buildDevMin)
 exports.buildRelease = gulp.series(buildReleaseFull, buildReleaseMin)
