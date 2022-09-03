@@ -1049,6 +1049,10 @@ export let cameraPos = vec2();
  *  @memberof Settings */
 export let cameraScale = max(tileSizeDefault.x, tileSizeDefault.y);
 
+export function setCameraScale(scale) {
+  cameraScale = scale;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // WebGL settings
 

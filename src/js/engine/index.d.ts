@@ -1,4 +1,5 @@
 declare module "engine.all" {
+    export function setCameraScale(scale: any): void;
     /** Draw textured tile centered in world space, with color applied if using WebGL
      *  @param {Vector2} pos                                - Center of the tile in world space
      *  @param {Vector2} [size=new Vector2(1,1)]            - Size of the tile in world space, width and height
