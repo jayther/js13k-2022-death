@@ -5,6 +5,7 @@ const stateColorMap = [
   new Color(),              // Placing
   new Color(0.9, 0.9, 0.9), // Placed
   new Color(1, 0.3, 0.3),   // Invalid
+  new Color(1, 1, 1, 0.5),  // Fittable
 ];
 
 const cw = 1, ccw = 0;
@@ -72,11 +73,19 @@ function createRandomTiles(maxExtent) {
 }
 
 export class House {
-  constructor(pos) {
+  constructor(pos, tiles = undefined) {
     this.pos = pos;
-    this.tiles = createRandomTiles(2);
+    this.tiles = tiles || createRandomTiles(2);
 
     this.state = HouseState.Placing;
+  }
+
+  copy() {
+    const tiles = [];
+    for (let y = 0; y < this.tiles.length; y++) {
+      tiles.push([...this.tiles[y]]);
+    }
+    return new House(this.pos.copy(), tiles);
   }
 
   getWorldBounds() {

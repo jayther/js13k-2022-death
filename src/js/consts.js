@@ -13,6 +13,7 @@ export const HouseState = {
   Placing: 0,
   Placed: 1,
   Invalid: 2,
+  Fittable: 3,
 };
 
 export const deltaArray = [

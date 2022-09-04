@@ -26,6 +26,7 @@ let skipsLeft;
 let spawnPos = vec2();
 
 let house;
+let fittableHouse;
 
 const topTextPos = vec2();
 const bottomTextPos = vec2();
@@ -122,6 +123,9 @@ const undroppableBounds = {
 
 function spawnNewHouse() {
   house = new House(spawnPos.copy());
+  fittableHouse = grid.houseFitsSomewhere(house);
+  console.log('houseFitsSomewhere', !!fittableHouse);
+
 }
 
 // Place Roads
@@ -295,6 +299,9 @@ export const placeHousesController = {
   gameRender() {
     grid.render();
     house.render();
+    if (fittableHouse) {
+      fittableHouse.render();
+    }
 
     drawText(
       placeHouseText,

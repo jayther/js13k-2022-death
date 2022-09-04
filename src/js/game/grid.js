@@ -35,15 +35,14 @@ export class Grid {
   constructor(width, height) {
     this.pos = vec2();
     this.tiles = [];
+    this.houses = [];
+    this.snapshotTiles = [];
+    this.allRoadsConnected = false;
     this.size = vec2(width, height);
     const total = this.size.x * this.size.y;
     for (let i = 0; i < total; i += 1) {
-      this.tiles.push(new Tile(0, i % this.size.x, Math.floor(i / this.size.y)));
-    }
-    this.allRoadsConnected = false;
-    this.houses = [];
-    this.snapshotTiles = [];
-    for (const tile of this.tiles) {
+      const tile = new Tile(0, i % this.size.x, Math.floor(i / this.size.y));
+      this.tiles.push(tile);
       this.snapshotTiles.push(tile.copy());
     }
   }
@@ -78,6 +77,22 @@ export class Grid {
       }
     }
     return true;
+  }
+
+  houseFitsSomewhere(house) {
+    const h = house.copy();
+    h.state = HouseState.Fittable;
+    for (const tile of this.tiles) {
+      const worldPos = vec2(tile.x, tile.y).multiply(vec2(tileSize));
+      h.pos = worldPos;
+      for (let i = 0; i < 4; i++) {
+        if (this.houseCanFit(h) && this.houseIsTouchingRoad(h)) {
+          return h;
+        }
+        h.rotate(1);
+      }
+    }
+    return null;
   }
 
   houseIsTouchingRoad(house) {
