@@ -28,5 +28,6 @@ export const GameState = {
   MainMenu: 1,
   PlaceRoads: 2,
   PlaceHouses: 3,
-  Leaderboard: 4,
+  GameOver: 4,
+  Leaderboard: 5,
 };

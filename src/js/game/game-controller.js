@@ -7,6 +7,9 @@ import {
   mouseWasPressed,
   Color,
   drawText,
+  lerp,
+  percent,
+  randVector,
 } from '../engine/engine.all';
 import { GameState, HouseState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
@@ -24,12 +27,14 @@ let roadStartCoord = null;
 let roadType;
 let skipsLeft;
 let spawnPos = vec2();
+let gameOverTime;
 
 let house;
-let fittableHouse;
+let fittableHouse = null;
 
 const topTextPos = vec2();
 const bottomTextPos = vec2();
+let topOffset = vec2();
 
 const placeRoadsText =
 `Make roads by clicking and dragging lines
@@ -42,6 +47,9 @@ const requiredRoadsText =
 const placeHouseText = 
 `Place houses! Must touch a road, not overlap
 other houses, and be within the grid`
+
+const noMoreMovesText =
+`Game over! No more space or skips`;
 
 // roads state buttons
 
@@ -84,28 +92,11 @@ const skipButton = new Button(
     }
     if (skipsLeft <= 0) {
       skipButton.enabled = false;
-      housesDoneButton.enabled = true;
     }
   },
   false,
 );
 housesBtnMgr.addBtn(skipButton);
-
-const housesDoneButton = new Button(
-  skipButton.pos.add(vec2(0, -4)), vec2(5, 3),
-  'End', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
-  () => {
-    const counts = grid.getCounts();
-    stateManager.setGameState(GameState.Leaderboard, {
-      timestamp: Date.now(),
-      totalMaxScore: counts.totalCount,
-      score: counts.houseTileCount,
-      roadCount: counts.roadCount,
-    });
-  },
-  false,
-);
-housesBtnMgr.addBtn(housesDoneButton);
 
 const droppableBounds = {
   lower: vec2(),
@@ -113,8 +104,8 @@ const droppableBounds = {
 };
 
 const undroppableBounds = {
-  lower: housesDoneButton.pos
-    .subtract(housesDoneButton.size.divide(vec2(2)))
+  lower: skipButton.pos
+    .subtract(skipButton.size.divide(vec2(2)))
     .add(vec2(tileSize / 2)),
   upper: rotateButton.pos
     .add(rotateButton.size.divide(vec2(2)))
@@ -124,8 +115,7 @@ const undroppableBounds = {
 function spawnNewHouse() {
   house = new House(spawnPos.copy());
   fittableHouse = grid.houseFitsSomewhere(house);
-  console.log('houseFitsSomewhere', !!fittableHouse);
-
+  // console.log('houseFitsSomewhere', !!fittableHouse);
 }
 
 // Place Roads
@@ -208,7 +198,6 @@ export const placeHousesController = {
     spawnPos.y = -8;
     skipsLeft = 3;
     skipButton.enabled = true;
-    housesDoneButton.enabled = false;
 
     const gridBounds = grid.getWorldBounds();
     const growAmount = 4 * tileSize;
@@ -293,15 +282,18 @@ export const placeHousesController = {
       } else if (bounds[1].y > droppableBounds.upper.y) {
         house.pos.y = droppableBounds.upper.y - (bounds[1].y - bounds[0].y);
       }
-
+    }
+    
+    if (!fittableHouse && skipsLeft <= 0) {
+      stateManager.setGameState(GameState.GameOver);
     }
   },
   gameRender() {
     grid.render();
     house.render();
-    if (fittableHouse) {
-      fittableHouse.render();
-    }
+    // if (fittableHouse) {
+    //   fittableHouse.render();
+    // }
 
     drawText(
       placeHouseText,
@@ -324,4 +316,55 @@ export const placeHousesController = {
     );
     housesBtnMgr.render();
   },
+};
+
+// Game over
+export const gameOverController = {
+  init() {
+    rotateButton.enabled = false;
+    skipButton.enabled = false;
+    gameOverTime = Date.now();
+  },
+  gameUpdate() {
+    const now = Date.now();
+    const since = now - gameOverTime;
+
+    topOffset = randVector(lerp(percent(since, 0, 1000), 1, 0));
+
+    if (since >= 3000) {
+      const counts = grid.getCounts();
+      stateManager.setGameState(GameState.Leaderboard, {
+        timestamp: now,
+        totalMaxScore: counts.totalCount,
+        score: counts.houseTileCount,
+        roadCount: counts.roadCount,
+      });
+    }
+  },
+  gameRender() {
+    grid.render();
+    house.render();
+
+    drawText(
+      noMoreMovesText,
+      topTextPos.add(topOffset),
+      1.5,
+    );
+    drawText(
+      'right-click\nworks too',
+      rotateButton.pos.add(vec2(3, 0.5)), 1,
+      new Color(1, 1, 1, 0.5),
+      undefined, undefined,
+      'left',
+    )
+    drawText(
+      `Skips left: ${skipsLeft}`,
+      skipButton.pos.add(vec2(3, 0)), 1.5,
+      new Color(1, 1, 1, 0.5),
+      undefined, undefined,
+      'left',
+    );
+    housesBtnMgr.render();
+  },
+
 };

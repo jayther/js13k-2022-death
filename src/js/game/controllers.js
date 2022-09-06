@@ -1,5 +1,5 @@
 import { menuController } from './menu-controller';
-import { placeRoadsController, placeHousesController } from './game-controller';
+import { placeRoadsController, placeHousesController, gameOverController } from './game-controller';
 import { leaderboardController } from './ldb-controller';
 
 // Idle
@@ -20,5 +20,6 @@ export const controllerMap = [
   menuController,
   placeRoadsController,
   placeHousesController,
+  gameOverController,
   leaderboardController,
 ];
