@@ -21,8 +21,7 @@ import { ButtonManager } from './btn-mgr';
 let grid;
 // let origCameraPos = vec2();
 let origHousePos = vec2();
-let dragAnchor = vec2();
-let dragging = false;
+let dragAnchor = null;
 let roadStartCoord = null;
 let roadType;
 let skipsLeft;
@@ -122,7 +121,7 @@ function spawnNewHouse() {
 export const placeRoadsController = {
   init() {
     grid = new Grid(15, 15);
-    dragging = false;
+    dragAnchor = null;
     roadStartCoord = null;
     const gridSize = grid.getWorldSize();
     cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
@@ -137,8 +136,7 @@ export const placeRoadsController = {
   },
   gameUpdate() {
     if (mouseWasPressed(0)) {
-      const buttonPressed = roadsBtnMgr.pressed();
-      if (!buttonPressed) {
+      if (!roadsBtnMgr.pressed()) {
         roadStartCoord = grid.getCoordsFromMousePos();
         if (roadStartCoord) {
           grid.createSnapshot();
@@ -229,18 +227,16 @@ export const placeHousesController = {
     }
 
     if (mouseWasPressed(0)) {
-      const buttonPressed = housesBtnMgr.pressed();
-      if (!buttonPressed && house.isClicked()) {
+      if (!housesBtnMgr.pressed() && house.isClicked()) {
         house.state = HouseState.Placing;
         origHousePos = house.pos.copy();
         dragAnchor = mousePos.copy();
-        dragging = true;
       }
     }
 
     if (mouseWasReleased(0)) {
       housesBtnMgr.released();
-      if (dragging) {
+      if (dragAnchor) {
         house.pos.x = Math.floor((house.pos.x + tileSize / 2) / tileSize) * tileSize;
         house.pos.y = Math.floor((house.pos.y + tileSize / 2) / tileSize) * tileSize;
 
@@ -266,11 +262,11 @@ export const placeHousesController = {
         } else {
           house.state = HouseState.Invalid;
         }
-        dragging = false;
+        dragAnchor = null;
       }
     }
   
-    if (mouseIsDown(0) && dragging) {
+    if (mouseIsDown(0) && dragAnchor) {
       house.pos.x = origHousePos.x + (mousePos.x - dragAnchor.x);
       house.pos.y = origHousePos.y + (mousePos.y - dragAnchor.y);
 
