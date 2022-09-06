@@ -37,7 +37,7 @@ const btnMgr = new ButtonManager();
 const retryBtn = new Button(
   topPos.add(vec2(0, -31)), vec2(5, 3), 'Retry', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
   () => {
-    stateManager.sgs(GameState.PlaceRoads);
+    stateManager.setGameState(GameState.PlaceRoads);
   },
   false,
 )

@@ -11,7 +11,7 @@ const standardScale = cameraScale;
 function gameInit() {
   resize();
   stateManager.init(controllerMap);
-  stateManager.sgs(GameState.MainMenu);
+  stateManager.setGameState(GameState.MainMenu);
   // stateManager.setGameState(GameState.Leaderboard, {
   //   score: randInt(1, 100),
   //   timestamp: Date.now(),

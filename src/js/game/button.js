@@ -32,7 +32,7 @@ export class Button {
     this.bgColor.a = value ? 1 : 0.5;
     this.textColor.a = value ? 1 : 0.5;
   }
-  cmp() {
+  containsMousePos() {
     if (!this.enabled || !this.visible) { return false; }
 
     const mp = this.screenSpace ? mousePosScreen : mousePos;
