@@ -49,7 +49,11 @@ function buildFull(outputName = undefined, releaseEngine = false) {
 function buildMin(input, minOutputName) {
   let pipeline;
   return pipeline = gulp.src(input)
-    .pipe( terser() )
+    .pipe( terser({
+      mangle: {
+        properties: {}, // defining an empty properties obj will mangle the properties
+      },
+    }) )
     .on( 'error', err => onError( err, pipeline ) )
     .pipe( rename(minOutputName) )
     .pipe( gulp.dest('./dist') );
