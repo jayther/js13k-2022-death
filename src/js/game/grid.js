@@ -72,7 +72,7 @@ export class Grid {
         
         const tileGridPos = houseGridPos.add(vec2(x, y));
         const gridTile = this.getTile(tileGridPos.x, tileGridPos.y);
-        if (gridTile.type) {
+        if (gridTile && gridTile.type) {
           return false;
         }
       }
@@ -101,10 +101,8 @@ export class Grid {
     for (const road of roads) {
       for (const delta of deltaArray) {
         const neighborPos = vec2(road.x + delta[0], road.y + delta[1]);
-        if (!neighborPos.arrayCheck(this.size)) { continue; }
-
         const tile = this.getTile(neighborPos.x, neighborPos.y);
-        if (tile.type === TileType.None) {
+        if (tile && tile.type === TileType.None) {
           this.hasAvailableSpaces = true;
           return;
         }
@@ -163,6 +161,7 @@ export class Grid {
   }
 
   getTile(x, y) {
+    if (!vec2(x, y).arrayCheck(this.size)) { return null; }
     return this.tiles[x + y * this.size.x];
   }
 
@@ -178,11 +177,8 @@ export class Grid {
 
   getCoordsFromPos(worldPos, beyondLimits = false) {
     const gridPos = worldPos.subtract(this.pos).add(vec2(tileSize / 2));
-    if (!beyondLimits) {
-      if (gridPos.x < 0) { return null; }
-      if (gridPos.x >= this.size.x * tileSize) { return null; }
-      if (gridPos.y < 0) { return null; }
-      if (gridPos.y >= this.size.y * tileSize) { return null; }
+    if (!beyondLimits && !gridPos.arrayCheck(this.size.multiply(vec2(tileSize)))) {
+      return null;
     }
     return gridPos.divide(vec2(tileSize)).floor();
   }
@@ -266,15 +262,12 @@ export class Grid {
   }
 
   render() {
-    for (let y = 0; y < this.size.y; y += 1) {
-      for (let x = 0; x < this.size.x; x += 1) {
-        const tilePos = vec2(x, y);
-        const renderTitlePos = tilePos.multiply(vec2(tileSize)).add(this.pos);
-        const tile = this.getTile(x, y);
-        const color = tileColorMap[tile.type] || baseColorMap[(x + y) % 2];
-        if (color) {
-          drawRect(renderTitlePos, vec2(tileSize), color);
-        }
+    for (const tile of this.tiles) {
+      const tilePos = vec2(tile.x, tile.y);
+      const renderTitlePos = tilePos.multiply(vec2(tileSize)).add(this.pos);
+      const color = tileColorMap[tile.type] || baseColorMap[(tile.x + tile.y) % 2];
+      if (color) {
+        drawRect(renderTitlePos, vec2(tileSize), color);
       }
     }
     for (const house of this.houses) {
