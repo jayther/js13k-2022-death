@@ -88,13 +88,21 @@ export class House {
     return new House(this.pos.copy(), tiles);
   }
 
-  getWorldBounds() {
+  /**
+   * getWorldBounds
+   * @returns 
+   */
+  gwb() {
     const width = this.tiles[0].length * tileSize;
     const height = this.tiles.length * tileSize;
     return [this.pos.copy(), this.pos.add(vec2(width, height))];
   }
 
-  isClicked() {
+  /**
+   * isClicked
+   * @returns 
+   */
+  ic() {
     const localPos = mousePos.subtract(this.pos).add(vec2(tileSize / 2)).divide(vec2(tileSize)).floor();
     const tileRow = this.tiles[localPos.y];
     if (!tileRow) { return false; }
@@ -102,6 +110,10 @@ export class House {
     return !!tileRow[localPos.x];
   }
 
+  /**
+   * 
+   * @param {number} direction 
+   */
   rotate(direction) {
     const width = this.tiles.length;
     const height = this.tiles[0].length;

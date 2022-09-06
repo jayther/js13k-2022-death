@@ -36,25 +36,45 @@ export class Grid {
     this.pos = vec2();
     this.tiles = [];
     this.houses = [];
-    this.snapshotTiles = [];
-    this.allRoadsConnected = false;
-    this.hasAvailableSpaces = false;
+    /**
+     * snapshotTiles
+     */
+    this.sst = [];
+    /**
+     * allRoadsConnected
+     */
+    this.arc = false;
+    /**
+     * hasAvailableSpaces
+     */
+    this.hvs = false;
     this.size = vec2(width, height);
     const total = this.size.x * this.size.y;
     for (let i = 0; i < total; i += 1) {
       const tile = new Tile(0, i % this.size.x, Math.floor(i / this.size.y));
       this.tiles.push(tile);
-      this.snapshotTiles.push(tile.copy());
+      this.sst.push(tile.copy());
     }
   }
 
-  createSnapshot() {
-    this.tiles.forEach((tile, i) => this.snapshotTiles[i].apply(tile));
+  /**
+   * createSnapshot
+   * 
+   * Creates a snapshot of the current tiles and sets it to `snapshotTiles`
+   */
+  csst() {
+    this.tiles.forEach((tile, i) => this.sst[i].apply(tile));
   }
 
-  houseCanFit(house) {
-    const houseBounds = house.getWorldBounds();
-    const gridBounds = this.getWorldBounds();
+  /**
+   * houseCanFit
+   * 
+   * @param {House} house 
+   * @returns 
+   */
+  hcf(house) {
+    const houseBounds = house.gwb();
+    const gridBounds = this.gwb();
     const withinBounds = (
       houseBounds[0].x >= gridBounds[0].x &&
       houseBounds[0].y >= gridBounds[0].y &&
@@ -80,14 +100,19 @@ export class Grid {
     return true;
   }
 
-  houseFitsSomewhere(house) {
+  /**
+   * houseFitsSomewhere
+   * @param {House} house 
+   * @returns 
+   */
+  hfs(house) {
     const h = house.copy();
     h.state = HouseState.Fittable;
     for (const tile of this.tiles) {
       const worldPos = vec2(tile.x, tile.y).multiply(vec2(tileSize));
       h.pos = worldPos;
       for (let i = 0; i < 4; i++) {
-        if (this.houseCanFit(h) && this.houseIsTouchingRoad(h)) {
+        if (this.hcf(h) && this.hitr(h)) {
           return h;
         }
         h.rotate(1);
@@ -96,22 +121,31 @@ export class Grid {
     return null;
   }
 
-  checkAvailableSpaces() {
+  /**
+   * checkAvailableSpaces
+   * @returns 
+   */
+  cvs() {
     const roads = this.tiles.filter(tile => tile.type === TileType.Road);
     for (const road of roads) {
       for (const delta of deltaArray) {
         const neighborPos = vec2(road.x + delta[0], road.y + delta[1]);
         const tile = this.getTile(neighborPos.x, neighborPos.y);
         if (tile && tile.type === TileType.None) {
-          this.hasAvailableSpaces = true;
+          this.hvs = true;
           return;
         }
       }
     }
-    this.hasAvailableSpaces = false;
+    this.hvs = false;
   }
 
-  houseIsTouchingRoad(house) {
+  /**
+   * houseIsTouchingRoad
+   * @param {House} house 
+   * @returns 
+   */
+  hitr(house) {
     const houseGridPos = house.pos.divide(vec2(tileSize));
     const houseTiles = house.tiles;
     for (let y = 0; y < houseTiles.length; y += 1) {
@@ -132,7 +166,11 @@ export class Grid {
     return false;
   }
 
-  addHouse(house) {
+  /**
+   * addHouse
+   * @param {House} house 
+   */
+  ah(house) {
     house.state = HouseState.Placed;
     this.houses.push(house);
     const houseGridPos = house.pos.divide(vec2(tileSize));
@@ -148,11 +186,19 @@ export class Grid {
     }
   }
 
-  getWorldSize() {
+  /**
+   * getWorldSize()
+   * @returns 
+   */
+  gws() {
     return this.size.multiply(vec2(tileSize));
   }
 
-  getWorldBounds() {
+  /**
+   * getWorldBounds()
+   * @returns 
+   */
+  gwb() {
     return [this.pos.copy(), this.pos.add(this.size.multiply(vec2(tileSize)))];
   }
 
@@ -165,17 +211,32 @@ export class Grid {
     return this.tiles[x + y * this.size.x];
   }
 
-  getTileFromMousePos() {
-    const coords = this.getCoordsFromMousePos();
+  /**
+   * getTileFromMousePos
+   * @returns 
+   */
+  gtfmp() {
+    const coords = this.gcfmp();
     if (!coords) { return null; }
     return this.getTile(coords.x, coords.y);
   }
 
-  getCoordsFromMousePos(beyondLimits = false) {
-    return this.getCoordsFromPos(mousePos, beyondLimits);
+  /**
+   * getCoordsFromMousePos
+   * @param {boolean} beyondLimits 
+   * @returns 
+   */
+  gcfmp(beyondLimits = false) {
+    return this.gcfp(mousePos, beyondLimits);
   }
 
-  getCoordsFromPos(worldPos, beyondLimits = false) {
+  /**
+   * getCoordsFromPos
+   * @param {Vector2} worldPos 
+   * @param {boolean} beyondLimits 
+   * @returns 
+   */
+  gcfp(worldPos, beyondLimits = false) {
     const gridPos = worldPos.subtract(this.pos).add(vec2(tileSize / 2));
     if (!beyondLimits && !gridPos.arrayCheck(this.size.multiply(vec2(tileSize)))) {
       return null;
@@ -206,11 +267,19 @@ export class Grid {
     return tiles;
   }
 
-  resetToSnapshot() {
-    this.tiles.forEach((tile, i) => tile.apply(this.snapshotTiles[i]));
+  /**
+   * resetToSnapshot
+   */
+  rtsst() {
+    this.tiles.forEach((tile, i) => tile.apply(this.sst[i]));
   }
 
-  checkRoadConnection() {
+  /**
+   * checkRoadConnection()
+   * 
+   * Checks if all roads connect to the edge and sets `allRoadsConnected`
+   */
+  crc() {
     const roads = this.tiles.filter(tile => tile.type === TileType.Road || tile.type === TileType.DCRoad);
     roads.forEach(tile => tile.type = TileType.DCRoad);
     
@@ -220,16 +289,21 @@ export class Grid {
     ));
 
     if (!edgeRoads.length) {
-      this.allRoadsConnected = false;
+      this.arc = false;
       return;
     }
 
-    edgeRoads.forEach(tile => this.setConnectedRoads(tile.x, tile.y));
+    edgeRoads.forEach(tile => this.scr(tile.x, tile.y));
 
-    this.allRoadsConnected = roads.every(road => road.type === TileType.Road);
+    this.arc = roads.every(road => road.type === TileType.Road);
   }
 
-  setConnectedRoads(x, y) {
+  /**
+   * SetConnectedRoads
+   * @param {number} x 
+   * @param {number} y 
+   */
+  scr(x, y) {
     const tile = this.getTile(x, y);
     if (!tile) { return; }
     if (tile.type !== TileType.DCRoad) { return; }
@@ -237,11 +311,15 @@ export class Grid {
     tile.type = TileType.Road;
 
     for (const delta of deltaArray) {
-      this.setConnectedRoads(x + delta[0], y + delta[1]);
+      this.scr(x + delta[0], y + delta[1]);
     }
   }
 
-  getCounts() {
+  /**
+   * getCounts
+   * @returns 
+   */
+  c() {
     const totalCount = this.size.x * this.size.y;
     let houseTileCount = 0;
     let roadCount = 0;

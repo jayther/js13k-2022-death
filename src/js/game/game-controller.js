@@ -18,6 +18,9 @@ import { stateManager } from './state-mgr';
 import { Button } from './button';
 import { ButtonManager } from './btn-mgr';
 
+/**
+ * @type {Grid}
+ */
 let grid;
 // let origCameraPos = vec2();
 let origHousePos = vec2();
@@ -28,7 +31,13 @@ let skipsLeft;
 let spawnPos = vec2();
 let gameOverTime;
 
+/**
+ * @type {House}
+ */
 let house;
+/**
+ * @type {House}
+ */
 let fittableHouse = null;
 
 const topTextPos = vec2();
@@ -58,8 +67,8 @@ const roadsDoneButton = new Button(
   vec2(0, -4), vec2(5, 3),
   'Done', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
   () => {
-    if (grid.allRoadsConnected) {
-      stateManager.setGameState(GameState.PlaceHouses);
+    if (grid.arc) {
+      stateManager.sgs(GameState.PlaceHouses);
     }
   },
   false,
@@ -113,7 +122,7 @@ const undroppableBounds = {
 
 function spawnNewHouse() {
   house = new House(spawnPos.copy());
-  fittableHouse = grid.houseFitsSomewhere(house);
+  fittableHouse = grid.hfs(house);
   // console.log('houseFitsSomewhere', !!fittableHouse);
 }
 
@@ -123,7 +132,7 @@ export const placeRoadsController = {
     grid = new Grid(15, 15);
     dragAnchor = null;
     roadStartCoord = null;
-    const gridSize = grid.getWorldSize();
+    const gridSize = grid.gws();
     cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
     cameraPos.y = grid.pos.y + gridSize.y / 2 - tileSize / 2;
     roadsDoneButton.pos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
@@ -137,10 +146,10 @@ export const placeRoadsController = {
   gameUpdate() {
     if (mouseWasPressed(0)) {
       if (!roadsBtnMgr.pressed()) {
-        roadStartCoord = grid.getCoordsFromMousePos();
+        roadStartCoord = grid.gcfmp();
         if (roadStartCoord) {
-          grid.createSnapshot();
-          const tile = grid.getTileFromMousePos();
+          grid.csst();
+          const tile = grid.gtfmp();
           // this should always return a tile since roadStartCoord should only
           // be non-null if it's clicked inside the grid
           if (tile.type === TileType.Road || tile.type === TileType.DCRoad) {
@@ -155,23 +164,23 @@ export const placeRoadsController = {
       roadsBtnMgr.released();
 
       if (roadStartCoord) {
-        grid.resetToSnapshot();
-        const roadEndCoord = grid.getCoordsFromMousePos(true);
+        grid.rtsst();
+        const roadEndCoord = grid.gcfmp(true);
         if (roadType === TileType.EphRoad) {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.Road);
         } else {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.None);
         }
-        grid.checkRoadConnection();
-        roadsDoneButton.enabled = grid.allRoadsConnected;
+        grid.crc();
+        roadsDoneButton.enabled = grid.arc;
       }
 
       roadStartCoord = null;
     }
 
     if (mouseIsDown(0) && roadStartCoord) {
-      grid.resetToSnapshot();
-      const roadEndCoord = grid.getCoordsFromMousePos(true);
+      grid.rtsst();
+      const roadEndCoord = grid.gcfmp(true);
       grid.setTileLine(roadStartCoord, roadEndCoord, roadType);
     }
     // if (mouseWasReleased(2) && grid.allRoadsConnected) {
@@ -181,7 +190,7 @@ export const placeRoadsController = {
   gameRender() {
     grid.render();
     drawText(placeRoadsText, topTextPos, 1.5);
-    if (!grid.allRoadsConnected) {
+    if (!grid.arc) {
       drawText(requiredRoadsText, bottomTextPos, 1.5);
     }
     roadsBtnMgr.render();
@@ -191,19 +200,19 @@ export const placeRoadsController = {
 // Place Houses
 export const placeHousesController = {
   init() {
-    const gridSize = grid.getWorldSize();
+    const gridSize = grid.gws();
     spawnPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
     spawnPos.y = -8;
     skipsLeft = 3;
     skipButton.enabled = true;
 
-    const gridBounds = grid.getWorldBounds();
+    const gridBounds = grid.gwb();
     const growAmount = 4 * tileSize;
 
     droppableBounds.lower = gridBounds[0].subtract(vec2(growAmount));
     droppableBounds.upper = gridBounds[1].add(vec2(growAmount)); // house pos is bottom left
 
-    grid.checkAvailableSpaces();
+    grid.cvs();
     
     spawnNewHouse();
   },
@@ -227,7 +236,7 @@ export const placeHousesController = {
     }
 
     if (mouseWasPressed(0)) {
-      if (!housesBtnMgr.pressed() && house.isClicked()) {
+      if (!housesBtnMgr.pressed() && house.ic()) {
         house.state = HouseState.Placing;
         origHousePos = house.pos.copy();
         dragAnchor = mousePos.copy();
@@ -240,7 +249,7 @@ export const placeHousesController = {
         house.pos.x = Math.floor((house.pos.x + tileSize / 2) / tileSize) * tileSize;
         house.pos.y = Math.floor((house.pos.y + tileSize / 2) / tileSize) * tileSize;
 
-        const bounds = house.getWorldBounds();
+        const bounds = house.gwb();
         const midpoint = vec2(
           (bounds[0].x + bounds[1].x) / 2,
           (bounds[0].y + bounds[1].y) / 2,
@@ -255,9 +264,9 @@ export const placeHousesController = {
           house.pos.y = origHousePos.y;
         }
 
-        if (grid.houseCanFit(house) && grid.houseIsTouchingRoad(house)) {
-          grid.addHouse(house);
-          grid.checkAvailableSpaces();
+        if (grid.hcf(house) && grid.hitr(house)) {
+          grid.ah(house);
+          grid.cvs();
           spawnNewHouse();
         } else {
           house.state = HouseState.Invalid;
@@ -270,7 +279,7 @@ export const placeHousesController = {
       house.pos.x = origHousePos.x + (mousePos.x - dragAnchor.x);
       house.pos.y = origHousePos.y + (mousePos.y - dragAnchor.y);
 
-      const bounds = house.getWorldBounds();
+      const bounds = house.gwb();
       if (bounds[0].x < droppableBounds.lower.x) {
         house.pos.x = droppableBounds.lower.x;
       } else if (bounds[1].x > droppableBounds.upper.x) {
@@ -283,8 +292,8 @@ export const placeHousesController = {
       }
     }
     
-    if (!grid.hasAvailableSpaces || (!fittableHouse && skipsLeft <= 0)) {
-      stateManager.setGameState(GameState.GameOver);
+    if (!grid.hvs || (!fittableHouse && skipsLeft <= 0)) {
+      stateManager.sgs(GameState.GameOver);
     }
   },
   gameRender() {
@@ -331,8 +340,8 @@ export const gameOverController = {
     topOffset = randVector(lerp(percent(since, 0, 1000), 1, 0));
 
     if (since >= 3000) {
-      const counts = grid.getCounts();
-      stateManager.setGameState(GameState.Leaderboard, {
+      const counts = grid.c();
+      stateManager.sgs(GameState.Leaderboard, {
         timestamp: now,
         totalMaxScore: counts.totalCount,
         score: counts.houseTileCount,

@@ -1,7 +1,13 @@
 
 export class ButtonManager {
   constructor() {
+    /**
+     * @type {Button[]}
+     */
     this.buttons = [];
+    /**
+     * @type {Button}
+     */
     this.pressedButton = null;
   }
 
@@ -20,7 +26,7 @@ export class ButtonManager {
     
     for (let i = this.buttons.length - 1; i >= 0 && !this.pressedButton; i--) {
       const button = this.buttons[i];
-      if (button.containsMousePos()) {
+      if (button.cmp()) {
         this.pressedButton = button;
       }
     }
@@ -31,7 +37,7 @@ export class ButtonManager {
   released() {
     if (!this.pressedButton) { return false; }
 
-    if (this.pressedButton.containsMousePos()) {
+    if (this.pressedButton.cmp()) {
       this.pressedButton.pressed();
     }
 

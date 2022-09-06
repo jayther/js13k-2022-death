@@ -7,7 +7,7 @@ import { stateManager } from './state-mgr';
 const startButton = new Button(
   vec2(0, -2), vec2(4, 2.5), 'Start', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
   () => {
-    stateManager.setGameState(GameState.PlaceRoads);
+    stateManager.sgs(GameState.PlaceRoads);
   },
   false
 );

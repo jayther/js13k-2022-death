@@ -2,22 +2,30 @@ import { GameState } from '../consts';
 
 class StateManager {
   constructor() {
-    this.controllerMap = null;
-    this.gameState = GameState.Idle;
+    /**
+     * controllerMap
+     */
+    this.cm = null;
+    this.gs = GameState.Idle;
   }
   init(controllerMap) {
-    this.controllerMap = controllerMap;
+    this.cm = controllerMap;
   }
-  setGameState(gameState, opts) {
-    this.gameState = gameState;
-    this.curController = this.controllerMap[gameState];
-    this.curController.init(opts);
+  /**
+   * setGameState
+   * @param {GameState} gameState 
+   * @param {*} opts 
+   */
+  sgs(gameState, opts) {
+    this.gs = gameState;
+    this.cc = this.cm[gameState];
+    this.cc.init(opts);
   }
   gameUpdate() {
-    this.curController.gameUpdate();
+    this.cc.gameUpdate();
   }
   gameRender() {
-    this.curController.gameRender();
+    this.cc.gameRender();
   }
 }
 
