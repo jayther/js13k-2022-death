@@ -38,6 +38,7 @@ export class Grid {
     this.houses = [];
     this.snapshotTiles = [];
     this.allRoadsConnected = false;
+    this.hasAvailableSpaces = false;
     this.size = vec2(width, height);
     const total = this.size.x * this.size.y;
     for (let i = 0; i < total; i += 1) {
@@ -93,6 +94,23 @@ export class Grid {
       }
     }
     return null;
+  }
+
+  checkAvailableSpaces() {
+    const roads = this.tiles.filter(tile => tile.type === TileType.Road);
+    for (const road of roads) {
+      for (const delta of deltaArray) {
+        const neighborPos = vec2(road.x + delta[0], road.y + delta[1]);
+        if (!neighborPos.arrayCheck(this.size)) { continue; }
+
+        const tile = this.getTile(neighborPos.x, neighborPos.y);
+        if (tile.type === TileType.None) {
+          this.hasAvailableSpaces = true;
+          return;
+        }
+      }
+    }
+    this.hasAvailableSpaces = false;
   }
 
   houseIsTouchingRoad(house) {

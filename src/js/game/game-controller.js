@@ -204,6 +204,8 @@ export const placeHousesController = {
 
     droppableBounds.lower = gridBounds[0].subtract(vec2(growAmount));
     droppableBounds.upper = gridBounds[1].add(vec2(growAmount)); // house pos is bottom left
+
+    grid.checkAvailableSpaces();
     
     spawnNewHouse();
   },
@@ -259,6 +261,7 @@ export const placeHousesController = {
 
         if (grid.houseCanFit(house) && grid.houseIsTouchingRoad(house)) {
           grid.addHouse(house);
+          grid.checkAvailableSpaces();
           spawnNewHouse();
         } else {
           house.state = HouseState.Invalid;
@@ -284,7 +287,7 @@ export const placeHousesController = {
       }
     }
     
-    if (!fittableHouse && skipsLeft <= 0) {
+    if (!grid.hasAvailableSpaces || (!fittableHouse && skipsLeft <= 0)) {
       stateManager.setGameState(GameState.GameOver);
     }
   },
