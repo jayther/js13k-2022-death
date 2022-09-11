@@ -1,12 +1,39 @@
-import { Color, drawTile, lerp, percent, time, vec2 } from '../engine/engine.all';
+import { 
+  Color, 
+  drawText, 
+  drawTile, 
+  lerp, 
+  percent, 
+  time, 
+  vec2,
+  randInt,
+} from '../engine/engine.all';
 
 const ghostTileIndex = 21;
+const textOffset = vec2(0, 4);
+
+const requestTexts = [
+  'Can you build me this?',
+];
+
+const thankTexts = [
+  'Thank you!',
+];
+
+const skippedTexts = [
+  'Aww...',
+];
+
+function randFromArr(arr) {
+  return arr[randInt(0, arr.length)];
+}
 
 export class Ghost {
   constructor(pos) {
     this.pos = pos;
     this.color = new Color(1, 1, 1, 1);
     this.size = vec2(6);
+    this.text = null;
 
     this.moving = false;
     this.startPos = pos.copy();
@@ -60,6 +87,19 @@ export class Ghost {
     return new Promise(resolve => this.resizeResolve = resolve);
   }
 
+  showRequestText() {
+    this.text = randFromArr(requestTexts);
+  }
+
+  showThankText() {
+    this.text = randFromArr(thankTexts);
+    setTimeout(() => this.text = null, 1500);
+  }
+
+  showSkippedText() {
+    this.text = randFromArr(skippedTexts);
+  }
+
   updateMoving() {
     if (!this.moving) { return; }
 
@@ -111,5 +151,9 @@ export class Ghost {
   
   render() {
     drawTile(this.pos, this.size, ghostTileIndex, undefined, this.color);
+
+    if (this.text) {
+      drawText(this.text, this.pos.add(vec2(0, this.size.y / 2 + 1)), 1, this.color);
+    }
   }
 }

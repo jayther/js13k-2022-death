@@ -10,7 +10,6 @@ import {
   lerp,
   percent,
   randVector,
-  drawTile,
 } from '../engine/engine.all';
 import { GameState, HouseState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
@@ -95,6 +94,7 @@ const skipButton = new Button(
     if (skipsLeft > 0) {
       house = null;
       skipsLeft -= 1;
+      currentGhost.showSkippedText();
       currentGhost.fadeTo(0, 2);
       currentGhost.moveTo(ghostRequestPos.copy().add(vec2(20, 0)), 10)
         .then(ghost => ghost.destroy = true);
@@ -286,6 +286,7 @@ export const placeHousesController = {
   init() {
     skipButton.enabled = skipsLeft > 0;
     rotateButton.enabled = true;
+    currentGhost.showRequestText();
 
     grid.checkAvailableSpaces();
     
@@ -342,6 +343,7 @@ export const placeHousesController = {
 
         if (grid.houseCanFit(house) && grid.houseIsTouchingRoad(house)) {
           grid.addHouse(house);
+          currentGhost.showThankText();
           currentGhost.resizeTo(vec2(1), 1);
           currentGhost.moveTo(midpoint.copy(), 10).then(ghost => {
             return ghost.fadeTo(0, 1);
@@ -377,6 +379,13 @@ export const placeHousesController = {
     // skipping while the current piece does not fit causes a "double game over",
     // so we're making sure we're still in the same state
     if (stateManager.gameState === GameState.PlaceHouses && (!grid.hasAvailableSpaces || (!fittableHouse && skipsLeft <= 0))) {
+      if (currentGhost) {
+        currentGhost.showSkippedText();
+        
+        currentGhost.fadeTo(0, 2);
+        currentGhost.moveTo(ghostRequestPos.copy().add(vec2(20, 0)), 10)
+          .then(ghost => ghost.destroy = true);
+      }
       stateManager.setGameState(GameState.GameOver);
     }
   },
