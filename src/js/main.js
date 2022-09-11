@@ -34,7 +34,7 @@ function gameRender() {
 function gameRenderPost() {
 }
 
-engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost);
+engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, 't.png');
 
 let resizeTimeout = null;
 function debouncedResize() {

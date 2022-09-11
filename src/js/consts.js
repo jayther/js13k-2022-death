@@ -66,3 +66,4 @@ export const deltaArrayDirectionMap = [
 export const tileMask = 0b111;
 
 export const directionShift = 3;
+export const orthoMask = 0b1111;

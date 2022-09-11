@@ -11,8 +11,8 @@ const tileColorMap = [
 ];
 
 const baseColorMap = [
-  new Color(0.3, 0.3, 0.3),
-  new Color(0.35, 0.35, 0.35),
+  new Color(0.278, 0.176, 0.235),
+  new Color(0.223, 0.125, 0.183),
 ];
 
 export class Tile {
