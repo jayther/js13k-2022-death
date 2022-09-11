@@ -9,17 +9,27 @@ const htmlmin   = require('gulp-htmlmin');
 const fs        = require('fs');
 const buildTasks = require('./build.js');
 const templateTasks = require('./template.js');
+const merge = require('merge-stream');
 
 function beep() {
   import('beeper').then(module => module.default());
 }
 
-function zip() {
+function indexRename() {
   return gulp.src('./dist/index.min.html')
     .pipe( htmlmin({ collapseWhitespace: true }) )
     .pipe( rename('index.html') )
+}
+
+function assetsFetch() {
+  return gulp.src('./dist/*.png');
+}
+
+function zip() {
+  const merged = merge(indexRename(), assetsFetch())
     .pipe( gulp_zip('game.zip') )
     .pipe( gulp.dest('dist') );
+  return merged;
 }
 
 function report(done) {
