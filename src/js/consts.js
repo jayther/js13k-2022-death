@@ -36,9 +36,10 @@ export const GameState = {
   Idle: 0,
   MainMenu: 1,
   PlaceRoads: 2,
-  PlaceHouses: 3,
-  GameOver: 4,
-  Leaderboard: 5,
+  GhostIncoming: 3,
+  PlaceHouses: 4,
+  GameOver: 5,
+  Leaderboard: 6,
 };
 
 export const Direction = {

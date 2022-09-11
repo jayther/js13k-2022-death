@@ -10,6 +10,7 @@ import {
   lerp,
   percent,
   randVector,
+  drawTile,
 } from '../engine/engine.all';
 import { GameState, HouseState, tileSize, TileType } from '../consts';
 import { Grid } from './grid';
@@ -17,6 +18,7 @@ import { House } from './house';
 import { stateManager } from './state-mgr';
 import { Button } from './button';
 import { ButtonManager } from './btn-mgr';
+import { Ghost } from './ghost';
 
 let grid;
 // let origCameraPos = vec2();
@@ -29,7 +31,12 @@ let spawnPos = vec2();
 let gameOverTime;
 
 let house;
+let currentGhost = null;
 let fittableHouse = null;
+
+const ghostRequestPos = vec2(0, -8);
+
+let ghosts = [];
 
 const topTextPos = vec2();
 const bottomTextPos = vec2();
@@ -59,7 +66,7 @@ const roadsDoneButton = new Button(
   'Done', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
   () => {
     if (grid.allRoadsConnected) {
-      stateManager.setGameState(GameState.PlaceHouses);
+      stateManager.setGameState(GameState.GhostIncoming);
     }
   },
   false,
@@ -86,8 +93,12 @@ const skipButton = new Button(
   'Skip', 1.5, new Color(1, 1, 1), new Color(0, 0, 0),
   () => {
     if (skipsLeft > 0) {
+      house = null;
       skipsLeft -= 1;
-      spawnNewHouse();
+      currentGhost.fadeTo(0, 2);
+      currentGhost.moveTo(ghostRequestPos.copy().add(vec2(20, 0)), 10)
+        .then(ghost => ghost.destroy = true);
+      stateManager.setGameState(GameState.GhostIncoming);
     }
     if (skipsLeft <= 0) {
       skipButton.enabled = false;
@@ -117,12 +128,25 @@ function spawnNewHouse() {
   // console.log('houseFitsSomewhere', !!fittableHouse);
 }
 
+function updateGhosts() {
+  for (let i = 0; i < ghosts.length; i++) {
+    const ghost = ghosts[i];
+    ghost.update();
+    if (ghost.destroy) {
+      ghosts.splice(i, 1);
+      i--;
+    }
+  }
+}
+
 // Place Roads
 export const placeRoadsController = {
   init() {
     grid = new Grid(15, 15);
     dragAnchor = null;
     roadStartCoord = null;
+    house = null;
+
     const gridSize = grid.getWorldSize();
     cameraPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
     cameraPos.y = grid.pos.y + gridSize.y / 2 - tileSize / 2;
@@ -133,6 +157,21 @@ export const placeRoadsController = {
     topTextPos.y = grid.pos.y + gridSize.y - tileSize / 2 + 5;
     bottomTextPos.x = roadsDoneButton.pos.x;
     bottomTextPos.y = roadsDoneButton.pos.y - 4;
+
+    skipsLeft = 3;
+
+    const gridBounds = grid.getWorldBounds();
+    const growAmount = 4 * tileSize;
+
+    droppableBounds.lower = gridBounds[0].subtract(vec2(growAmount));
+    droppableBounds.upper = gridBounds[1].add(vec2(growAmount)); // house pos is bottom left
+    
+    spawnPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
+    spawnPos.y = -8;
+
+    ghostRequestPos.x = grid.pos.x + gridSize.x - 5;
+
+    ghosts = [];
   },
   gameUpdate() {
     if (mouseWasPressed(0)) {
@@ -189,27 +228,71 @@ export const placeRoadsController = {
   },
 };
 
+export const ghostIncomingController = {
+  init() {
+    skipButton.enabled = false;
+    rotateButton.enabled = false;
+    // setTimeout(() => {
+    //   stateManager.setGameState(GameState.PlaceHouses);
+    // }, 5000);
+    currentGhost = new Ghost(vec2(40, -20));
+    currentGhost.moveTo(ghostRequestPos, 15).then(() => {
+      stateManager.setGameState(GameState.PlaceHouses);
+    });
+    ghosts.push(currentGhost);
+  },
+  gameUpdate() {
+    updateGhosts();
+  },
+  gameRender() {
+    grid.render();
+    // drawTile(ghostRequestPos, vec2(6), ghostTileIndex);
+    if (house) {
+      house.render();
+    }
+    for (const ghost of ghosts) {
+      ghost.render();
+    }
+
+    // if (fittableHouse) {
+    //   fittableHouse.render();
+    // }
+
+    drawText(
+      placeHouseText,
+      topTextPos,
+      1.5,
+    );
+    drawText(
+      'right-click\nworks too',
+      rotateButton.pos.add(vec2(3, 0.5)), 1,
+      undefined,
+      undefined, undefined,
+      'left',
+    )
+    drawText(
+      `Skips left: ${skipsLeft}`,
+      skipButton.pos.add(vec2(3, 0)), 1.5,
+      undefined,
+      undefined, undefined,
+      'left',
+    );
+    housesBtnMgr.render();
+  },
+};
+
 // Place Houses
 export const placeHousesController = {
   init() {
-    const gridSize = grid.getWorldSize();
-    spawnPos.x = grid.pos.x + gridSize.x / 2 - tileSize / 2;
-    spawnPos.y = -8;
-    skipsLeft = 3;
-    skipButton.enabled = true;
+    skipButton.enabled = skipsLeft > 0;
     rotateButton.enabled = true;
-
-    const gridBounds = grid.getWorldBounds();
-    const growAmount = 4 * tileSize;
-
-    droppableBounds.lower = gridBounds[0].subtract(vec2(growAmount));
-    droppableBounds.upper = gridBounds[1].add(vec2(growAmount)); // house pos is bottom left
 
     grid.checkAvailableSpaces();
     
     spawnNewHouse();
   },
   gameUpdate() {
+    updateGhosts();
     // if (mouseIsDown(0)) {
     //   if (!dragging) {
     //     dragAnchor = mousePosScreen.copy();
@@ -259,8 +342,14 @@ export const placeHousesController = {
 
         if (grid.houseCanFit(house) && grid.houseIsTouchingRoad(house)) {
           grid.addHouse(house);
-          grid.checkAvailableSpaces();
-          spawnNewHouse();
+          currentGhost.resizeTo(vec2(1), 1);
+          currentGhost.moveTo(midpoint.copy(), 10).then(ghost => {
+            return ghost.fadeTo(0, 1);
+          }).then(ghost => {
+            ghost.destroy = true;
+          });
+          house = null;
+          stateManager.setGameState(GameState.GhostIncoming);
         } else {
           house.state = HouseState.Invalid;
         }
@@ -285,13 +374,19 @@ export const placeHousesController = {
       }
     }
     
-    if (!grid.hasAvailableSpaces || (!fittableHouse && skipsLeft <= 0)) {
+    // skipping while the current piece does not fit causes a "double game over",
+    // so we're making sure we're still in the same state
+    if (stateManager.gameState === GameState.PlaceHouses && (!grid.hasAvailableSpaces || (!fittableHouse && skipsLeft <= 0))) {
       stateManager.setGameState(GameState.GameOver);
     }
   },
   gameRender() {
     grid.render();
+    for (const ghost of ghosts) {
+      ghost.render();
+    }
     house.render();
+
     // if (fittableHouse) {
     //   fittableHouse.render();
     // }
@@ -327,6 +422,8 @@ export const gameOverController = {
     gameOverTime = Date.now();
   },
   gameUpdate() {
+    updateGhosts();
+
     const now = Date.now();
     const since = now - gameOverTime;
 
@@ -345,6 +442,9 @@ export const gameOverController = {
   gameRender() {
     grid.render();
     house.render();
+    for (const ghost of ghosts) {
+      ghost.render();
+    }
 
     drawText(
       noMoreMovesText,

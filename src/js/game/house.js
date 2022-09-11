@@ -4,7 +4,6 @@ import {
   tileSize,
   TileType,
   deltaArray,
-  Direction,
   tileMask,
   deltaArrayDirectionMap,
   directionShift,
@@ -22,13 +21,6 @@ const stateColorMap = [
 const cw = 1, ccw = 0;
 
 const tileSizeVec2 = vec2(tileSize);
-const tileDrawSize = vec2(tileSize * 0.75);
-const neighborOffset = 1 / 8;
-
-const NE = Direction.North | Direction.East | Direction.NorthEast;
-const SE = Direction.South | Direction.East | Direction.SouthEast;
-const SW = Direction.South | Direction.West | Direction.SouthWest;
-const NW = Direction.North | Direction.West | Direction.NorthWest;
 
 function createRandomTiles(maxExtent) {
   const side = maxExtent * 2 - 1;
