@@ -1,5 +1,5 @@
 import { Color, drawRect, vec2, randInt, mousePos, sign } from '../engine/engine.all';
-import { deltaArray, HouseState, tileSize, TileType } from '../consts';
+import { deltaArray, HouseState, tileMask, tileSize, TileType } from '../consts';
 
 const tileColorMap = [
   null,                     // None
@@ -68,7 +68,7 @@ export class Grid {
     for (let y = 0; y < houseTiles.length; y += 1) {
       const row = houseTiles[y];
       for (let x = 0; x < row.length; x += 1) {
-        if (!row[x]) { continue; }
+        if (!(row[x] & tileMask)) { continue; }
         
         const tileGridPos = houseGridPos.add(vec2(x, y));
         const gridTile = this.getTile(tileGridPos.x, tileGridPos.y);
@@ -117,7 +117,7 @@ export class Grid {
     for (let y = 0; y < houseTiles.length; y += 1) {
       const row = houseTiles[y];
       for (let x = 0; x < row.length; x += 1) {
-        if (!row[x]) { continue; }
+        if (!(row[x] & tileMask)) { continue; }
         
         const tileGridPos = houseGridPos.add(vec2(x, y));
         const gridTiles = deltaArray.map(delta => {
@@ -140,7 +140,7 @@ export class Grid {
     for (let y = 0; y < houseTiles.length; y += 1) {
       const row = houseTiles[y];
       for (let x = 0; x < row.length; x += 1) {
-        if (!row[x]) { continue; }
+        if (!(row[x] & tileMask)) { continue; }
         
         const tileGridPos = houseGridPos.add(vec2(x, y));
         this.setTile(tileGridPos.x, tileGridPos.y, TileType.HousePart);
