@@ -185,6 +185,7 @@ export class House {
         // drawRect(renderTilePos, tileDrawSize, color);
         const directionFlags = (tile >> directionShift) & orthoMask;
         drawTile(renderTilePos, tileSizeVec2, directionFlags);
+        
         // if (directionFlags & Direction.North) {
         //   drawRect(renderTilePos.add(vec2(0, neighborOffset).multiply(tileSizeVec2)), tileDrawSize, color);
         // }

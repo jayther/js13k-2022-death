@@ -1,5 +1,22 @@
-import { Color, drawRect, vec2, randInt, mousePos, sign } from '../engine/engine.all';
-import { deltaArray, HouseState, tileMask, tileSize, TileType } from '../consts';
+import { 
+  Color, 
+  drawRect, 
+  vec2, 
+  randInt, 
+  mousePos, 
+  sign, 
+  drawTile,
+  PI,
+  abs,
+} from '../engine/engine.all';
+import { 
+  deltaArray,
+  deltaArrayDirectionMap,
+  HouseState, 
+  tileMask, 
+  tileSize, 
+  TileType,
+} from '../consts';
 
 const tileColorMap = [
   null,                     // None
@@ -15,11 +32,36 @@ const baseColorMap = [
   new Color(0.223, 0.125, 0.183),
 ];
 
+// WSEN
+const roadTileRenderMap = [
+  null,
+  { index: 4, angle: PI }, // ___N
+  { index: 4, angle: -PI / 2 }, // __E_
+  { index: 1, angle: -PI / 2 }, // __EN
+  { index: 4, angle: 0 }, // _S__
+  { index: 0, angle: 0 }, // _S_N
+  { index: 1, angle: 0 }, // _SE_
+  { index: 2, angle: 0 }, // _SEN
+  { index: 4, angle: PI / 2 }, // W___
+  { index: 1, angle: PI }, // W__N
+  { index: 0, angle: PI / 2 }, // W_E_
+  { index: 2, angle: -PI / 2 }, // W_EN
+  { index: 1, angle: PI / 2 }, // WS__
+  { index: 2, angle: PI }, // WS_N
+  { index: 2, angle: PI / 2 }, // WSE_
+  { index: 3, angle: 0 }, // WSEN
+];
+
+const roadTileIndexOffset = 16;
+const pilotRoadMinDistance = 3;
+
 export class Tile {
   constructor(type, x, y) {
     this.x = x;
     this.y = y;
     this.type = type || 0;
+    this.directionFlags = 0;
+    this.pilotRoad = false;
   }
   copy() {
     const tile = new Tile(this.type, this.x, this.y);
@@ -212,7 +254,10 @@ export class Grid {
 
   checkRoadConnection() {
     const roads = this.tiles.filter(tile => tile.type === TileType.Road || tile.type === TileType.DCRoad);
-    roads.forEach(tile => tile.type = TileType.DCRoad);
+    roads.forEach(tile => {
+      tile.type = TileType.DCRoad;
+      tile.pilotRoad = false;
+    });
     
     const edgeRoads = roads.filter(tile => (
       tile.x === 0 || tile.y === 0 ||
@@ -224,7 +269,18 @@ export class Grid {
       return;
     }
 
-    edgeRoads.forEach(tile => this.setConnectedRoads(tile.x, tile.y));
+    const pilotRoads = [];
+    edgeRoads.forEach(tile => {
+      const hasNearbyPilot = pilotRoads.some(pilotRoad => (
+        abs(pilotRoad.x - tile.x) <= pilotRoadMinDistance &&
+        abs(pilotRoad.y - tile.y) <= pilotRoadMinDistance
+      ));
+      if (!hasNearbyPilot || tile.type === TileType.DCRoad) {
+        tile.pilotRoad = true;
+        pilotRoads.push(tile);
+      }
+      this.setConnectedRoads(tile.x, tile.y);
+    });
 
     this.allRoadsConnected = roads.every(road => road.type === TileType.Road);
   }
@@ -238,6 +294,24 @@ export class Grid {
 
     for (const delta of deltaArray) {
       this.setConnectedRoads(x + delta[0], y + delta[1]);
+    }
+  }
+
+  recalculateDirections() {
+    const roads = this.tiles.filter(tile => tile.type === TileType.Road);
+    for (const road of roads) {
+      road.directionFlags = deltaArray.reduce((accFlags, delta, i) => {
+        const pos = vec2(road.x + delta[0], road.y + delta[1]);
+        if (pos.arrayCheck(this.size)) {
+          const tile = this.getTile(pos.x, pos.y);
+          if (!tile || tile.type !== TileType.Road) {
+            return accFlags;
+          }
+        } else if (!road.pilotRoad) {
+          return accFlags;
+        }
+        return accFlags | deltaArrayDirectionMap[i];
+      }, 0);
     }
   }
 
@@ -263,11 +337,22 @@ export class Grid {
 
   render() {
     for (const tile of this.tiles) {
+      let tileIndex = -1;
+      let tileAngle = 0;
       const tilePos = vec2(tile.x, tile.y);
-      const renderTitlePos = tilePos.multiply(vec2(tileSize)).add(this.pos);
+      const renderTilePos = tilePos.multiply(vec2(tileSize)).add(this.pos);
       const color = tileColorMap[tile.type] || baseColorMap[(tile.x + tile.y) % 2];
-      if (color) {
-        drawRect(renderTitlePos, vec2(tileSize), color);
+      if (tile.type === TileType.Road) {
+        const roadTileData = roadTileRenderMap[tile.directionFlags];
+        if (roadTileData) {
+          tileIndex = roadTileData.index + roadTileIndexOffset;
+          tileAngle = roadTileData.angle;
+        }
+      }
+      if (tileIndex > -1) {
+        drawTile(renderTilePos, vec2(tileSize), tileIndex, undefined, undefined, tileAngle);
+      } else if (color) {
+        drawRect(renderTilePos, vec2(tileSize), color);
       }
     }
     for (const house of this.houses) {

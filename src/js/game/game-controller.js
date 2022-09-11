@@ -163,6 +163,7 @@ export const placeRoadsController = {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.None);
         }
         grid.checkRoadConnection();
+        grid.recalculateDirections();
         roadsDoneButton.enabled = grid.allRoadsConnected;
       }
 
