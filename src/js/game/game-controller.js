@@ -196,6 +196,7 @@ export const placeHousesController = {
     spawnPos.y = -8;
     skipsLeft = 3;
     skipButton.enabled = true;
+    rotateButton.enabled = true;
 
     const gridBounds = grid.getWorldBounds();
     const growAmount = 4 * tileSize;
