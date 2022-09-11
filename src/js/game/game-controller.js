@@ -50,8 +50,8 @@ const requiredRoadsText =
 `All roads must connect to an edge of the grid`;
 
 const placeHouseText = 
-`Place houses! Must touch a road, not overlap
-other houses, and be within the grid`
+`Drag and drop the ghosts' house requests! Must touch
+a road, not overlap other houses, and be within the grid`
 
 const noMoreMovesText =
 `Game over! No more space or skips`;

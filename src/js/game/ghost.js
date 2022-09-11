@@ -10,18 +10,25 @@ import {
 } from '../engine/engine.all';
 
 const ghostTileIndex = 21;
-const textOffset = vec2(0, 4);
 
 const requestTexts = [
   'Can you build me this?',
+  'Please make this for me?',
+  'I would like this house!',
 ];
 
 const thankTexts = [
   'Thank you!',
+  'Thanks so much!',
+  'Appreciate it!',
+  '<3',
 ];
 
 const skippedTexts = [
   'Aww...',
+  'Darn...',
+  'Fine then...',
+  ':(',
 ];
 
 function randFromArr(arr) {
