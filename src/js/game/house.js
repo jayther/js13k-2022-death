@@ -13,9 +13,9 @@ import {
 } from '../consts';
 
 const stateColorMap = [
-  new Color(),              // Placing
-  new Color(0.9, 0.9, 0.9), // Placed
-  new Color(1, 0.3, 0.3),   // Invalid
+  new Color(1, 1, 1, 0.3),  // Placing
+  null,                     // Placed
+  new Color(1, 0, 0, 0.5),   // Invalid
   new Color(1, 1, 1, 0.5),  // Fittable
 ];
 
@@ -180,11 +180,15 @@ export class House {
       for (let x = 0; x < tileRow.length; x += 1) {
         const tile = tileRow[x];
         if (!(tile & tileMask)) { continue; }
-        const color = stateColorMap[this.state] || new Color(1, 0, 0);
+        const color = stateColorMap[this.state];
         const renderTilePos = vec2(x, y).multiply(tileSizeVec2).add(this.pos);
         // drawRect(renderTilePos, tileDrawSize, color);
         const directionFlags = (tile >> directionShift) & orthoMask;
         drawTile(renderTilePos, tileSizeVec2, directionFlags);
+
+        if (color) {
+          drawRect(renderTilePos, tileSizeVec2, color);
+        }
         
         // if (directionFlags & Direction.North) {
         //   drawRect(renderTilePos.add(vec2(0, neighborOffset).multiply(tileSizeVec2)), tileDrawSize, color);
