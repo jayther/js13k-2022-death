@@ -1,4 +1,4 @@
-import { mouseWasPressed, mainCanvasSize, Color, vec2, drawTextScreen, mouseWasReleased, cameraPos, cameraScale, drawText } from '../engine/engine.all';
+import { mouseWasPressed, Color, vec2, mouseWasReleased, cameraPos, drawText } from '../engine/engine.all';
 import { ButtonManager } from './btn-mgr';
 import { Button } from './button';
 import { stateManager } from './state-mgr';
@@ -60,6 +60,8 @@ function loadScores() {
   if (scoresStr) {
     scores = JSON.parse(scoresStr);
   }
+  // remove scores with missing "score" property (from overriding non-mangled version)
+  scores = scores.filter(score => typeof score.score === 'number');
   scores.forEach(score => score.dateStr = new Date(score.timestamp).toLocaleDateString());
 }
 
