@@ -897,7 +897,7 @@ export function engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gam
         overlayCanvas.style = styleCanvas;
         
         gameInit();
-        touchGamepadCreate();
+        // touchGamepadCreate();
         engineUpdate();
     };
 
@@ -981,12 +981,12 @@ export function engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gam
         // render sort then render while removing destroyed objects
         enginePreRender();
         gameRender();
-        engineObjects.sort((a,b)=> a.renderOrder - b.renderOrder);
-        for (const o of engineObjects)
-            o.destroyed || o.render();
+        // engineObjects.sort((a,b)=> a.renderOrder - b.renderOrder);
+        // for (const o of engineObjects)
+        //     o.destroyed || o.render();
         gameRenderPost();
-        medalsRender();
-        touchGamepadRender();
+        // medalsRender();
+        // touchGamepadRender();
         debugRender();
         glCopyToContext(mainContext);
 
@@ -998,7 +998,7 @@ export function engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gam
             overlayContext.font = '1em monospace';
             overlayContext.fillStyle = '#000';
             const text = engineName + ' ' + 'v' + engineVersion + ' / ' 
-                + drawCount + ' / ' + engineObjects.length + ' / ' + averageFPS.toFixed(1)
+                + drawCount + ' / ' + /*engineObjects.length + ' / ' + */ averageFPS.toFixed(1)
                 + ' ' + (glEnable ? 'GL' : '2D') ;
             overlayContext.fillText(text, mainCanvas.width-3, 3);
             overlayContext.fillStyle = '#fff';
@@ -1032,60 +1032,60 @@ export function enginePreRender()
 export function engineObjectsUpdate()
 {
     // get list of solid objects for physics optimzation
-    engineObjectsCollide = engineObjects.filter(o=>o.collideSolidObjects);
+    // engineObjectsCollide = engineObjects.filter(o=>o.collideSolidObjects);
 
-    // recursive object update
-    const updateObject = (o)=>
-    {
-        if (!o.destroyed)
-        {
-            o.update();
-            for (const child of o.children)
-                updateObject(child);
-        }
-    }
-    for (const o of engineObjects)
-        o.parent || updateObject(o);
+    // // recursive object update
+    // const updateObject = (o)=>
+    // {
+    //     if (!o.destroyed)
+    //     {
+    //         o.update();
+    //         for (const child of o.children)
+    //             updateObject(child);
+    //     }
+    // }
+    // for (const o of engineObjects)
+    //     o.parent || updateObject(o);
 
-    // remove destroyed objects
-    engineObjects = engineObjects.filter(o=>!o.destroyed);
+    // // remove destroyed objects
+    // engineObjects = engineObjects.filter(o=>!o.destroyed);
 
     // increment frame and update time
     time = ++frame / frameRate;
 }
 
-/** Destroy and remove all objects */
-export function engineObjectsDestroy()
-{
-    for (const o of engineObjects)
-        o.parent || o.destroy();
-    engineObjects = engineObjects.filter(o=>!o.destroyed);
-}
+// /** Destroy and remove all objects */
+// export function engineObjectsDestroy()
+// {
+//     for (const o of engineObjects)
+//         o.parent || o.destroy();
+//     engineObjects = engineObjects.filter(o=>!o.destroyed);
+// }
 
-/** Triggers a callback for each object within a given area
- *  @param {Vector2} [pos]                 - Center of test area
- *  @param {Number} [size]                 - Radius of circle if float, rectangle size if Vector2
- *  @param {Function} [callbackFunction]   - Calls this function on every object that passes the test
- *  @param {Array} [objects=engineObjects] - List of objects to check */
-export function engineObjectsCallback(pos, size, callbackFunction, objects=engineObjects)
-{
-    if (!pos) // all objects
-    {
-        for (const o of objects)
-            callbackFunction(o);
-    }
-    else if (size.x != undefined)  // bounding box test
-    {
-        for (const o of objects)
-            isOverlapping(pos, size, o.pos, o.size) && callbackFunction(o);
-    }
-    else  // circle test
-    {
-        const sizeSquared = size*size;
-        for (const o of objects)
-            pos.distanceSquared(o.pos) < sizeSquared && callbackFunction(o);
-    }
-}
+// /** Triggers a callback for each object within a given area
+//  *  @param {Vector2} [pos]                 - Center of test area
+//  *  @param {Number} [size]                 - Radius of circle if float, rectangle size if Vector2
+//  *  @param {Function} [callbackFunction]   - Calls this function on every object that passes the test
+//  *  @param {Array} [objects=engineObjects] - List of objects to check */
+// export function engineObjectsCallback(pos, size, callbackFunction, objects=engineObjects)
+// {
+//     if (!pos) // all objects
+//     {
+//         for (const o of objects)
+//             callbackFunction(o);
+//     }
+//     else if (size.x != undefined)  // bounding box test
+//     {
+//         for (const o of objects)
+//             isOverlapping(pos, size, o.pos, o.size) && callbackFunction(o);
+//     }
+//     else  // circle test
+//     {
+//         const sizeSquared = size*size;
+//         for (const o of objects)
+//             pos.distanceSquared(o.pos) < sizeSquared && callbackFunction(o);
+//     }
+// }
 /*
     LittleJS Object System
 */

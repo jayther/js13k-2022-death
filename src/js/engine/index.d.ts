@@ -222,14 +222,6 @@ declare module "engine.all" {
     export function enginePreRender(): void;
     /** Calls update on each engine object (recursively if child), removes destroyed objects, and updated time */
     export function engineObjectsUpdate(): void;
-    /** Destroy and remove all objects */
-    export function engineObjectsDestroy(): void;
-    /** Triggers a callback for each object within a given area
-     *  @param {Vector2} [pos]                 - Center of test area
-     *  @param {Number} [size]                 - Radius of circle if float, rectangle size if Vector2
-     *  @param {Function} [callbackFunction]   - Calls this function on every object that passes the test
-     *  @param {Array} [objects=engineObjects] - List of objects to check */
-    export function engineObjectsCallback(pos?: Vector2, size?: number, callbackFunction?: Function, objects?: any[]): void;
     /** True if debug is enabled
      *  @default
      *  @memberof Debug */
