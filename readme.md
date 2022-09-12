@@ -9,11 +9,23 @@ JS13K Games 2022 - Death
 ![Gulp](https://img.shields.io/badge/GULP-%23CF4647.svg?style=for-the-badge&logo=gulp&logoColor=white)
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
-So here lies the beginning of JS13K Games 2022 entry by jayther!
+Death Estate, a packing-puzzle city builder! Build roads, then try to place as many houses that can fit for ghosts to live in.
 
 ## Current State
 
 Try the current state of the game at: https://jayther.github.io/js13k-2022-death/
+
+## Instructions
+
+(Instructions in-game, but also described below)
+
+In the first phase, build roads by click-and-dragging on the grid. When you're ready, click Done.
+
+In the houses phase, ghosts will come in and request peculiarly-shaped houses for you to place. Drag-and-drop the houses onto the grid to place them (must touch a road and not intersect other houses). You can click "Rotate" or right-click to rotate the house, or click "Skip" to skip the current ghost's request.
+
+Game is over when you've run out of skips or there are no where to build. Points are based on the number of tiles covered by houses.
+
+# Developing
 
 ## Setup
 
