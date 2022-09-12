@@ -1,4 +1,4 @@
-import { GameState } from '../consts';
+import { GameState, HouseState } from '../consts';
 import { Color, drawText, mouseWasPressed, mouseWasReleased, PI, rand, time, vec2 } from '../engine/engine.all';
 import { ButtonManager } from './btn-mgr';
 import { Button } from './button';
@@ -34,6 +34,7 @@ function spawnNewHouse() {
   const offset = house.pos.subtract(midpoint);
   house.pos.x = housePos.x + offset.x;
   house.pos.y = housePos.y + offset.y;
+  house.state = HouseState.Placed;
   house.bounce();
 }
 

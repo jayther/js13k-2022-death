@@ -20,6 +20,9 @@ const cw = 1, ccw = 0;
 
 const tileSizeVec2 = vec2(tileSize);
 
+const altSingleIndexOffset = 25;
+const altSingleLength = 6;
+
 function createRandomTiles(maxExtent) {
   const side = maxExtent * 2 - 1;
   const numTiles = randInt(1, side**2 + 1);
@@ -87,7 +90,16 @@ export class House {
     this.pos = pos;
     this.offset = vec2();
     this.tiles = tiles || createRandomTiles(2);
+    // this.tiles = tiles || createRandomTiles(1);
     this.recalculateDirections();
+    this.singleTileIndex = -1;
+    if (this.tiles.length === 1 && this.tiles[0].length === 1) {
+      // randInt seems to limit to zero, so we have to add 1 in rand, then subtract 1
+      this.singleTileIndex = randInt(0, altSingleLength + 1) - 1;
+      if (this.singleTileIndex > -1) {
+        this.singleTileIndex += altSingleIndexOffset;
+      }
+    }
 
     // console.table(this.tiles.map(row => row.map(tile => tile.toString(2).padStart(11, '0'))));
     this.state = HouseState.Placing;
@@ -197,9 +209,10 @@ export class House {
         const color = stateColorMap[this.state];
         const renderTilePos = vec2(x, y).multiply(tileSizeVec2).add(this.pos).add(this.offset);
 
+        // if singleTileIndex is properly defined, use that one. otherwise,
         // tiles are indexed according to the direction flags
-        const directionFlags = (tile >> directionShift);
-        drawTile(renderTilePos, tileSizeVec2, directionFlags);
+        const tileIndex = this.singleTileIndex > -1 ? this.singleTileIndex : (tile >> directionShift);
+        drawTile(renderTilePos, tileSizeVec2, tileIndex);
 
         if (color) {
           drawRect(renderTilePos, tileSizeVec2, color);
