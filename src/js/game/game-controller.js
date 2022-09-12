@@ -295,8 +295,11 @@ export const placeHousesController = {
 
     grid.checkAvailableSpaces();
     
-    houseRequestSound.play();
     spawnNewHouse();
+    if (grid.hasAvailableSpaces && fittableHouse) {
+      houseRequestSound.play();
+    }
+    
     house.bounce();
   },
   gameUpdate() {
