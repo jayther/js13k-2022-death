@@ -89,7 +89,6 @@ declare module "engine.all" {
     export function toggleFullscreen(): void;
     export function inputUpdate(): void;
     export function inputUpdatePost(): void;
-    export function gamepadsUpdate(): void;
     export function touchGamepadCreate(): void;
     export function touchGamepadRender(): void;
     /** Play an mp3 or wav audio from a local file or url

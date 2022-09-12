@@ -1968,7 +1968,7 @@ export function inputUpdate()
     mousePos = screenToWorld(mousePosScreen);
 
     // update gamepads if enabled
-    gamepadsUpdate();
+    // gamepadsUpdate();
 }
 
 export function inputUpdatePost()
@@ -2020,66 +2020,66 @@ export const mouseToScreen = (mousePos)=>
 // Gamepad input
 
 export const stickData = [];
-export function gamepadsUpdate()
-{
-    if (touchGamepadEnable && touchGamepadTimer.isSet())
-    {
-        // read virtual analog stick
-        const sticks = stickData[0] || (stickData[0] = []);
-        sticks[0] = vec2(touchGamepadStick.x, -touchGamepadStick.y); // flip vertical
+// export function gamepadsUpdate()
+// {
+//     if (touchGamepadEnable && touchGamepadTimer.isSet())
+//     {
+//         // read virtual analog stick
+//         const sticks = stickData[0] || (stickData[0] = []);
+//         sticks[0] = vec2(touchGamepadStick.x, -touchGamepadStick.y); // flip vertical
 
-        // read virtual gamepad buttons
-        const data = inputData[1] || (inputData[1] = []);
-        for (let i=10; i--;)
-        {
-            const j = i == 3 ? 2 : i == 2 ? 3 : i; // fix button locations
-            data[j] = touchGamepadButtons[i] ? 1 + 2*!gamepadIsDown(j,0) : 4*gamepadIsDown(j,0);
-        }
-    }
+//         // read virtual gamepad buttons
+//         const data = inputData[1] || (inputData[1] = []);
+//         for (let i=10; i--;)
+//         {
+//             const j = i == 3 ? 2 : i == 2 ? 3 : i; // fix button locations
+//             data[j] = touchGamepadButtons[i] ? 1 + 2*!gamepadIsDown(j,0) : 4*gamepadIsDown(j,0);
+//         }
+//     }
 
-    if (!gamepadsEnable || !navigator.getGamepads || !document.hasFocus() && !debug)
-        return;
+//     if (!gamepadsEnable || !navigator.getGamepads || !document.hasFocus() && !debug)
+//         return;
 
-    // poll gamepads
-    const gamepads = navigator.getGamepads();
-    for (let i = gamepads.length; i--;)
-    {
-        // get or create gamepad data
-        const gamepad = gamepads[i];
-        const data = inputData[i+1] || (inputData[i+1] = []);
-        const sticks = stickData[i] || (stickData[i] = []);
+//     // poll gamepads
+//     const gamepads = navigator.getGamepads();
+//     for (let i = gamepads.length; i--;)
+//     {
+//         // get or create gamepad data
+//         const gamepad = gamepads[i];
+//         const data = inputData[i+1] || (inputData[i+1] = []);
+//         const sticks = stickData[i] || (stickData[i] = []);
 
-        if (gamepad)
-        {
-            // read clamp dead zone of analog sticks
-            const deadZone = .3, deadZoneMax = .8;
-            const applyDeadZone = (v)=> 
-                v >  deadZone ?  percent( v, deadZone, deadZoneMax) : 
-                v < -deadZone ? -percent(-v, deadZone, deadZoneMax) : 0;
+//         if (gamepad)
+//         {
+//             // read clamp dead zone of analog sticks
+//             const deadZone = .3, deadZoneMax = .8;
+//             const applyDeadZone = (v)=> 
+//                 v >  deadZone ?  percent( v, deadZone, deadZoneMax) : 
+//                 v < -deadZone ? -percent(-v, deadZone, deadZoneMax) : 0;
 
-            // read analog sticks
-            for (let j = 0; j < gamepad.axes.length-1; j+=2)
-                sticks[j>>1] = vec2(applyDeadZone(gamepad.axes[j]), applyDeadZone(-gamepad.axes[j+1])).clampLength();
+//             // read analog sticks
+//             for (let j = 0; j < gamepad.axes.length-1; j+=2)
+//                 sticks[j>>1] = vec2(applyDeadZone(gamepad.axes[j]), applyDeadZone(-gamepad.axes[j+1])).clampLength();
             
-            // read buttons
-            for (let j = gamepad.buttons.length; j--;)
-            {
-                const button = gamepad.buttons[j];
-                data[j] = button.pressed ? 1 + 2*!gamepadIsDown(j,i) : 4*gamepadIsDown(j,i);
-                isUsingGamepad |= !i && button.pressed;
-                touchGamepadEnable && touchGamepadTimer.unset(); // disable touch gamepad if using real gamepad
-            }
+//             // read buttons
+//             for (let j = gamepad.buttons.length; j--;)
+//             {
+//                 const button = gamepad.buttons[j];
+//                 data[j] = button.pressed ? 1 + 2*!gamepadIsDown(j,i) : 4*gamepadIsDown(j,i);
+//                 isUsingGamepad |= !i && button.pressed;
+//                 touchGamepadEnable && touchGamepadTimer.unset(); // disable touch gamepad if using real gamepad
+//             }
 
-            if (gamepadDirectionEmulateStick)
-            {
-                // copy dpad to left analog stick when pressed
-                const dpad = vec2(gamepadIsDown(15,i) - gamepadIsDown(14,i), gamepadIsDown(12,i) - gamepadIsDown(13,i));
-                if (dpad.lengthSquared())
-                    sticks[0] = dpad.clampLength();
-            }
-        }
-    }
-}
+//             if (gamepadDirectionEmulateStick)
+//             {
+//                 // copy dpad to left analog stick when pressed
+//                 const dpad = vec2(gamepadIsDown(15,i) - gamepadIsDown(14,i), gamepadIsDown(12,i) - gamepadIsDown(13,i));
+//                 if (dpad.lengthSquared())
+//                     sticks[0] = dpad.clampLength();
+//             }
+//         }
+//     }
+// }
 
 ///////////////////////////////////////////////////////////////////////////////
 
