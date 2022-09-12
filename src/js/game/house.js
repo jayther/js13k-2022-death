@@ -7,8 +7,6 @@ import {
   tileMask,
   deltaArrayDirectionMap,
   directionShift,
-  orthoDiagDeltaArray,
-  orthoMask,
 } from '../consts';
 
 const stateColorMap = [
@@ -98,7 +96,7 @@ export class House {
     for (let y = 0; y < this.tiles.length; y++) {
       for (let x = 0; x < this.tiles[y].length; x++) {
         const limits = vec2(this.tiles[y].length, this.tiles.length);
-        const directionFlags = orthoDiagDeltaArray.reduce((accFlags, delta, i) => {
+        const directionFlags = deltaArray.reduce((accFlags, delta, i) => {
           const pos = vec2(x + delta[0], y + delta[1]);
           if (!pos.arrayCheck(limits)) {
             return accFlags;
@@ -174,38 +172,14 @@ export class House {
         if (!(tile & tileMask)) { continue; }
         const color = stateColorMap[this.state];
         const renderTilePos = vec2(x, y).multiply(tileSizeVec2).add(this.pos);
-        // drawRect(renderTilePos, tileDrawSize, color);
-        const directionFlags = (tile >> directionShift) & orthoMask;
+
+        // tiles are indexed according to the direction flags
+        const directionFlags = (tile >> directionShift);
         drawTile(renderTilePos, tileSizeVec2, directionFlags);
 
         if (color) {
           drawRect(renderTilePos, tileSizeVec2, color);
         }
-        
-        // if (directionFlags & Direction.North) {
-        //   drawRect(renderTilePos.add(vec2(0, neighborOffset).multiply(tileSizeVec2)), tileDrawSize, color);
-        // }
-        // if (directionFlags & Direction.East) {
-        //   drawRect(renderTilePos.add(vec2(neighborOffset, 0).multiply(tileSizeVec2)), tileDrawSize, color);
-        // }
-        // if (directionFlags & Direction.South) {
-        //   drawRect(renderTilePos.add(vec2(0, -neighborOffset).multiply(tileSizeVec2)), tileDrawSize, color);
-        // }
-        // if (directionFlags & Direction.West) {
-        //   drawRect(renderTilePos.add(vec2(-neighborOffset, 0).multiply(tileSizeVec2)), tileDrawSize, color);
-        // }
-        // if ((directionFlags & NE) === NE) {
-        //   drawRect(renderTilePos.add(vec2(neighborOffset, neighborOffset).multiply(tileSizeVec2)), tileDrawSize, color);
-        // }
-        // if ((directionFlags & SE) === SE) {
-        //   drawRect(renderTilePos.add(vec2(neighborOffset, -neighborOffset).multiply(tileSizeVec2)), tileDrawSize, color);
-        // }
-        // if ((directionFlags & SW) === SW) {
-        //   drawRect(renderTilePos.add(vec2(-neighborOffset, -neighborOffset).multiply(tileSizeVec2)), tileDrawSize, color);
-        // }
-        // if ((directionFlags & NW) === NW) {
-        //   drawRect(renderTilePos.add(vec2(-neighborOffset, neighborOffset).multiply(tileSizeVec2)), tileDrawSize, color);
-        // }
       }
     }
   }
