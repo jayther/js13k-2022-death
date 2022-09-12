@@ -67,6 +67,7 @@ export const menuController = {
     if (mouseWasReleased(0)) {
       btnMgr.released();
     }
+    btnMgr.update();
   },
   gameRender() {
     if (house) {

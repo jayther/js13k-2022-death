@@ -214,6 +214,8 @@ export const placeRoadsController = {
       roadStartCoord = null;
     }
 
+    roadsBtnMgr.update();
+
     if (mouseIsDown(0) && roadStartCoord) {
       grid.resetToSnapshot();
       const roadEndCoord = grid.getCoordsFromMousePos(true);
@@ -248,6 +250,7 @@ export const ghostIncomingController = {
   },
   gameUpdate() {
     updateGhosts();
+    housesBtnMgr.update();
   },
   gameRender() {
     grid.render();
@@ -374,6 +377,7 @@ export const placeHousesController = {
         dragAnchor = null;
       }
     }
+    housesBtnMgr.update();
   
     if (mouseIsDown(0) && dragAnchor) {
       house.pos.x = origHousePos.x + (mousePos.x - dragAnchor.x);
@@ -449,6 +453,7 @@ export const gameOverController = {
   },
   gameUpdate() {
     updateGhosts();
+    housesBtnMgr.update();
 
     const now = Date.now();
     const since = now - gameOverTime;

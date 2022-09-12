@@ -151,6 +151,7 @@ export const leaderboardController = {
     if (mouseWasReleased(0)) {
       btnMgr.released();
     }
+    btnMgr.update();
   },
   gameRender() {
     renderScores();

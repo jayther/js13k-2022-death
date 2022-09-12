@@ -40,6 +40,9 @@ export class ButtonManager {
     return true;
   }
 
+  update() {
+    this.buttons.forEach(button => button.update());
+  }
   render() {
     this.buttons.forEach(button => button.render());
   }

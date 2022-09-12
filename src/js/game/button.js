@@ -1,17 +1,24 @@
 import {
+  Color,
   drawRect,
   drawRectScreenSpace,
   drawText,
   drawTextScreen,
   mousePos,
   mousePosScreen,
+  percent,
+  time,
   vec2,
 } from '../engine/engine.all';
 import { clickSound } from './sounds';
 
+const sideColor = new Color(0.2, 0.2, 0.2, 0);
+const buttonThickness = 0.5;
+
 export class Button {
   constructor(pos, size, text, textSize, bgColor, textColor, onPressed, screenSpace = true, playSound = true) {
     this.pos = pos;
+    this.offset = vec2();
     this.size = size;
     this.text = text;
     this.textSize = textSize;
@@ -24,6 +31,10 @@ export class Button {
     this.visible = true;
 
     this.screenSpace = screenSpace;
+    
+    this.animating = false;
+    this.animStartTime = 0;
+    this.animEndTime = 0;
   }
 
   get enabled() {
@@ -45,9 +56,27 @@ export class Button {
   }
   pressed() {
     this.onPressed();
+    this.startAnim();
     if (this.playSound) {
       clickSound.play();
     }
+  }
+  startAnim() {
+    this.animating = true;
+    this.animStartTime = time;
+    this.animEndTime = time + 0.1;
+  }
+  update() {
+    if (!this.animating) { return; }
+
+    if (time >= this.animEndTime) {
+      this.offset.y = 0;
+      this.animating = false;
+      return;
+    }
+
+    const p = percent(time, this.animStartTime, this.animEndTime);
+    this.offset.y = -buttonThickness + p * buttonThickness;
   }
   render() {
     if (!this.visible) { return; }
@@ -61,10 +90,16 @@ export class Button {
       drawT = drawText;
     }
 
-    drawR(this.pos, this.size, this.bgColor);
+    const currentThickness = buttonThickness + this.offset.y;
+    drawR(
+      this.pos.add(this.offset).add(vec2(0, -this.size.y / 2 - currentThickness / 2)),
+      vec2(this.size.x, currentThickness),
+      this.bgColor.subtract(sideColor),
+    );
+    drawR(this.pos.add(this.offset), this.size, this.bgColor);
     drawT(
       this.text,
-      this.pos,
+      this.pos.add(this.offset),
       this.textSize,
       this.textColor,
     );
