@@ -7,9 +7,10 @@ import {
   mousePosScreen,
   vec2,
 } from '../engine/engine.all';
+import { clickSound } from './sounds';
 
 export class Button {
-  constructor(pos, size, text, textSize, bgColor, textColor, onPressed, screenSpace = true) {
+  constructor(pos, size, text, textSize, bgColor, textColor, onPressed, screenSpace = true, playSound = true) {
     this.pos = pos;
     this.size = size;
     this.text = text;
@@ -17,6 +18,7 @@ export class Button {
     this.bgColor = bgColor;
     this.textColor = textColor;
     this.onPressed = onPressed || (() => {});
+    this.playSound = playSound;
 
     this._enabled = true;
     this.visible = true;
@@ -43,6 +45,9 @@ export class Button {
   }
   pressed() {
     this.onPressed();
+    if (this.playSound) {
+      clickSound.play();
+    }
   }
   render() {
     if (!this.visible) { return; }

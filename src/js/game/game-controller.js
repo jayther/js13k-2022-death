@@ -18,6 +18,7 @@ import { stateManager } from './state-mgr';
 import { Button } from './button';
 import { ButtonManager } from './btn-mgr';
 import { Ghost } from './ghost';
+import { clickSound, houseRequestSound, houseSkipSound, invalidSound, pickUpSound, placeHouseSound } from './sounds';
 
 let grid;
 // let origCameraPos = vec2();
@@ -94,6 +95,7 @@ const skipButton = new Button(
     if (skipsLeft > 0) {
       house = null;
       skipsLeft -= 1;
+      houseSkipSound.play();
       currentGhost.showSkippedText();
       currentGhost.fadeTo(0, 2);
       currentGhost.moveTo(ghostRequestPos.copy().add(vec2(20, 0)), 10)
@@ -104,6 +106,7 @@ const skipButton = new Button(
       skipButton.enabled = false;
     }
   },
+  false,
   false,
 );
 housesBtnMgr.addBtn(skipButton);
@@ -198,8 +201,10 @@ export const placeRoadsController = {
         const roadEndCoord = grid.getCoordsFromMousePos(true);
         if (roadType === TileType.EphRoad) {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.Road);
+          placeHouseSound.play();
         } else {
           grid.setTileLine(roadStartCoord, roadEndCoord, TileType.None);
+          invalidSound.play();
         }
         grid.checkRoadConnection();
         grid.recalculateDirections();
@@ -290,6 +295,7 @@ export const placeHousesController = {
 
     grid.checkAvailableSpaces();
     
+    houseRequestSound.play();
     spawnNewHouse();
   },
   gameUpdate() {
@@ -310,10 +316,12 @@ export const placeHousesController = {
   
     if (mouseWasReleased(2)) {
       house.rotate(1);
+      clickSound.play();
     }
 
     if (mouseWasPressed(0)) {
       if (!housesBtnMgr.pressed() && house.isClicked()) {
+        pickUpSound.play();
         house.state = HouseState.Placing;
         origHousePos = house.pos.copy();
         dragAnchor = mousePos.copy();
@@ -342,6 +350,7 @@ export const placeHousesController = {
         }
 
         if (grid.houseCanFit(house) && grid.houseIsTouchingRoad(house)) {
+          placeHouseSound.play();
           grid.addHouse(house);
           currentGhost.showThankText();
           currentGhost.resizeTo(vec2(1), 1);
@@ -353,6 +362,7 @@ export const placeHousesController = {
           house = null;
           stateManager.setGameState(GameState.GhostIncoming);
         } else {
+          invalidSound.play();
           house.state = HouseState.Invalid;
         }
         dragAnchor = null;
@@ -386,6 +396,7 @@ export const placeHousesController = {
         currentGhost.moveTo(ghostRequestPos.copy().add(vec2(20, 0)), 10)
           .then(ghost => ghost.destroy = true);
       }
+      houseSkipSound.play();
       stateManager.setGameState(GameState.GameOver);
     }
   },
