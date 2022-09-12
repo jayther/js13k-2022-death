@@ -296,7 +296,7 @@ export const placeHousesController = {
     grid.checkAvailableSpaces();
     
     spawnNewHouse();
-    if (grid.hasAvailableSpaces && fittableHouse) {
+    if (grid.hasAvailableSpaces && (fittableHouse || skipsLeft > 0)) {
       houseRequestSound.play();
     }
     
