@@ -9,21 +9,20 @@ import {
   randInt,
 } from '../engine/engine.all';
 
-const ghostTileIndex = 21;
+const ghostTileIndexOffset = 21;
+const ghostTileLength = 4;
 
 const requestTexts = [
   'Can you build me this?',
   'Please make this for me?',
   'I would like this house!',
 ];
-
 const thankTexts = [
   'Thank you!',
   'Thanks so much!',
   'Appreciate it!',
   '<3',
 ];
-
 const skippedTexts = [
   'Aww...',
   'Darn...',
@@ -41,6 +40,7 @@ export class Ghost {
     this.color = new Color(1, 1, 1, 1);
     this.size = vec2(6);
     this.text = null;
+    this.ghostTileIndex = ghostTileIndexOffset + randInt(0, ghostTileLength);
 
     this.moving = false;
     this.startPos = pos.copy();
@@ -157,7 +157,7 @@ export class Ghost {
   }
   
   render() {
-    drawTile(this.pos, this.size, ghostTileIndex, undefined, this.color);
+    drawTile(this.pos, this.size, this.ghostTileIndex, undefined, this.color);
 
     if (this.text) {
       drawText(this.text, this.pos.add(vec2(0, this.size.y / 2 + 1)), 1, this.color);
