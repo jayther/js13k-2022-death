@@ -34,6 +34,7 @@ function spawnNewHouse() {
   const offset = house.pos.subtract(midpoint);
   house.pos.x = housePos.x + offset.x;
   house.pos.y = housePos.y + offset.y;
+  house.bounce();
 }
 
 // Main Menu
@@ -53,6 +54,10 @@ export const menuController = {
     if (time - lastHouseTime >= 1) {
       spawnNewHouse();
       lastHouseTime = time;
+    }
+
+    if (house) {
+      house.update();
     }
 
     if (mouseWasPressed(0)) {

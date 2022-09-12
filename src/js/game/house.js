@@ -1,4 +1,4 @@
-import { vec2, Color, drawRect, mousePos, randInt, drawTile } from '../engine/engine.all';
+import { vec2, Color, drawRect, mousePos, randInt, drawTile, time, percent, PI } from '../engine/engine.all';
 import {
   HouseState,
   tileSize,
@@ -85,11 +85,23 @@ function createRandomTiles(maxExtent) {
 export class House {
   constructor(pos, tiles = undefined) {
     this.pos = pos;
+    this.offset = vec2();
     this.tiles = tiles || createRandomTiles(2);
     this.recalculateDirections();
 
     // console.table(this.tiles.map(row => row.map(tile => tile.toString(2).padStart(11, '0'))));
     this.state = HouseState.Placing;
+    this.bouncing = false;
+    this.bounceStartTime = 0;
+    this.bounceEndTime = 0;
+  }
+
+  bounce() {
+    if (this.bouncing) { return; }
+
+    this.bouncing = true;
+    this.bounceStartTime = time;
+    this.bounceEndTime = time + 0.2;
   }
 
   recalculateDirections() {
@@ -164,6 +176,18 @@ export class House {
     this.recalculateDirections();
   }
 
+  update() {
+    if (!this.bouncing) { return; }
+
+    if (time >= this.bounceEndTime) {
+      this.offset.y = 0;
+      this.bouncing = false;
+    }
+    const p = percent(time, this.bounceStartTime, this.bounceEndTime);
+    this.offset.y = Math.sin(p * PI) * 1;
+
+  }
+
   render() {
     for (let y = 0; y < this.tiles.length; y += 1) {
       const tileRow = this.tiles[y];
@@ -171,7 +195,7 @@ export class House {
         const tile = tileRow[x];
         if (!(tile & tileMask)) { continue; }
         const color = stateColorMap[this.state];
-        const renderTilePos = vec2(x, y).multiply(tileSizeVec2).add(this.pos);
+        const renderTilePos = vec2(x, y).multiply(tileSizeVec2).add(this.pos).add(this.offset);
 
         // tiles are indexed according to the direction flags
         const directionFlags = (tile >> directionShift);

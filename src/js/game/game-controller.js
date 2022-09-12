@@ -297,6 +297,7 @@ export const placeHousesController = {
     
     houseRequestSound.play();
     spawnNewHouse();
+    house.bounce();
   },
   gameUpdate() {
     updateGhosts();
@@ -313,6 +314,8 @@ export const placeHousesController = {
     //     dragging = false;
     //   }
     // }
+
+    house.update();
   
     if (mouseWasReleased(2)) {
       house.rotate(1);
