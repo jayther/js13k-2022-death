@@ -1,5 +1,5 @@
-JS13K Games 2022 - Death
-========================
+Death Estate - JS13K Games 2022 - Death
+=======================================
 
 [![pages-build-deployment](https://github.com/jayther/js13k-2022-death/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/jayther/js13k-2022-death/actions/workflows/pages/pages-build-deployment)
 
@@ -11,7 +11,9 @@ JS13K Games 2022 - Death
 
 Death Estate, a packing-puzzle city builder! Build roads, then try to place as many houses that can fit for ghosts to live in.
 
-## Current State
+## Game Links
+
+Try the submitted entry at: https://dev.js13kgames.com/games/death-estate
 
 Try the current state of the game at: https://jayther.github.io/js13k-2022-death/
 
@@ -54,3 +56,7 @@ Note that `npm run watch` won't build right away until a change in `src/` has oc
 
 1. Build with `npm run build`, which will update the `docs/` folder
 2. Push to main
+
+# License
+
+[MIT](LICENSE)
